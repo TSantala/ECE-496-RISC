@@ -35,12 +35,12 @@ public class SocketClient {
 			 */
 			OutputStreamWriter osw = new OutputStreamWriter(bos, "US-ASCII");
 			TimeStamp = new java.util.Date().toString();
-			String process = "BOOTY CALL TIME "+ address.getHostAddress() + " port " + port +
-					" at " + TimeStamp +  (char) 13;
+			String process = "Calling the Socket Server on "+ address.getHostAddress() + " port " + port + "at" + TimeStamp +  (char) 13;
 
 			/** Write across the socket connection and flush the buffer */
 			osw.write(process);
 			osw.flush();
+			
 			/** Instantiate a BufferedInputStream object for reading
 	            /** Instantiate a BufferedInputStream object for reading
 			 * incoming socket streams.
@@ -58,10 +58,32 @@ public class SocketClient {
 			int c;
 			while ( (c = isr.read()) != 13)
 				instr.append( (char) c);
+			System.out.println(instr);
+			
+			BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
+			while(true){
+				String str=br.readLine();
+				if (str.endsWith("exit"))
+					break;
+				Socket johnConnection = new Socket(address, port);
+				BufferedOutputStream johnStream = new BufferedOutputStream(johnConnection.
+						getOutputStream());
+				OutputStreamWriter myWriter = new OutputStreamWriter(johnStream, "US-ASCII");
+				myWriter.write(str+(char) 13);
+				myWriter.flush();
+				StringBuffer johnstr = new StringBuffer();
+				BufferedInputStream johnInput = new BufferedInputStream(johnConnection.
+						getInputStream());
+				InputStreamReader jsr = new InputStreamReader(johnInput, "US-ASCII");
+				int j;
+				while ( (j = jsr.read()) != 13)
+					johnstr.append( (char) j);
+				System.out.println(johnstr);
+				johnConnection.close();
+			}
 
 			/** Close the socket connection. */
 			connection.close();
-			System.out.println(instr);
 		}
 		catch (IOException f) {
 			System.out.println("IOException: " + f);
