@@ -21,7 +21,7 @@ public class SocketClient {
 			//InetAddress address = InetAddress.getByName(host);
 			//System.out.println("Address is: "+address.toString());
 			
-			InetAddress address = InetAddress.getLocalHost();
+			InetAddress address = InetAddress.getByName("10.190.72.198");
 			System.out.println("Address is: "+InetAddress.getLocalHost().getHostAddress());
 			
 			/** Establish a socket connection */
@@ -42,6 +42,7 @@ public class SocketClient {
 			/** Write across the socket connection and flush the buffer */
 			osw.write(process);
 			osw.flush();
+			
 			/** Instantiate a BufferedInputStream object for reading
 	            /** Instantiate a BufferedInputStream object for reading
 			 * incoming socket streams.
@@ -59,10 +60,32 @@ public class SocketClient {
 			int c;
 			while ( (c = isr.read()) != 13)
 				instr.append( (char) c);
+			System.out.println(instr);
+			
+			BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
+			while(true){
+				String str=br.readLine();
+				if (str.endsWith("exit"))
+					break;
+				Socket johnConnection = new Socket(address, port);
+				BufferedOutputStream johnStream = new BufferedOutputStream(johnConnection.
+						getOutputStream());
+				OutputStreamWriter myWriter = new OutputStreamWriter(johnStream, "US-ASCII");
+				myWriter.write(str+(char) 13);
+				myWriter.flush();
+				StringBuffer johnstr = new StringBuffer();
+				BufferedInputStream johnInput = new BufferedInputStream(johnConnection.
+						getInputStream());
+				InputStreamReader jsr = new InputStreamReader(johnInput, "US-ASCII");
+				int j;
+				while ( (j = jsr.read()) != 13)
+					johnstr.append( (char) j);
+				System.out.println(johnstr);
+				johnConnection.close();
+			}
 
 			/** Close the socket connection. */
 			connection.close();
-			System.out.println(instr);
 		}
 		catch (IOException f) {
 			System.out.println("IOException: " + f);
