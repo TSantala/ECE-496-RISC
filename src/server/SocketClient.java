@@ -21,7 +21,7 @@ public class SocketClient {
 			//InetAddress address = InetAddress.getByName(host);
 			//System.out.println("Address is: "+address.toString());
 			
-			InetAddress address = InetAddress.getLocalHost();
+			InetAddress address = InetAddress.getByName("10.190.72.198");
 			System.out.println("Address is: "+InetAddress.getLocalHost().getHostAddress());
 			
 			/** Establish a socket connection */
@@ -35,7 +35,7 @@ public class SocketClient {
 			 */
 			OutputStreamWriter osw = new OutputStreamWriter(bos, "US-ASCII");
 			TimeStamp = new java.util.Date().toString();
-			String process = "Calling the Socket Server on "+ address.getHostAddress() + " port " + port +
+			String process = "BOOTY CALL TIME "+ address.getHostAddress() + " port " + port +
 					" at " + TimeStamp +  (char) 13;
 
 			/** Write across the socket connection and flush the buffer */
