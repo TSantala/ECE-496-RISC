@@ -35,8 +35,7 @@ public class SocketClient {
 			 */
 			OutputStreamWriter osw = new OutputStreamWriter(bos, "US-ASCII");
 			TimeStamp = new java.util.Date().toString();
-			String process = "Calling the Socket Server on "+ address.getHostAddress() + " port " + port +
-					" at " + TimeStamp +  (char) 13;
+			String process = "Calling the Socket Server on "+ address.getHostAddress() + " port " + port + "at" + TimeStamp +  (char) 13;
 
 			/** Write across the socket connection and flush the buffer */
 			osw.write(process);
