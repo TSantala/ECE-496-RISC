@@ -65,11 +65,11 @@ public class SocketClient {
 				String str=br.readLine();
 				if (str.endsWith("exit"))
 					break;
-				Socket johnConnection = new Socket(address, port);
+				/*Socket johnConnection = new Socket(address, port);
 				BufferedOutputStream johnStream = new BufferedOutputStream(johnConnection.
 						getOutputStream());
 				OutputStreamWriter myWriter = new OutputStreamWriter(johnStream, "US-ASCII");
-				/*myWriter.write(str+(char) 13);
+				myWriter.write(str+(char) 13);
 				myWriter.flush();*/
 				
 				osw.write(str+(char) 13);
@@ -81,8 +81,8 @@ public class SocketClient {
 				int j;
 				while ( (j = jsr.read()) != 13)
 					johnstr.append( (char) j);
-				System.out.println(johnstr);*/
-				johnConnection.close();
+				System.out.println(johnstr);
+				johnConnection.close();*/
 			}
 
 			/** Close the socket connection. */

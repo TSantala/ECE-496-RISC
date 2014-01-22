@@ -11,19 +11,38 @@ public class MultipleSocketServer extends Thread {
 	private String myTimeStamp;
 	private Server myServer;
 	private int myID;
-
+    private OutputStreamWriter osw ;
+    private InputStreamReader isr;
+    
 	MultipleSocketServer(Socket socket, int id, Server server) {
 		myConnection = socket;
 		myID = id;
 		myServer = server;
+		try {
+		BufferedInputStream is = new BufferedInputStream(myConnection.getInputStream());
+		isr = new InputStreamReader(is);
+		BufferedOutputStream os = new BufferedOutputStream(myConnection.getOutputStream());
+		osw = new OutputStreamWriter(os, "US-ASCII");
+		} catch (IOException e){
+			System.out.println("Initializing the Multiple Socket Server input and output streams failed.");
+		}
+		
 	}
-
+	
+    public synchronized void sendMessage(String m) {
+    	try {
+			osw.write(m);
+			osw.flush();
+		} catch (IOException e) {
+			System.out.println("Output stream buffer broke in the thread.");
+		}
+        
+    }
+	
 	@Override
 	public void run() {
 		while(true){
 			try {
-				BufferedInputStream is = new BufferedInputStream(myConnection.getInputStream());
-				InputStreamReader isr = new InputStreamReader(is);
 				int character;
 				StringBuffer process = new StringBuffer();
 				while((character = isr.read()) != 13) {
@@ -35,12 +54,8 @@ public class MultipleSocketServer extends Thread {
 				//String returnCode = "Timo test. MultipleSocketServer responded to "+myConnection.getPort()+" at "+ myTimeStamp;
 				String returnCode = "Test ";
 
-				for(Socket s : myServer.getConnections()){
-					BufferedOutputStream os = new BufferedOutputStream(s.getOutputStream());
-					OutputStreamWriter osw = new OutputStreamWriter(os, "US-ASCII");
-					osw.write(returnCode + "THIS IS WHAT YOU SENT: " + process + (char) 13);
-					osw.flush();
-				}
+				myServer.broadCastMessage(returnCode + "THIS IS WHAT YOU SENT: " + process + (char) 13);
+				
 
 			}
 			catch (Exception e) {
@@ -53,13 +68,13 @@ public class MultipleSocketServer extends Thread {
 			//			catch (IOException e){}
 			//		}
 			
-			synchronized(this){
+			/*synchronized(this){
 				try {
 					this.wait();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-			}
+			}*/
 		}
 	}
 }
