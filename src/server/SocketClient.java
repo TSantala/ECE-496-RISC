@@ -6,7 +6,7 @@ import java.io.*;
 /** The SocketClient class is a simple example of a TCP/IP Socket Client.
  *
  */
-public class SocketClient {
+public class SocketClient implements ServerConstants{
 	public static void main(String[] args) {
 		/** Define a host server */
 		//String host = "localhost";
@@ -21,7 +21,7 @@ public class SocketClient {
 			//InetAddress address = InetAddress.getByName(host);
 			//System.out.println("Address is: "+address.toString());
 			
-			InetAddress address = InetAddress.getByName("192.168.56.1");
+			InetAddress address = InetAddress.getByName("10.190.84.72");
 			System.out.println("Address is: "+InetAddress.getLocalHost().getHostAddress());
 			
 			/** Establish a socket connection */
@@ -37,7 +37,6 @@ public class SocketClient {
 			TimeStamp = new java.util.Date().toString();
 			//String process = "Calling the Socket Server on "+ address.getHostAddress() + " port " + port + "at " + TimeStamp +  (char) 13;
 			String process = "John connected.";
-			
 			/** Write across the socket connection and flush the buffer */
 			osw.write(process);
 			osw.flush();
@@ -57,7 +56,7 @@ public class SocketClient {
 
 			/**Read the socket's InputStream and append to a StringBuffer */
 			int c;
-			while ( (c = isr.read()) != 13)
+			while ( (c = isr.read()) != CARRIAGE_RETURN)
 				instr.append( (char) c);
 			System.out.println(instr);
 			
@@ -80,17 +79,9 @@ public class SocketClient {
 				myWriter.write(str+(char) 13);
 				myWriter.flush();*/
 				
-				osw.write(str+(char) 13);
+				osw.write(str+ CARRIAGE_RETURN);
 				osw.flush();
-				/*StringBuffer johnstr = new StringBuffer();
-				BufferedInputStream johnInput = new BufferedInputStream(johnConnection.
-						getInputStream());
-				InputStreamReader jsr = new InputStreamReader(johnInput, "US-ASCII");
-				int j;
-				while ( (j = jsr.read()) != 13)
-					johnstr.append( (char) j);
-				System.out.println(johnstr);
-				johnConnection.close();*/
+
 			}
 
 			/** Close the socket connection. */

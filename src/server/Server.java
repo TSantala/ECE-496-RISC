@@ -4,9 +4,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
 
-public class Server {
+public class Server implements ServerConstants{
 	
-	HashSet<MultipleSocketServer> myConnections = new HashSet<MultipleSocketServer>();
+	HashSet<MultipleSocket> myConnections = new HashSet<MultipleSocket>();
 	
 	public Server(){
 		
@@ -17,7 +17,7 @@ public class Server {
 			System.out.println("Server Initialized");
 			while (true) {
 				Socket connection = socket1.accept();
-				MultipleSocketServer runnable = new MultipleSocketServer(connection, ++count, this);
+				MultipleSocket runnable = new MultipleSocket(connection, ++count, this);
 				myConnections.add(runnable);
 				Thread thread = new Thread(runnable);
 				thread.start();
@@ -26,15 +26,14 @@ public class Server {
 		catch (Exception e) {}
 	}
 	
-	public Collection<MultipleSocketServer> getConnections(){
+	public Collection<MultipleSocket> getConnections(){
 		System.out.println("Number of connections = "+myConnections.size());
-		for(MultipleSocketServer s : myConnections)
-			System.out.println(s.toString());
 		return myConnections;
 	}
+	
 	public void broadCastMessage(String str) {
-		for(MultipleSocketServer s : this.getConnections()){
-			s.sendMessage(str);
+		for(MultipleSocket s : this.getConnections()){
+			s.sendMessage(str + CARRIAGE_RETURN);
 		}
 	}
 
