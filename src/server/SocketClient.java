@@ -21,7 +21,7 @@ public class SocketClient {
 			//InetAddress address = InetAddress.getByName(host);
 			//System.out.println("Address is: "+address.toString());
 			
-			InetAddress address = InetAddress.getByName("10.190.72.198");
+			InetAddress address = InetAddress.getByName("192.168.56.1");
 			System.out.println("Address is: "+InetAddress.getLocalHost().getHostAddress());
 			
 			/** Establish a socket connection */
@@ -35,8 +35,9 @@ public class SocketClient {
 			 */
 			OutputStreamWriter osw = new OutputStreamWriter(bos, "US-ASCII");
 			TimeStamp = new java.util.Date().toString();
-			String process = "Calling the Socket Server on "+ address.getHostAddress() + " port " + port + "at" + TimeStamp +  (char) 13;
-
+			//String process = "Calling the Socket Server on "+ address.getHostAddress() + " port " + port + "at " + TimeStamp +  (char) 13;
+			String process = "John connected.";
+			
 			/** Write across the socket connection and flush the buffer */
 			osw.write(process);
 			osw.flush();
@@ -65,6 +66,13 @@ public class SocketClient {
 				String str=br.readLine();
 				if (str.endsWith("exit"))
 					break;
+				else if (str.endsWith("listen")){
+					while ( (c = isr.read()) != 13)
+						instr.append( (char) c);
+					System.out.println(instr);
+					continue;
+				}
+					
 				/*Socket johnConnection = new Socket(address, port);
 				BufferedOutputStream johnStream = new BufferedOutputStream(johnConnection.
 						getOutputStream());
