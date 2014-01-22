@@ -70,16 +70,19 @@ public class SocketClient {
 				BufferedOutputStream johnStream = new BufferedOutputStream(johnConnection.
 						getOutputStream());
 				OutputStreamWriter myWriter = new OutputStreamWriter(johnStream, "US-ASCII");
-				myWriter.write(str+(char) 13);
-				myWriter.flush();
-				StringBuffer johnstr = new StringBuffer();
+				/*myWriter.write(str+(char) 13);
+				myWriter.flush();*/
+				
+				osw.write(str+(char) 13);
+				osw.flush();
+				/*StringBuffer johnstr = new StringBuffer();
 				BufferedInputStream johnInput = new BufferedInputStream(johnConnection.
 						getInputStream());
 				InputStreamReader jsr = new InputStreamReader(johnInput, "US-ASCII");
 				int j;
 				while ( (j = jsr.read()) != 13)
 					johnstr.append( (char) j);
-				System.out.println(johnstr);
+				System.out.println(johnstr);*/
 				johnConnection.close();
 			}
 
