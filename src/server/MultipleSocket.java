@@ -1,22 +1,20 @@
 package server;
 
 import java.net.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.io.*;
 
-public class MultipleSocketServer extends Thread {
+public class MultipleSocket extends Thread implements ServerConstants{
 
 	private Socket myConnection;
-	private String myTimeStamp;
+	//private String myTimeStamp;
 	private Server myServer;
-	private int myID;
+	//private int myID;
     private OutputStreamWriter osw ;
     private InputStreamReader isr;
     
-	MultipleSocketServer(Socket socket, int id, Server server) {
+	MultipleSocket(Socket socket, int id, Server server) {
 		myConnection = socket;
-		myID = id;
+		//myID = id;
 		myServer = server;
 		try {
 		BufferedInputStream is = new BufferedInputStream(myConnection.getInputStream());
@@ -31,6 +29,7 @@ public class MultipleSocketServer extends Thread {
 	
     public synchronized void sendMessage(String m) {
     	try {
+    		System.out.println("Message was sent - TIMO");
 			osw.write(m);
 			osw.flush();
 		} catch (IOException e) {
@@ -45,17 +44,16 @@ public class MultipleSocketServer extends Thread {
 			try {
 				int character;
 				StringBuffer process = new StringBuffer();
-				while((character = isr.read()) != 13) {
+				while((character = isr.read()) != CARRIAGE_RETURN) {
+					System.out.println((char) character);
 					process.append((char)character);
 				}
 				System.out.println(process);
 
 				//myTimeStamp = new java.util.Date().toString();
 				//String returnCode = "Timo test. MultipleSocketServer responded to "+myConnection.getPort()+" at "+ myTimeStamp;
-				String returnCode = "Test ";
 
-				myServer.broadCastMessage(returnCode + "THIS IS WHAT YOU SENT: " + process + (char) 13);
-				
+				myServer.broadCastMessage("THIS IS WHAT YOU SENT: " + process + CARRIAGE_RETURN);
 
 			}
 			catch (Exception e) {
