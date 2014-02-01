@@ -11,6 +11,7 @@ public class MultipleSocket extends Thread implements ServerConstants{
 	//private int myID;
     private OutputStreamWriter osw ;
     private InputStreamReader isr;
+    private String id;
     
 	MultipleSocket(Socket socket, int id, Server server) {
 		myConnection = socket;
@@ -29,7 +30,6 @@ public class MultipleSocket extends Thread implements ServerConstants{
 	
     public synchronized void sendMessage(String m) {
     	try {
-    		System.out.println("Message was sent - TIMO");
 			osw.write(m);
 			osw.flush();
 		} catch (IOException e) {
@@ -45,34 +45,26 @@ public class MultipleSocket extends Thread implements ServerConstants{
 				int character;
 				StringBuffer process = new StringBuffer();
 				while((character = isr.read()) != CARRIAGE_RETURN) {
-					System.out.println((char) character);
 					process.append((char)character);
 				}
+				String[] input = process.toString().split(" ");
+				if (input[0].equals("name"))
+					id = input[1];
 				System.out.println(process);
-
-				//myTimeStamp = new java.util.Date().toString();
-				//String returnCode = "Timo test. MultipleSocketServer responded to "+myConnection.getPort()+" at "+ myTimeStamp;
-
-				myServer.broadCastMessage("THIS IS WHAT YOU SENT: " + process + CARRIAGE_RETURN);
+				
+				myServer.broadCastMessage(id + ": " + process.toString() + CARRIAGE_RETURN);
 
 			}
 			catch (Exception e) {
 				System.out.println(e);
-			}
-			//		{
-			//			try {
-			//				myConnection.close();
-			//			}
-			//			catch (IOException e){}
-			//		}
-			
-			/*synchronized(this){
 				try {
-					this.wait();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+					myConnection.close();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+					break;
 				}
-			}*/
+				break;
+			}
 		}
 	}
 }

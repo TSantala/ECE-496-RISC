@@ -4,11 +4,14 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
 
-public class Server implements ServerConstants{
+public class Server extends Thread implements ServerConstants{
 	
 	HashSet<MultipleSocket> myConnections = new HashSet<MultipleSocket>();
 	
 	public Server(){
+	}
+	
+	public void run(){
 		
 		int port = 19999;
 		int count = 0;
@@ -27,7 +30,7 @@ public class Server implements ServerConstants{
 	}
 	
 	public Collection<MultipleSocket> getConnections(){
-		System.out.println("Number of connections = "+myConnections.size());
+		//System.out.println("Number of connections = "+myConnections.size());
 		return myConnections;
 	}
 	

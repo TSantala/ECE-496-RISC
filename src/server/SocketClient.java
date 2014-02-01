@@ -1,13 +1,18 @@
 package server;
 
 import java.net.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.io.*;
 
 /** The SocketClient class is a simple example of a TCP/IP Socket Client.
  *
  */
-public class SocketClient implements ServerConstants{
-	public static void main(String[] args) {
+public class SocketClient extends Thread implements ServerConstants{
+	public SocketClient() {
+	}
+	
+	public void run(){
 		/** Define a host server */
 		//String host = "localhost";
 		/** Define a port */
@@ -20,10 +25,10 @@ public class SocketClient implements ServerConstants{
 			/** Obtain an address object of the server */
 			//InetAddress address = InetAddress.getByName(host);
 			//System.out.println("Address is: "+address.toString());
-			
-			InetAddress address = InetAddress.getByName("10.190.84.72");
+
+			InetAddress address = InetAddress.getByName("10.190.26.186");
 			System.out.println("Address is: "+InetAddress.getLocalHost().getHostAddress());
-			
+
 			/** Establish a socket connection */
 			Socket connection = new Socket(address, port);
 			/** Instantiate a BufferedOutputStream object */
@@ -36,11 +41,11 @@ public class SocketClient implements ServerConstants{
 			OutputStreamWriter osw = new OutputStreamWriter(bos, "US-ASCII");
 			TimeStamp = new java.util.Date().toString();
 			//String process = "Calling the Socket Server on "+ address.getHostAddress() + " port " + port + "at " + TimeStamp +  (char) 13;
-			String process = "John connected.";
+			String process = "name John"+CARRIAGE_RETURN;
 			/** Write across the socket connection and flush the buffer */
 			osw.write(process);
 			osw.flush();
-			
+
 			/** Instantiate a BufferedInputStream object for reading
 	            /** Instantiate a BufferedInputStream object for reading
 			 * incoming socket streams.
@@ -59,31 +64,30 @@ public class SocketClient implements ServerConstants{
 			while ( (c = isr.read()) != CARRIAGE_RETURN)
 				instr.append( (char) c);
 			System.out.println(instr);
+
+			List<DummyClient> dummies = new ArrayList<DummyClient>();
 			
 			BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
+			ClientReader myReader = new ClientReader(isr,this);
+			myReader.start();
+			
 			while(true){
 				String str=br.readLine();
-				if (str.endsWith("exit"))
+				if (str.endsWith("exit")){
 					break;
-				else if (str.endsWith("listen")){
-					while ( (c = isr.read()) != 13)
-						instr.append( (char) c);
-					System.out.println(instr);
-					continue;
 				}
-					
-				/*Socket johnConnection = new Socket(address, port);
-				BufferedOutputStream johnStream = new BufferedOutputStream(johnConnection.
-						getOutputStream());
-				OutputStreamWriter myWriter = new OutputStreamWriter(johnStream, "US-ASCII");
-				myWriter.write(str+(char) 13);
-				myWriter.flush();*/
-				
-				osw.write(str+ CARRIAGE_RETURN);
-				osw.flush();
-
+				else if (str.endsWith("dummy")){
+					dummies.add(new DummyClient());
+				}
+				else {
+					osw.write(str+ CARRIAGE_RETURN);
+					osw.flush();
+				}
 			}
-
+			
+			for (DummyClient d : dummies){
+				d.closeMe();
+			}
 			/** Close the socket connection. */
 			connection.close();
 		}
@@ -93,5 +97,8 @@ public class SocketClient implements ServerConstants{
 		catch (Exception g) {
 			System.out.println("Exception: " + g);
 		}
+	}
+	public void printMessage(String str){
+		System.out.println(str);
 	}
 }

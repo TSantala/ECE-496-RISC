@@ -4,6 +4,7 @@ import javax.swing.SwingUtilities;
 
 import gameElements.Initialization;
 import server.Server;
+import server.SocketClient;
 
 public class Main {
 
@@ -11,5 +12,10 @@ public class Main {
 		Initialization i = new Initialization();
 		SwingUtilities.invokeLater(i);
 		//new Server();
+
+		Server myServer = new Server();
+		myServer.start();
+		SocketClient myClient = new SocketClient();
+		myClient.start();
 	}
 }
