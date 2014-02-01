@@ -7,9 +7,10 @@ public class Main {
 
 	public static void main(String[] args){
 		// new RiscGame();
-		new Server();
-		//SocketClient myClient = new SocketClient();
-		//myClient.main(null);
+		Server myServer = new Server();
+		myServer.start();
+		SocketClient myClient = new SocketClient();
+		myClient.start();
 	}
 
 }

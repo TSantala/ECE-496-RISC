@@ -28,7 +28,7 @@ public class DummyClient implements ServerConstants{
 			 * encoding.
 			 */
 			OutputStreamWriter osw = new OutputStreamWriter(bos, "US-ASCII");
-			String process = Double.toString(Math.random())+ " connected." +CARRIAGE_RETURN;
+			String process = "name " + Double.toString(Math.random())+CARRIAGE_RETURN;
 			/** Write across the socket connection and flush the buffer */
 			osw.write(process);
 			osw.flush();
