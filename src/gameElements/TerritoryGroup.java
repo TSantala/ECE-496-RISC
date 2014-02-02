@@ -6,11 +6,11 @@ import java.util.*;
  * This class if for initialization phase when each player is either assigned
  * or picks a list of territories to be their starting area.  This is a group.  
  */
-public class Group 
+public class TerritoryGroup 
 {
 	private List<Territory> territoryList;
 	private Player owner;
-	public Group()
+	public TerritoryGroup()
 	{
 		territoryList = new ArrayList<Territory>();
 	}
