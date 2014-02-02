@@ -1,15 +1,12 @@
 package main;
 
-<<<<<<< HEAD
 import javax.swing.SwingUtilities;
 
 import gameElements.Initialization;
 import server.ObjectClient;
 import server.ObjectServer;
 import server.Server;
-=======
-import gui.GameGUI;
->>>>>>> 2bf1e85e92b83adb8c9df8a860a0876a8c44f441
+//import gui.GameGUI;
 import server.SocketClient;
 
 public class Main {
@@ -19,9 +16,8 @@ public class Main {
 		//SwingUtilities.invokeLater(i);
 		//new Server();
 		
-		new GameGUI();
+//		new GameGUI();
 
-<<<<<<< HEAD
 		/*Server myServer = new Server();
 		myServer.start();
 		SocketClient myClient = new SocketClient();
@@ -31,12 +27,5 @@ public class Main {
 		myServer.start();
 		ObjectClient myClient = new ObjectClient();
 		myClient.start();
-=======
-		//Server myServer = new Server();
-		//myServer.start();
-		
-		//SocketClient myClient = new SocketClient();
-		//myClient.start();
->>>>>>> 2bf1e85e92b83adb8c9df8a860a0876a8c44f441
 	}
 }
