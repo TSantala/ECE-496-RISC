@@ -4,11 +4,11 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
 
-public class Server extends Thread implements ServerConstants{
+public class ObjectServer extends Thread implements ServerConstants{
 	
-	HashSet<MultipleSocket> myConnections = new HashSet<MultipleSocket>();
+	HashSet<ObjectSocket> myConnections = new HashSet<ObjectSocket>();
 	
-	public Server(){
+	public ObjectServer(){
 	}
 	
 	public void run(){
@@ -20,7 +20,7 @@ public class Server extends Thread implements ServerConstants{
 			System.out.println("Server Initialized");
 			while (true) {
 				Socket connection = socket1.accept();
-				MultipleSocket runnable = new MultipleSocket(connection, ++count, this);
+				ObjectSocket runnable = new ObjectSocket(connection, ++count, this);
 				myConnections.add(runnable);
 				Thread thread = new Thread(runnable);
 				thread.start();
@@ -29,18 +29,18 @@ public class Server extends Thread implements ServerConstants{
 		catch (Exception e) {}
 	}
 	
-	public Collection<MultipleSocket> getConnections(){
+	public Collection<ObjectSocket> getConnections(){
 		//System.out.println("Number of connections = "+myConnections.size());
 		return myConnections;
 	}
 	
-	public void broadCastMessage(String str) {
-		for(MultipleSocket s : this.getConnections()){
-			s.sendMessage(str + CARRIAGE_RETURN);
+	public void broadCastMessage(Message m) {
+		for(ObjectSocket s : this.getConnections()){
+			s.sendMessage(m);
 		}
 	}
 	
-	public void removeConnection(MultipleSocket ms){
+	public void removeConnection(ObjectSocket ms){
 		myConnections.remove(ms);
 	}
 
