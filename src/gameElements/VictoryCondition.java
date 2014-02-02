@@ -1,5 +1,6 @@
 package gameElements;
 
-public class VictoryCondition {
+public class VictoryCondition 
+{
 
 }

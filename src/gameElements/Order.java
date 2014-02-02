@@ -1,5 +1,6 @@
 package gameElements;
 
-public class Order {
-
+public class Order 
+{
+	
 }
