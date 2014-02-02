@@ -11,7 +11,7 @@ import java.io.*;
 public class SocketClient extends Thread implements ServerConstants{
 	public SocketClient() {
 	}
-	
+
 	public void run(){
 		/** Define a host server */
 		//String host = "localhost";
@@ -26,7 +26,7 @@ public class SocketClient extends Thread implements ServerConstants{
 			//InetAddress address = InetAddress.getByName(host);
 			//System.out.println("Address is: "+address.toString());
 
-			InetAddress address = InetAddress.getByName("10.190.26.186");
+			InetAddress address = InetAddress.getByName("10.190.49.104");
 			System.out.println("Address is: "+InetAddress.getLocalHost().getHostAddress());
 
 			/** Establish a socket connection */
@@ -66,25 +66,24 @@ public class SocketClient extends Thread implements ServerConstants{
 			System.out.println(instr);
 
 			List<DummyClient> dummies = new ArrayList<DummyClient>();
-			
+
 			BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
 			ClientReader myReader = new ClientReader(isr,this);
 			myReader.start();
-			
+
 			while(true){
 				String str=br.readLine();
+				osw.write(str+ CARRIAGE_RETURN);
+				osw.flush();
 				if (str.endsWith("exit")){
 					break;
 				}
 				else if (str.endsWith("dummy")){
 					dummies.add(new DummyClient());
 				}
-				else {
-					osw.write(str+ CARRIAGE_RETURN);
-					osw.flush();
-				}
+
 			}
-			
+
 			for (DummyClient d : dummies){
 				d.closeMe();
 			}

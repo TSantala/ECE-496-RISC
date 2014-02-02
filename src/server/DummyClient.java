@@ -8,6 +8,7 @@ import java.io.*;
  */
 public class DummyClient implements ServerConstants{
 	private Socket myConnection;
+	private OutputStreamWriter osw;
 	
 	public DummyClient(){
 		int port = 19999;
@@ -16,7 +17,7 @@ public class DummyClient implements ServerConstants{
 		try {
 			/** Obtain an address object of the server */
 			
-			InetAddress address = InetAddress.getByName("10.190.26.186");
+			InetAddress address = InetAddress.getByName("10.190.49.104");
 			
 			/** Establish a socket connection */
 			myConnection = new Socket(address, port);
@@ -27,7 +28,7 @@ public class DummyClient implements ServerConstants{
 			/** Instantiate an OutputStreamWriter object with the optional character
 			 * encoding.
 			 */
-			OutputStreamWriter osw = new OutputStreamWriter(bos, "US-ASCII");
+			osw = new OutputStreamWriter(bos, "US-ASCII");
 			String process = "name " + Double.toString(Math.random())+CARRIAGE_RETURN;
 			/** Write across the socket connection and flush the buffer */
 			osw.write(process);
@@ -44,6 +45,9 @@ public class DummyClient implements ServerConstants{
 	
 	public void closeMe(){
 		try {
+			System.out.println("dummy is closing itself");
+			osw.write("exit"+CARRIAGE_RETURN);
+			osw.flush();
 			myConnection.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
