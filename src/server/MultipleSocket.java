@@ -54,6 +54,7 @@ public class MultipleSocket extends Thread implements ServerConstants{
 				if (process.toString().equals("exit")){
 					myConnection.close();
 					System.out.println("Server is closing the connection " + id);
+					myServer.removeConnection(this);
 					break;
 				}
 					
