@@ -41,7 +41,7 @@ public class SocketClient extends Thread implements ServerConstants{
 			OutputStreamWriter osw = new OutputStreamWriter(bos, "US-ASCII");
 			TimeStamp = new java.util.Date().toString();
 			//String process = "Calling the Socket Server on "+ address.getHostAddress() + " port " + port + "at " + TimeStamp +  (char) 13;
-			String process = "name John"+CARRIAGE_RETURN;
+			String process = "name IMDABES"+CARRIAGE_RETURN;
 			/** Write across the socket connection and flush the buffer */
 			osw.write(process);
 			osw.flush();
@@ -97,6 +97,7 @@ public class SocketClient extends Thread implements ServerConstants{
 			System.out.println("Exception: " + g);
 		}
 	}
+	
 	public void printMessage(String str){
 		System.out.println(str);
 	}

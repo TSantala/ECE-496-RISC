@@ -2,14 +2,18 @@ package gameElements;
 
 public class Unit 
 {
-	private Player owner;
-	//private Stat stats;
+	private Player myOwner;
+	private String myID;
+
 	public Unit(Player p)
 	{
-		owner = p;
+		myOwner = p;
 	}
 	public Player getOwner()
 	{
-		return owner;
+		return myOwner;
+	}
+	public String getID(){
+		return myID;
 	}
 }
