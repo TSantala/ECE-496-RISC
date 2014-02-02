@@ -46,10 +46,17 @@ public class MultipleSocket extends Thread implements ServerConstants{
 				StringBuffer process = new StringBuffer();
 				while((character = isr.read()) != CARRIAGE_RETURN) {
 					process.append((char)character);
+					//System.out.println((char)character);
 				}
 				String[] input = process.toString().split(" ");
 				if (input[0].equals("name"))
 					id = input[1];
+				if (process.toString().equals("exit")){
+					myConnection.close();
+					System.out.println("Server is closing the connection " + id);
+					break;
+				}
+					
 				System.out.println(process);
 				
 				myServer.broadCastMessage(id + ": " + process.toString() + CARRIAGE_RETURN);
