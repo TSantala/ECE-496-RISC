@@ -6,14 +6,25 @@ public class GameState {
 
     GameMap myMap;
     List<Player> myPlayers;
+    
     public GameState()
     {
-        
     }
     
-    public void move(int from, int to, List<Unit> units){
-    	myMap.getTerritory(from).removeUnits(units);
-    	myMap.getTerritory(to).addUnits(units);
+    public void setMap(GameMap gm){
+    	myMap = gm;
+    }
+    
+    public GameMap getMap(){
+    	return myMap;
+    }
+    
+    public void setPlayers(List<Player> players){
+    	myPlayers = players;
+    }
+    
+    public List<Player> getPlayers(){
+    	return myPlayers;
     }
     
 }

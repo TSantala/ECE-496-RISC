@@ -1,13 +1,12 @@
 package main;
 
-import javax.swing.SwingUtilities;
-
-import gameElements.Initialization;
+//import javax.swing.SwingUtilities;
+//import gameElements.Initialization;
+import gui.GameGUI;
 import server.ObjectClient;
 import server.ObjectServer;
-import server.Server;
-//import gui.GameGUI;
-import server.SocketClient;
+//import server.Server;
+//import server.SocketClient;
 
 public class Main {
 
@@ -22,7 +21,7 @@ public class Main {
 		myServer.start();
 		SocketClient myClient = new SocketClient();
 		myClient.start();*/
-		
+
 		ObjectServer myServer = new ObjectServer();
 		myServer.start();
 		ObjectClient myClient = new ObjectClient();
