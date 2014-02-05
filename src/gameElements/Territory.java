@@ -33,6 +33,10 @@ public class Territory
 		myUnits = units;
 	}
 	
+	public List<Unit> getUnits(){
+		return myUnits;
+	}
+	
 	public int getID() {
 		return myID;
 	}
@@ -41,6 +45,10 @@ public class Territory
 		for(Unit u : units){
 			myUnits.remove(u);
 		}
+	}
+	
+	public void removeUnit(Unit u){
+		myUnits.remove(u);
 	}
 
 	public void addUnits(List<Unit> units) {

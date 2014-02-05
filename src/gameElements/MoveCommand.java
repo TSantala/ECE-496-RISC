@@ -29,5 +29,11 @@ public class MoveCommand extends Command{
 	}
 
 
+	@Override
+	public void enact(ServerGame sg) {
+		sg.move(myTerritoryFrom, myTerritoryTo, myUnits);
+	}
+
+
     
 }

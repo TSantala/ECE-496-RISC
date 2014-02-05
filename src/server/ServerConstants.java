@@ -2,6 +2,7 @@ package server;
 
 public interface ServerConstants {
 	
-	Character CARRIAGE_RETURN = 13;
+	final Character CARRIAGE_RETURN = 13;
+	final int ATTACK_DIE = 20;
 
 }

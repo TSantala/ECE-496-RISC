@@ -31,6 +31,10 @@ public class Player
 		myUnits = units;
 	}
 	
+	public void removeUnit(Unit u){
+		myUnits.remove(u);
+	}
+	
 	public TerritoryGroup getTerritories(){
 		return myTerritories;
 	}

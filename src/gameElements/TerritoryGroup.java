@@ -22,4 +22,8 @@ public class TerritoryGroup
 	{
 		territoryList.add(t);
 	}
+	
+	public boolean containsTerritory(Territory t){
+		return territoryList.contains(t);
+	}
 }

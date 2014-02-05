@@ -8,4 +8,6 @@ public abstract class Command
 	{
 	    
 	}
+	
+	public abstract void enact(ServerGame sg);
 }

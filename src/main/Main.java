@@ -22,8 +22,8 @@ public class Main {
 		SocketClient myClient = new SocketClient();
 		myClient.start();*/
 
-		ObjectServer myServer = new ObjectServer();
-		myServer.start();
+		//ObjectServer myServer = new ObjectServer();
+		//myServer.start();
 		ObjectClient myClient = new ObjectClient();
 		myClient.start();
 	}
