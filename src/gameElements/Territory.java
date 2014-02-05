@@ -8,8 +8,9 @@ public class Territory
 	private List<Territory> myNeighbors;
 	private int myID;
 	
-	public Territory()
+	public Territory(int id)
 	{
+		myID = id;
 		myUnits = new ArrayList<Unit>();
 		myNeighbors = new ArrayList<Territory>();
 	}
@@ -17,6 +18,14 @@ public class Territory
 	public void setNeighbors(List<Territory> nghbrs)
 	{
 		myNeighbors = nghbrs;
+	}
+	
+	public void addNeighbor(Territory neighbor){
+		myNeighbors.add(neighbor);
+	}
+	
+	public List<Territory> getNeighbors(){
+		return myNeighbors;
 	}
 	
 	public void setUnits(List<Unit> units)
