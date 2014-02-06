@@ -38,7 +38,8 @@ public class ObjectClient extends Thread implements ServerConstants{
 			myReader.start();
 			
 			myGUI = new GameGUI(this);
-			SwingUtilities.invokeLater(myGUI);
+			myGUI.run();
+			//SwingUtilities.invokeLater(myGUI);
 
 			/*while(true){
 				String str=br.readLine();

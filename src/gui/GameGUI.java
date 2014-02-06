@@ -19,7 +19,7 @@ import server.ObjectClient;
 /*
  * This is the class that is called when the game begins- has to be passed number of players 
  */
-public class GameGUI implements Runnable
+public class GameGUI extends JFrame
 {
 	private JTextField input;
 	private JTextArea output;
@@ -30,7 +30,6 @@ public class GameGUI implements Runnable
 		myClient = client;
 	}
 
-	@Override
 	public void run() {
 		JFrame f = new JFrame("RISC");
 		f.setSize(1000, 800);

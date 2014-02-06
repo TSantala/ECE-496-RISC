@@ -4,8 +4,42 @@ import java.util.*;
 
 public class GameMap
 {
-	private List<Territory> myTerritories;
+	private List<Territory> myTerritories = new ArrayList<Territory>();
+	private int myTerritoryCount=0;
 	
+	public GameMap()
+	{
+		Territory t1 = this.createTerritory();
+		Territory t2 = this.createTerritory();
+		Territory t3 = this.createTerritory();
+		Territory t4 = this.createTerritory();
+		
+		t1.addNeighbor(t4);
+		t1.addNeighbor(t2);
+		t2.addNeighbor(t1);
+		t2.addNeighbor(t3);
+		t3.addNeighbor(t2);
+		t3.addNeighbor(t4);
+		t4.addNeighbor(t3);
+		t4.addNeighbor(t1);
+		
+		myTerritories.add(t1);
+		myTerritories.add(t2);
+		myTerritories.add(t3);
+		myTerritories.add(t4);
+//		myTerritories.add(new Territory(5));
+//		myTerritories.add(new Territory(6));
+//		myTerritories.add(new Territory(7));
+//		myTerritories.add(new Territory(8));
+//		myTerritories.add(new Territory(9));
+//		myTerritories.add(new Territory(10));
+	}
+	
+	public Territory createTerritory(){
+		myTerritoryCount++;
+		return new Territory(myTerritoryCount);
+	}
+		
 	public GameMap(List<Territory> map){
 		myTerritories = map;
 	}
@@ -38,10 +72,6 @@ public class GameMap
 		return from.getNeighbors().contains(to);
 	}
 	
-	public List<Territory> getTerritories(){
-		return myTerritories;
-	}
-	
 	public Territory getTerritory(int id){
 		for(Territory t : myTerritories){
 			if(t.getID() == id)
@@ -49,6 +79,10 @@ public class GameMap
 		}
 		System.out.println("Get territory returned null!! In GameMap");
 		return null;
+	}
+	
+	public List<Territory> getTerritories(){
+		return myTerritories;
 	}
 	
 	public GameMap clone(){

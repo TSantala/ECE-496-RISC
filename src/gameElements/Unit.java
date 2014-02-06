@@ -12,6 +12,7 @@ public class Unit
 	public Unit(Player p, int id){
 		myOwner = p;
 		myID = id;
+		p.addUnit(this);
 	}
 	
 	public void setOwner(Player p){
