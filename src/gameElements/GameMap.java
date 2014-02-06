@@ -4,10 +4,34 @@ import java.util.*;
 
 public class GameMap
 {
-	private List<Territory> myTerritories;
+	private List<Territory> myTerritories = new ArrayList<Territory>();
 	
 	public GameMap()
 	{
+		Territory t1 = new Territory(1);
+		Territory t2 = new Territory(2);
+		Territory t3 = new Territory(3);
+		Territory t4 = new Territory(4);
+		
+		t1.addNeighbor(t4);
+		t1.addNeighbor(t2);
+		t2.addNeighbor(t1);
+		t2.addNeighbor(t3);
+		t3.addNeighbor(t2);
+		t3.addNeighbor(t4);
+		t4.addNeighbor(t3);
+		t4.addNeighbor(t1);
+		
+		myTerritories.add(t1);
+		myTerritories.add(t2);
+		myTerritories.add(t3);
+		myTerritories.add(t4);
+		myTerritories.add(new Territory(5));
+		myTerritories.add(new Territory(6));
+		myTerritories.add(new Territory(7));
+		myTerritories.add(new Territory(8));
+		myTerritories.add(new Territory(9));
+		myTerritories.add(new Territory(10));
 		
 	}
 	

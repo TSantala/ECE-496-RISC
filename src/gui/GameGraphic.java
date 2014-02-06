@@ -18,9 +18,9 @@ public class GameGraphic extends JPanel{
 	private GameGUI myGUI;
 	private List<MapTerritory> myTerritories = new ArrayList<MapTerritory>();
 	private GameState myGame;
-	private final int DEFAULT_RADIUS = 30;
+	private final int DEFAULT_RADIUS = 50;
 	private final int DEFAULT_MAP_RADIUS = 100;
-	private final Point MAP_CENTER = new Point(300,200);
+	private final Point MAP_CENTER = new Point(500,300);
 
 	public GameGraphic(GameGUI gameGUI, GameState game) {
 		myGUI = gameGUI;
@@ -28,8 +28,8 @@ public class GameGraphic extends JPanel{
 		int i = 0;
 		int n = myGame.getMap().getTerritories().size();
 		for (Territory t : myGame.getMap().getTerritories()){
-			myTerritories.add(new MapTerritory((int)Math.sin(i*360/n)*DEFAULT_MAP_RADIUS + MAP_CENTER.x,
-					(int)Math.cos(i*360/n)*DEFAULT_MAP_RADIUS + MAP_CENTER.y, DEFAULT_RADIUS, t));
+			myTerritories.add(new MapTerritory((int)(Math.sin(i*2*Math.PI/n)*DEFAULT_MAP_RADIUS + MAP_CENTER.x),
+					(int)(Math.cos(i*2*Math.PI/n)*DEFAULT_MAP_RADIUS + MAP_CENTER.y), DEFAULT_RADIUS, t));
 			i++;
 		}
 		this.setSize(600, 400);
@@ -42,14 +42,13 @@ public class GameGraphic extends JPanel{
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setColor(Color.RED);
 		for (MapTerritory t : myTerritories){
-			g2d.fillOval(t.getCenter().x - t.getRadius(), t.getCenter().y - t.getRadius(), 
-					t.getCenter().x + t.getRadius(), t.getCenter().y + t.getRadius());
+			g2d.fillOval(t.getCenter().x, t.getCenter().y, t.getRadius(), t.getRadius());
 		}
 
 	}
 
 	public void processClick(Point p){
-
+		System.out.println("Mouse at: (" + p.x +", " + p.y + ").");
 	}
 
 }

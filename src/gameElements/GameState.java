@@ -7,8 +7,8 @@ public class GameState {
     GameMap myMap;
     List<Player> myPlayers;
     
-    public GameState()
-    {
+    public GameState(){
+    	myMap = new GameMap();
     }
     
     public void setMap(GameMap gm){
