@@ -27,4 +27,24 @@ public class GameState {
     	return myPlayers;
     }
     
+    public Player getPlayer(String name){
+    	for(Player p : myPlayers){
+    		if(p.getName().equals(name))
+    			return p;
+    	}
+    	System.out.println("Get player returned null!! In GameState");
+    	return null;
+    }
+    
+    public Unit getUnit(int id){
+    	for(Player p : myPlayers){
+    		for(Unit u : p.getUnits()){
+    			if(u.getID() == id)
+    				return u;
+    		}
+    	}
+    	System.out.println("Null return: Unit not found in GameState call!");
+    	return null;
+    }
+    
 }

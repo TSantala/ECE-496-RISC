@@ -3,9 +3,9 @@ package gameElements;
 public class Unit 
 {
 	private Player myOwner;
-	private String myID;
+	private int myID;
 
-	public Unit(Player p, String id){
+	public Unit(Player p, int id){
 		myOwner = p;
 		myID = id;
 	}
@@ -14,7 +14,7 @@ public class Unit
 		return myOwner;
 	}
 	
-	public String getID(){
+	public int getID(){
 		return myID;
 	}
 }
