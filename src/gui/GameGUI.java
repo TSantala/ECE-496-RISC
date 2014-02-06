@@ -1,5 +1,8 @@
 package gui;
 
+import gameElements.GameState;
+import gameElements.ServerGame;
+
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -51,7 +54,7 @@ public class GameGUI implements Runnable
 			}			
 		});
 
-		GameGraphic game = new GameGraphic(this); 
+		GameGraphic game = new GameGraphic(this,new GameState()); 
 		subPane.add(game,BorderLayout.CENTER);
 		subPane.add(scrollingOutput,BorderLayout.SOUTH);
 		
