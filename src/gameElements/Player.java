@@ -19,17 +19,17 @@ public class Player{
 		return myName;
 	}
 	
-	public List<Unit> getUnits(){
-		return myUnits;
-	}
-	
-	public void setUnits (List<Unit> units){
-		myUnits = units;
-	}
-	
-	public void removeUnit(Unit u){
-		myUnits.remove(u);
-	}
+//	public List<Unit> getUnits(){
+//		return myUnits;
+//	}
+//	
+//	public void setUnits (List<Unit> units){
+//		myUnits = units;
+//	}
+//	
+//	public void removeUnit(Unit u){
+//		myUnits.remove(u);
+//	}
 	
 	public List<Territory> getTerritories(){
 		return myTerritories;

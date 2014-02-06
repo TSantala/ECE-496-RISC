@@ -51,10 +51,6 @@ public class GameMap
 		return null;
 	}
 	
-	public List<Territory> getTerritories(){
-		return myTerritories;
-	}
-	
 	public GameMap clone(){
 		List<Territory> clonedTerritories = new ArrayList<Territory>();
 		for(Territory t : myTerritories){

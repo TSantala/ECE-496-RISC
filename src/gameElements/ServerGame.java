@@ -8,6 +8,7 @@ import server.ServerConstants;
 public class ServerGame implements ServerConstants {
 
 	private GameState myGame;
+	private int unitID=0;
 
 	public ServerGame(GameState gs){
 		myGame = gs;
@@ -35,9 +36,11 @@ public class ServerGame implements ServerConstants {
 		this.displaceAttackingUnits(cl.getCommands());
 		// combine attack commands from same player to same destination.
 		this.combineGroupAttacks(cl.getCommands());
-		
+		// attack!
 		for(Command attack : cl.getCommands())
 			attack.enact(this);
+		// add 1 unit to each territory.
+		this.endOfRoundAddUnits();
 	}
 
 	private CommandList createServerCommandList(CommandList cl) {
@@ -166,6 +169,14 @@ public class ServerGame implements ServerConstants {
 		}
 		cl.clear();
 		cl.addAll(newList);
+	}
+	
+	private void endOfRoundAddUnits(){
+		for(Player p : myGame.getPlayers()){
+			for(Territory t : p.getTerritories()){
+				t.addUnit(new Unit(p,unitID++));
+			}
+		}
 	}
 
 }

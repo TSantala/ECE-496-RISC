@@ -8,6 +8,10 @@ public class GameState {
     GameMap myMap;
     List<Player> myPlayers;
     
+    public GameState(){
+    	
+    }
+    
     public GameState(GameMap gm, List<Player> players){
     	myMap = gm;
     	myPlayers = players;

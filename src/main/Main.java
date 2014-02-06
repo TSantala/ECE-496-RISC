@@ -2,9 +2,9 @@ package main;
 
 //import javax.swing.SwingUtilities;
 //import gameElements.Initialization;
-import javax.swing.SwingUtilities;
+//import javax.swing.SwingUtilities;
 
-import gui.GameGUI;
+//import gui.GameGUI;
 import server.ObjectClient;
 import server.ObjectServer;
 //import server.Server;
