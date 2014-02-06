@@ -1,6 +1,6 @@
 package server;
 
-import gameElements.Initialization;
+import gui.GameGUI;
 
 import java.net.*;
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ import javax.swing.SwingUtilities;
  *
  */
 public class ObjectClient extends Thread implements ServerConstants{
-	private Initialization myGUI;
+	private GameGUI myGUI;
 	private ObjectOutputStream oos;
 	
 	public ObjectClient() {
@@ -37,7 +37,7 @@ public class ObjectClient extends Thread implements ServerConstants{
 			ObjectClientReader myReader = new ObjectClientReader(connection,this);
 			myReader.start();
 			
-			myGUI = new Initialization(this);
+			myGUI = new GameGUI(this);
 			SwingUtilities.invokeLater(myGUI);
 
 			/*while(true){
