@@ -4,14 +4,11 @@ import java.util.*;
 
 public class Player{
 	private String myName;
-	private List<Unit> myUnits;
-	private TerritoryGroup myTerritories;
-	//private List<Order> previousOrders;
+	private List<Unit> myUnits = new ArrayList<Unit>();
+	private List<Territory> myTerritories = new ArrayList<Territory>();
 
-	public Player(){
-		myName = "johnandtimo";
-		myUnits = new ArrayList<Unit>();
-		myTerritories = new TerritoryGroup();
+	public Player(String name){
+		myName = name;
 	}
 
 	public void setName(String s){
@@ -26,7 +23,7 @@ public class Player{
 		return myUnits;
 	}
 	
-	public void setMyUnits (List<Unit> units){
+	public void setUnits (List<Unit> units){
 		myUnits = units;
 	}
 	
@@ -34,20 +31,37 @@ public class Player{
 		myUnits.remove(u);
 	}
 	
-	public TerritoryGroup getTerritories(){
+	public List<Territory> getTerritories(){
 		return myTerritories;
 	}
-	
-	public void setTerritories (TerritoryGroup myTerritories) {
-		this.myTerritories = myTerritories;
-	}
-	
+
 	public void addTerritory(Territory t){
-		myTerritories.addTerritory(t);
+		myTerritories.add(t);
 	}
 	
 	public void removeTerritory(Territory t){
-		myTerritories.removeTerritory(t);
+		myTerritories.remove(t);
+	}
+	
+	public boolean containsTerritory(Territory t){
+		return myTerritories.contains(t);
+	}
+	
+	public Player clone(GameMap clonedMap){
+		Player toReturn = new Player(myName);
+		List<Unit> clonedUnits = new ArrayList<Unit>();
+		for(Unit u : myUnits){
+			for(Territory t : clonedMap.getTerritories()){
+				if(t.getUnit(u.getID()) != null){
+					clonedUnits.add(t.getUnit(u.getID()));
+					t.getUnit(u.getID()).setOwner(toReturn);
+				}
+			}
+		}
+		for(Territory t : myTerritories){
+			toReturn.addTerritory(clonedMap.getTerritory(t.getID()));
+		}
+		return toReturn;
 	}
 
 }

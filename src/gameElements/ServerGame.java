@@ -26,7 +26,7 @@ public class ServerGame implements ServerConstants {
 			move.enact(this);
 			cl.removeCommand(move);
 		}
-		// In this implementation, only Attack commands are now left.
+		// In this first implementation, only Attack commands are now left.
 		// first check validity of attacks.
 		this.checkValidAttacks(cl.getCommands());
 		// check if attack swaps and enact them.

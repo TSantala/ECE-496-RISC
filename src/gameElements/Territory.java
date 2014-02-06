@@ -52,8 +52,28 @@ public class Territory
 	}
 
 	public void addUnits(List<Unit> units) {
-		for(Unit u : units){
-			myUnits.add(u);
+		myUnits.addAll(units);
+	}
+	
+	public void addUnit(Unit u){
+		myUnits.add(u);
+	}
+	
+	public Unit getUnit(int id){
+		for(Unit u : myUnits){
+			if(u.getID() == id)
+				return u;
 		}
+		return null;
+	}
+	
+	public Territory clone(){
+		List<Unit> newUnits = new ArrayList<Unit>();
+		for(Unit u : myUnits){
+			newUnits.add(u.clone());
+		}
+		Territory toReturn = new Territory(myID);
+		toReturn.addUnits(newUnits);
+		return toReturn;
 	}
 }
