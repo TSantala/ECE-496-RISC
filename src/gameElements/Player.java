@@ -2,8 +2,7 @@ package gameElements;
 
 import java.util.*;
 
-public class Player 
-{
+public class Player{
 	private String myName;
 	private List<Unit> myUnits;
 	private TerritoryGroup myTerritories;
@@ -38,7 +37,16 @@ public class Player
 	public TerritoryGroup getTerritories(){
 		return myTerritories;
 	}
+	
 	public void setTerritories (TerritoryGroup myTerritories) {
 		this.myTerritories = myTerritories;
+	}
+	
+	public void addTerritory(Territory t){
+		myTerritories.addTerritory(t);
+	}
+	
+	public void removeTerritory(Territory t){
+		myTerritories.removeTerritory(t);
 	}
 }

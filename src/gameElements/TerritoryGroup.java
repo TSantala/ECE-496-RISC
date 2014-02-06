@@ -8,22 +8,28 @@ import java.util.*;
  */
 public class TerritoryGroup 
 {
-	private List<Territory> territoryList;
-	private Player owner;
-	public TerritoryGroup()
-	{
-		territoryList = new ArrayList<Territory>();
+	private List<Territory> myTerritoryList;
+	private Player myPlayer;
+	
+	public TerritoryGroup(){
+		myTerritoryList = new ArrayList<Territory>();
 	}
-	public Player getOwner()
-	{
-		return owner;
+	
+	public Player getOwner(){
+		return myPlayer;
 	}
-	public void addTerritory(Territory t)
-	{
-		territoryList.add(t);
+	
+	public void addTerritory(Territory t){
+		if(!myTerritoryList.contains(t))
+			myTerritoryList.add(t);
 	}
 	
 	public boolean containsTerritory(Territory t){
-		return territoryList.contains(t);
+		return myTerritoryList.contains(t);
+	}
+	
+	public void removeTerritory(Territory t) {
+		if(myTerritoryList.contains(t))
+			myTerritoryList.remove(t);
 	}
 }
