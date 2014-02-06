@@ -43,4 +43,13 @@ public class GameMap
 		return myTerritories;
 	}
 	
+	public Territory getTerritory(int id){
+		for(Territory t : myTerritories){
+			if(t.getID() == id)
+				return t;
+		}
+		System.out.println("Get territory returned null!! In GameMap");
+		return null;
+	}
+	
 }

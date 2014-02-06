@@ -49,4 +49,5 @@ public class Player{
 	public void removeTerritory(Territory t){
 		myTerritories.removeTerritory(t);
 	}
+
 }
