@@ -42,11 +42,11 @@ public class ObjectSocket extends Thread implements ServerConstants{
 			try {
 				Message m = (Message)ois.readObject();
 				String process = m.getMessage();
-				String[] input = process.split(" ");
+				/*String[] input = process.split(" ");
 				if (input[0].equals("name")){
 					id = input[1];
 					continue;
-				}
+				}*/
 				if (process.equals("exit")){
 					myConnection.close();
 					System.out.println("Server is closing the connection " + id);

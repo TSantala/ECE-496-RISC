@@ -4,7 +4,6 @@ package main;
 //import gameElements.Initialization;
 import javax.swing.SwingUtilities;
 
-import gameElements.Initialization;
 import gui.GameGUI;
 import server.ObjectClient;
 import server.ObjectServer;
