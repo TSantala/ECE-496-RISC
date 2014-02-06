@@ -1,5 +1,6 @@
 package gameElements;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GameState {
@@ -7,8 +8,9 @@ public class GameState {
     GameMap myMap;
     List<Player> myPlayers;
     
-    public GameState()
-    {
+    public GameState(GameMap gm, List<Player> players){
+    	myMap = gm;
+    	myPlayers = players;
     }
     
     public void setMap(GameMap gm){
@@ -45,6 +47,15 @@ public class GameState {
     	}
     	System.out.println("Null return: Unit not found in GameState call!");
     	return null;
+    }
+    
+    public GameState clone(){
+    	GameMap mapClone = myMap.clone();
+    	List<Player> playersClone = new ArrayList<Player>();
+    	for(Player p : myPlayers){
+    		playersClone.add(p.clone(mapClone));
+    	}
+    	return new GameState(mapClone,playersClone);
     }
     
 }

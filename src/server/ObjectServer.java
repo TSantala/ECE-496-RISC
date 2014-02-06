@@ -6,7 +6,8 @@ import java.util.*;
 
 public class ObjectServer extends Thread implements ServerConstants{
 	
-	HashSet<ObjectSocket> myConnections = new HashSet<ObjectSocket>();
+	private HashSet<ObjectSocket> myConnections = new HashSet<ObjectSocket>();
+	private int myNumPlayers;
 	
 	public ObjectServer(){
 	}
