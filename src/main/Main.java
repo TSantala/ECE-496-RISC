@@ -2,6 +2,9 @@ package main;
 
 //import javax.swing.SwingUtilities;
 //import gameElements.Initialization;
+import javax.swing.SwingUtilities;
+
+import gameElements.Initialization;
 import gui.GameGUI;
 import server.ObjectClient;
 import server.ObjectServer;
@@ -11,8 +14,10 @@ import server.ObjectServer;
 public class Main {
 
 	public static void main(String[] args){
-		//Initialization i = new Initialization();
-		//SwingUtilities.invokeLater(i);
+		ObjectServer myServer = new ObjectServer();
+		myServer.start();
+		ObjectClient myClient = new ObjectClient();
+		myClient.start();
 		//new Server();
 		
 //		new GameGUI();
@@ -22,9 +27,7 @@ public class Main {
 		SocketClient myClient = new SocketClient();
 		myClient.start();*/
 
-		//ObjectServer myServer = new ObjectServer();
-		//myServer.start();
-		ObjectClient myClient = new ObjectClient();
-		myClient.start();
+		/*
+		*/
 	}
 }
