@@ -4,7 +4,7 @@ import java.util.*;
 
 public class GameMap
 {
-	List<Territory> myTerritories;
+	private List<Territory> myTerritories;
 	
 	public GameMap()
 	{
@@ -37,6 +37,10 @@ public class GameMap
 		if(p.getTerritories().containsTerritory(to))
 			return false;
 		return from.getNeighbors().contains(to);
+	}
+	
+	public List<Territory> getTerritories(){
+		return myTerritories;
 	}
 	
 }
