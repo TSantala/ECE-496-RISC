@@ -2,15 +2,11 @@ package server;
 
 import java.io.Serializable;
 
-public class Message implements Serializable {
-	private static final long serialVersionUID = 8672323596598488884L;
-	private String myMessage;
+public abstract class Message implements Serializable {
 
-	public Message(String str) {
-		myMessage = str;
-	}
+	private static final long serialVersionUID = 1L;
 	
-	public String getMessage(){
-		return myMessage;
-	}
+	public abstract boolean sendMessageToServer(ObjectServer os);
+	public abstract void sendMessageToClient(ObjectClient oc);
+
 }

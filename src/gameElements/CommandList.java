@@ -1,10 +1,16 @@
 package gameElements;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommandList {
-	
+import server.Message;
+import server.ObjectClient;
+import server.ObjectServer;
+
+public class CommandList extends Message implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 	private List<Command> myCommands;
 	
 	public CommandList(){
@@ -35,6 +41,20 @@ public class CommandList {
 			}
 		}
 		return toReturn;
+	}
+
+	@Override
+	public boolean sendMessageToServer(ObjectServer os) {
+		System.out.println("Commandlist sent to server! Contents size: "+myCommands.size());
+		os.receiveCommandList(this);
+		myCommands.clear();
+		return true;
+	}
+
+	@Override
+	public void sendMessageToClient(ObjectClient oc) {
+		// should not occur.
+		System.out.println("Request for CommandList to send message to Client");
 	}
 
 }

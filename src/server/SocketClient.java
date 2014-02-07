@@ -68,8 +68,8 @@ public class SocketClient extends Thread implements ServerConstants{
 			List<DummyClient> dummies = new ArrayList<DummyClient>();
 
 			BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
-			ClientReader myReader = new ClientReader(isr,this);
-			myReader.start();
+			//ClientReader myReader = new ClientReader(isr,this);
+			//myReader.start();
 
 			while(true){
 				String str=br.readLine();

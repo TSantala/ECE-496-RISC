@@ -1,10 +1,13 @@
 package gameElements;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameState {
+public class GameState implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
 	GameMap myMap;
 	List<Player> myPlayers = new ArrayList<Player>();
 

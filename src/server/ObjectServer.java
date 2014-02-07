@@ -1,5 +1,7 @@
 package server;
 
+import gameElements.CommandList;
+import gameElements.GameState;
 import gameElements.ServerGame;
 
 import java.net.ServerSocket;
@@ -39,10 +41,19 @@ public class ObjectServer extends Thread implements ServerConstants{
 		return myConnections;
 	}
 	
-	public void broadCastMessage(Message m) {
+	public void broadCastMessage(TextMessage m) {
 		for(ObjectSocket s : this.getConnections()){
 			s.sendMessage(m);
 		}
+	}
+	
+	public void sendUpdatedGame(GameState gs){
+		for(ObjectSocket s : this.getConnections())
+			s.sendGameState(gs);
+	}
+	
+	public void receiveCommandList(CommandList ls){
+		System.out.println("Got it!!!");
 	}
 	
 	public void removeConnection(ObjectSocket ms){

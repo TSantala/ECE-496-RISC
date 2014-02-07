@@ -1,5 +1,7 @@
 package server;
 
+import gameElements.GameState;
+
 import java.net.*;
 import java.io.*;
 
@@ -11,7 +13,7 @@ public class ObjectSocket extends Thread implements ServerConstants{
 	//private int myID;
 	private ObjectOutputStream oos ;
 	private ObjectInputStream ois;
-	private String id;
+	//private String id;
 
 	public ObjectSocket(Socket socket, int id, ObjectServer server) {
 		myConnection = socket;
@@ -26,14 +28,22 @@ public class ObjectSocket extends Thread implements ServerConstants{
 
 	}
 
-	public synchronized void sendMessage(Message m) {
+	public synchronized void sendMessage(TextMessage m) {
 		try {
 			oos.writeObject(m);
 			oos.flush();
 		} catch (IOException e) {
 			System.out.println("Object output stream broke in the thread.");
 		}
+	}
 
+	public synchronized void sendGameState(GameState gs){
+		try{
+			oos.writeObject(gs);
+			oos.flush();
+		} catch (IOException e) {
+			System.out.println("Object output stream broke in the thread.");
+		}
 	}
 
 	@Override
@@ -41,23 +51,7 @@ public class ObjectSocket extends Thread implements ServerConstants{
 		while(true){
 			try {
 				Message m = (Message)ois.readObject();
-				String process = m.getMessage();
-				/*String[] input = process.split(" ");
-				if (input[0].equals("name")){
-					id = input[1];
-					continue;
-				}*/
-				if (process.equals("exit")){
-					myConnection.close();
-					System.out.println("Server is closing the connection " + id);
-					myServer.removeConnection(this);
-					break;
-				}
-
-				System.out.println(process);
-
-				myServer.broadCastMessage(new Message(id + ": " +m.getMessage()));
-
+				m.sendMessageToServer(myServer);
 			}
 			catch (Exception e) {
 				System.out.println(e);

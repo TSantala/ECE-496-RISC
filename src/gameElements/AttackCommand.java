@@ -1,8 +1,15 @@
 package gameElements;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class AttackCommand extends Command{
+public class AttackCommand extends Command implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	public AttackCommand(){
+		//testing...
+	}
 	
     public AttackCommand(Player p, Territory from, Territory to, List<Unit> units){
         myPlayer = p;

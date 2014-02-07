@@ -1,19 +1,11 @@
 package server;
 
-import gameElements.CommandList;
 import gameElements.GameState;
 import gui.GameGUI;
 
 import java.net.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.io.*;
 
-import javax.swing.SwingUtilities;
-
-/** The SocketClient class is a simple example of a TCP/IP Socket Client.
- *
- */
 public class ObjectClient extends Thread implements ServerConstants{
 	private GameGUI myGUI;
 	private GameState myGame;
@@ -33,26 +25,13 @@ public class ObjectClient extends Thread implements ServerConstants{
 			System.out.println("Address is: "+InetAddress.getLocalHost().getHostAddress());
 
 			Socket connection = new Socket(address, port);
-			oos = new ObjectOutputStream(connection.
-					getOutputStream());
-			//oos.writeObject(new Message("name John"));
-
-			BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
-			ObjectClientReader myReader = new ObjectClientReader(connection,this);
-			myReader.start();
+			oos = new ObjectOutputStream(connection.getOutputStream());
 			
+			ObjectClientReader myObjectReader = new ObjectClientReader(connection,this);
+			myObjectReader.start();
+
 			myGUI = new GameGUI(this);
 			myGUI.run();
-			//SwingUtilities.invokeLater(myGUI);
-
-			/*while(true){
-				String str=br.readLine();
-				oos.writeObject(new Message(str));
-				oos.flush();
-				if (str.endsWith("exit")){
-					break;
-				}
-			}*/
 			
 			this.wait();
 			
@@ -65,9 +44,9 @@ public class ObjectClient extends Thread implements ServerConstants{
 			System.out.println("Exception: " + g);
 		}
 	}
-	public void printMessage(Message m){
-		myGUI.printMessage(m.getMessage());
-		System.out.println(m.getMessage());
+	
+	public void printMessage(String s){
+		myGUI.printMessage(s);
 	}
 	
 	public void sendMessage(Message m){
@@ -79,13 +58,9 @@ public class ObjectClient extends Thread implements ServerConstants{
 		}
 	}
 	
-	public void sendCommandList(CommandList cl){
-		try {
-			oos.writeObject(cl);
-			oos.flush();
-		} catch (IOException e) {
-			System.out.println("ObjectClient could not send the message.");
-		}
+	public void receiveGameState(GameState gs){
+		myGame = gs;
+		myGUI.updateGameState(gs);
 	}
 	
 	public GameState getGameState(){
