@@ -132,8 +132,8 @@ public class GameGUI extends JFrame implements ServerConstants {
 	}
 	
 	public void updateTerritoryInfo(Territory t){
-		territoryInfo.setText("Territory owner = "+t.getOwner().getName()+"  \n"+
-				"Number of Units = "+t.getUnits().size()+"  \n");
+		territoryInfo.setText("  Territory owner = "+t.getOwner().getName()+"  \n"+
+				"  Number of Units = "+t.getUnits().size()+"  \n");
 	}
 	
 	public Player getPlayer(){

@@ -31,7 +31,7 @@ public class MapTerritory {
 	
 	public boolean isWithin(Point p){
 		System.out.println(myCenter.x + " " + myCenter.y);
-		if ( Math.pow(Math.pow((p.x - myCenter.x),2) + Math.pow((p.y - myCenter.y),2),.5) < myRadius){
+		if ( Math.pow(Math.pow((p.x - (myCenter.x+myRadius/2)),2) + Math.pow((p.y - (myCenter.y+myRadius/2)),2),.5) < myRadius){
 			return true;
 		}
 		return false;

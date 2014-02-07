@@ -20,7 +20,7 @@ public class GameGraphic extends JPanel{
 	private GameState myGame;
 	private final int DEFAULT_RADIUS = 50;
 	private final int DEFAULT_MAP_RADIUS = 100;
-	private final Point MAP_CENTER = new Point(500,300);
+	private final Point MAP_CENTER = new Point(300,200);
 
 	public GameGraphic(GameGUI gameGUI, GameState game) {
 		myGUI = gameGUI;
@@ -43,13 +43,14 @@ public class GameGraphic extends JPanel{
 		for (MapTerritory t : myTerritories){
 			g2d.setColor(t.getColor());
 			g2d.fillOval(t.getCenter().x, t.getCenter().y, t.getRadius(), t.getRadius());
+			g2d.setColor(Color.black);
+			g2d.drawString(""+t.getTerritory().getUnits().size(), t.getCenter().x+25, t.getCenter().y+25);
 		}
 
 	}
 
 	public void processClick(Point p, boolean leftClick){
 		System.out.println("Mouse at: (" + p.x +", " + p.y + ").");
-		p.x-=25; p.y-=25;
 		for(MapTerritory mt : myTerritories){
 			if(mt.isWithin(p)){
 				if(leftClick){
