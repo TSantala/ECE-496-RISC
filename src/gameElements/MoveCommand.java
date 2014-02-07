@@ -19,7 +19,7 @@ public class MoveCommand extends Command implements Serializable {
     }
 
 	@Override
-	public void enact(ServerGame sg) {
+	public void enact(GameModel sg) {
 		sg.move(myPlayer, myTerritoryFrom, myTerritoryTo, myUnits, false);
 	}
 

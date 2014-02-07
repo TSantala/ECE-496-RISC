@@ -1,9 +1,14 @@
 package gameElements;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class Territory 
+public class Territory implements Serializable 
 {
+
+	private static final long serialVersionUID = 1L;
+	
+	private Player myOwner;
 	private List<Unit> myUnits;
 	private List<Territory> myNeighbors;
 	private int myID;
@@ -15,9 +20,12 @@ public class Territory
 		myNeighbors = new ArrayList<Territory>();
 	}
 	
-	public void setNeighbors(List<Territory> nghbrs)
-	{
-		myNeighbors = nghbrs;
+	public void setOwner(Player p){
+		myOwner = p;
+	}
+	
+	public Player getOwner(){
+		return myOwner;
 	}
 	
 	public void addNeighbor(Territory neighbor){

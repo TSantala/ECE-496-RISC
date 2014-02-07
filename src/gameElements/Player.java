@@ -1,8 +1,12 @@
 package gameElements;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class Player{
+public class Player implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+	
 	private String myName;
 	private List<Unit> myUnits = new ArrayList<Unit>();
 	private List<Territory> myTerritories = new ArrayList<Territory>();
@@ -37,6 +41,7 @@ public class Player{
 
 	public void addTerritory(Territory t){
 		myTerritories.add(t);
+		t.setOwner(this);
 	}
 	
 	public void removeTerritory(Territory t){
@@ -59,7 +64,9 @@ public class Player{
 			}
 		}
 		for(Territory t : myTerritories){
-			toReturn.addTerritory(clonedMap.getTerritory(t.getID()));
+			Territory clonedT = clonedMap.getTerritory(t.getID());
+			toReturn.addTerritory(clonedT);
+			clonedT.setOwner(toReturn);
 		}
 		return toReturn;
 	}

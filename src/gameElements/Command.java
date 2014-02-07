@@ -9,7 +9,7 @@ public abstract class Command
 	protected List<Unit> myUnits;
 	protected Player myPlayer;
 	
-	public abstract void enact(ServerGame sg);
+	public abstract void enact(GameModel sg);
 
     public Territory getFrom() {
 		return myTerritoryFrom;

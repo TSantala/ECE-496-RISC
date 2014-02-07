@@ -4,7 +4,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameState implements Serializable {
+import server.Message;
+import server.ObjectClient;
+import server.ObjectServer;
+
+public class GameState extends Message implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -79,6 +83,17 @@ public class GameState implements Serializable {
 			playersClone.add(p.clone(mapClone));
 		}
 		return new GameState(mapClone,playersClone);
+	}
+
+	@Override
+	public boolean sendMessageToServer(ObjectServer os) {
+		// should never happen
+		return false;
+	}
+
+	@Override
+	public void sendMessageToClient(ObjectClient oc) {
+		oc.getGUI().updateGameState(this);
 	}
 
 }

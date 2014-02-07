@@ -1,7 +1,7 @@
 package gui;
 
 import gameElements.GameState;
-import gameElements.ServerGame;
+import gameElements.GameModel;
 import gameElements.Territory;
 
 import java.awt.Color;
@@ -40,15 +40,31 @@ public class GameGraphic extends JPanel{
 	public void paint(Graphics g) {
 		//paint map
 		Graphics2D g2d = (Graphics2D) g;
-		g2d.setColor(Color.RED);
 		for (MapTerritory t : myTerritories){
+			g2d.setColor(t.getColor());
 			g2d.fillOval(t.getCenter().x, t.getCenter().y, t.getRadius(), t.getRadius());
 		}
 
 	}
 
-	public void processClick(Point p){
+	public void processClick(Point p, boolean leftClick){
 		System.out.println("Mouse at: (" + p.x +", " + p.y + ").");
+		p.x-=25; p.y-=25;
+		for(MapTerritory mt : myTerritories){
+			if(mt.isWithin(p)){
+				if(leftClick){
+					mt.setColorLeftClick();
+					myGUI.updateTerritoryInfo(mt.getTerritory());
+				}
+				else{
+					mt.setColorRightClick();
+				}
+			}
+			else{
+				mt.restoreColor(leftClick);
+			}
+		}
+		this.repaint();		// this seems to be causing weird graphics bugs at random.
 	}
 
 }

@@ -67,6 +67,10 @@ public class ObjectClient extends Thread implements ServerConstants{
 		return myGame;
 	}
 	
+	public GameGUI getGUI(){
+		return myGUI;
+	}
+	
 	public synchronized void closeClient(){
 		this.notify();
 	}

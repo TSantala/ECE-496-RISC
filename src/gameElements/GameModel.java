@@ -3,15 +3,17 @@ package gameElements;
 import java.util.ArrayList;
 import java.util.List;
 
+import server.ObjectServer;
 import server.ServerConstants;
 
-public class ServerGame implements ServerConstants {
+public class GameModel implements ServerConstants {
 
+	private ObjectServer myServer;
 	private GameState myPrevious;
 	private GameState myGame;
 	private int unitID=0;
 
-	public ServerGame(GameState gs){
+	public GameModel(GameState gs){
 		myGame = gs;
 		myPrevious = gs;
 	}
@@ -55,6 +57,8 @@ public class ServerGame implements ServerConstants {
 			attack.enact(this);
 		// add 1 unit to each territory.
 		this.endOfRoundAddUnits();
+		// return updated game after commands enacted to clients.
+		this.sendUpdatedGameState();
 	}
 
 	private CommandList createServerCommandList(CommandList cl) {
@@ -195,6 +199,15 @@ public class ServerGame implements ServerConstants {
 	private void redoTurnErrorFound(String message){
 		myGame = myPrevious;
 		// return myGame (unaltered) to the clients, send error message, and request turn startover.
+	}
+	
+	public void setServer(ObjectServer os){
+		myServer = os;
+	}
+	
+	private void sendUpdatedGameState(){
+		System.out.println("Model logic completed!!!");
+		myServer.updateGameStates(myGame);
 	}
 
 }

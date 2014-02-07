@@ -2,8 +2,10 @@ package gui;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.List;
 
 public class MapMouseListener implements MouseListener{
+	
 	private GameGraphic myGame;
 
 	public MapMouseListener(GameGraphic game) {
@@ -12,7 +14,7 @@ public class MapMouseListener implements MouseListener{
 
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
-		myGame.processClick(myGame.getMousePosition());
+		myGame.processClick(myGame.getMousePosition(),arg0.getButton() == MouseEvent.BUTTON1);
 	}
 
 	@Override
@@ -27,7 +29,7 @@ public class MapMouseListener implements MouseListener{
 
 	@Override
 	public void mousePressed(MouseEvent arg0) {
-		
+	   	
 	}
 
 	@Override

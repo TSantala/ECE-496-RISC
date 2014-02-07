@@ -42,6 +42,10 @@ public class CommandList extends Message implements Serializable {
 		}
 		return toReturn;
 	}
+	
+	public void clear(){
+		myCommands.clear();
+	}
 
 	@Override
 	public boolean sendMessageToServer(ObjectServer os) {

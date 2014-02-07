@@ -28,7 +28,7 @@ public class GameGUI extends JFrame implements ServerConstants {
 	
 	private JTextField input;
 	private JTextArea output;
-	private JTextArea tileInfo;
+	private JTextArea territoryInfo;
 	private JScrollPane scrollingOutput;
 	private ObjectClient myClient;
 	
@@ -37,7 +37,9 @@ public class GameGUI extends JFrame implements ServerConstants {
 	
 	private Territory leftClick;		// maybe hue territory color with blue?
 	private Territory rightClick;		// maybe hue territory color with red?
-	private List<Unit> selectedUnits = new ArrayList<Unit>();;
+	private List<Unit> selectedUnits = new ArrayList<Unit>();
+	
+	private JButton myCommitButton = new CommitButton(this);
 	
 	private CommandList myCommandList = new CommandList();
 
@@ -49,6 +51,7 @@ public class GameGUI extends JFrame implements ServerConstants {
 	
 	public void updateGameState(GameState gs){
 		myGame = gs;
+		myCommitButton.setEnabled(true);
 	}
 
 	public void run() {
@@ -82,7 +85,7 @@ public class GameGUI extends JFrame implements ServerConstants {
 		});
 		textPane.add(input,BorderLayout.SOUTH);
 		bottomPane.add(textPane,BorderLayout.CENTER);
-		bottomPane.add(new CommitButton(this),BorderLayout.EAST);
+		bottomPane.add(myCommitButton,BorderLayout.EAST);
 		
 		JPanel mainPane = new JPanel();
 		mainPane.setLayout(new BorderLayout());
@@ -91,9 +94,9 @@ public class GameGUI extends JFrame implements ServerConstants {
 		
 		JPanel rightPane = new JPanel();
 		rightPane.setLayout(new BorderLayout());
-		tileInfo = new JTextArea(7, 7);
-		tileInfo.setEditable(false);
-		rightPane.add(tileInfo,BorderLayout.CENTER);
+		territoryInfo = new JTextArea(7, 7);
+		territoryInfo.setEditable(false);
+		rightPane.add(territoryInfo,BorderLayout.CENTER);
 		
 		JPanel buttonPane = new JPanel();
 		buttonPane.setLayout(new BorderLayout());
@@ -122,9 +125,15 @@ public class GameGUI extends JFrame implements ServerConstants {
 	}
 	
 	public void sendCommandList(){
-		// pop up an "Are you sure?" message maybe?
+		// pop up an "Are you sure?" message maybe?	
 		myClient.sendMessage(myCommandList);
 		myCommandList.getCommands().clear();
+		myCommitButton.setEnabled(false);
+	}
+	
+	public void updateTerritoryInfo(Territory t){
+		territoryInfo.setText("Territory owner = "+t.getOwner().getName()+"  \n"+
+				"Number of Units = "+t.getUnits().size()+"  \n");
 	}
 	
 	public Player getPlayer(){

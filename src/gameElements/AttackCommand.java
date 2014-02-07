@@ -19,7 +19,7 @@ public class AttackCommand extends Command implements Serializable {
     }
 
 	@Override
-	public void enact(ServerGame sg) {
+	public void enact(GameModel sg) {
 		sg.attack(myPlayer, myTerritoryFrom, myTerritoryTo,myUnits);
 	}
 }

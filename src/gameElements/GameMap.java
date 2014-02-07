@@ -1,9 +1,12 @@
 package gameElements;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class GameMap
+public class GameMap implements Serializable 
 {
+	private static final long serialVersionUID = 1L;
+	
 	private List<Territory> myTerritories = new ArrayList<Territory>();
 	private int myTerritoryCount=0;
 	

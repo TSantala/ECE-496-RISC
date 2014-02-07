@@ -1,7 +1,7 @@
 package main;
 
 import gameElements.GameState;
-import gameElements.ServerGame;
+import gameElements.GameModel;
 import server.ObjectClient;
 import server.ObjectServer;
 
@@ -15,9 +15,9 @@ public class Main {
 	public static void main(String[] args){
 		
 		GameState init = new GameState(NUM_PLAYERS,NUM_TERRITORIES);	// Numbers will be determined by start-wizard later...
-		ServerGame sg = new ServerGame(init);
+		GameModel gm = new GameModel(init);
 		
-		ObjectServer myServer = new ObjectServer(sg);
+		ObjectServer myServer = new ObjectServer(gm,NUM_PLAYERS);
 		myServer.start();
 		
 		ObjectClient myClient1 = new ObjectClient(init);
