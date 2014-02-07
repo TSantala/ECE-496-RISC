@@ -7,32 +7,18 @@ public class GameMap
 	private List<Territory> myTerritories = new ArrayList<Territory>();
 	private int myTerritoryCount=0;
 	
-	public GameMap()
+	public GameMap(int num)		// for now, just create a 'circle' with each connected to numeric neighbors and last to first
 	{
-		Territory t1 = this.createTerritory();
-		Territory t2 = this.createTerritory();
-		Territory t3 = this.createTerritory();
-		Territory t4 = this.createTerritory();
-		
-		t1.addNeighbor(t4);
-		t1.addNeighbor(t2);
-		t2.addNeighbor(t1);
-		t2.addNeighbor(t3);
-		t3.addNeighbor(t2);
-		t3.addNeighbor(t4);
-		t4.addNeighbor(t3);
-		t4.addNeighbor(t1);
-		
-		myTerritories.add(t1);
-		myTerritories.add(t2);
-		myTerritories.add(t3);
-		myTerritories.add(t4);
-//		myTerritories.add(new Territory(5));
-//		myTerritories.add(new Territory(6));
-//		myTerritories.add(new Territory(7));
-//		myTerritories.add(new Territory(8));
-//		myTerritories.add(new Territory(9));
-//		myTerritories.add(new Territory(10));
+		while(myTerritoryCount<num){
+			Territory newT = this.createTerritory();
+			myTerritories.add(newT);
+		}
+		for(int i = 0; i<num-1; i++){
+			myTerritories.get(i).addNeighbor(myTerritories.get(i+1));
+			myTerritories.get(i+1).addNeighbor(myTerritories.get(i));
+		}
+		myTerritories.get(num).addNeighbor(myTerritories.get(0));
+		myTerritories.get(0).addNeighbor(myTerritories.get(num));
 	}
 	
 	public Territory createTerritory(){

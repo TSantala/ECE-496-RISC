@@ -8,8 +8,24 @@ public class GameState {
 	GameMap myMap;
 	List<Player> myPlayers;
 
-	public GameState(){
-		myMap = new GameMap();
+	public GameState(int numPlayers, int numTerritories){
+		for(int i = 0; i<numPlayers; i++){
+			myPlayers.add(new Player("Player "+myPlayers.size()));
+		}
+		
+		// Create map of territories.
+		myMap = new GameMap(numTerritories);
+		
+		// Randomly assign initial territories.
+		List<Territory> initialTerritories = new ArrayList<Territory>();
+		initialTerritories.addAll(myMap.getTerritories());
+		int player = 0;
+		while(!initialTerritories.isEmpty()){
+			player = (player+1)%numPlayers;
+			int territory = (int) Math.floor(initialTerritories.size()*Math.random());
+			myPlayers.get(player).addTerritory(initialTerritories.get(territory));
+			initialTerritories.remove(territory);
+		}
 	}
 
 	public GameState(GameMap gm, List<Player> players){

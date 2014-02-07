@@ -53,7 +53,7 @@ public class GameGUI extends JFrame
 			}			
 		});
 
-		GameGraphic game = new GameGraphic(this,new GameState()); 
+		GameGraphic game = new GameGraphic(this,new GameState(2,6)); 
 		subPane.add(game,BorderLayout.CENTER);
 		subPane.add(scrollingOutput,BorderLayout.SOUTH);
 		

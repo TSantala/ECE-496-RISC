@@ -5,6 +5,7 @@ package main;
 //import javax.swing.SwingUtilities;
 
 //import gui.GameGUI;
+import gui.GameGUI;
 import server.ObjectClient;
 import server.ObjectServer;
 //import server.Server;
@@ -19,7 +20,7 @@ public class Main {
 		myClient.start();
 		//new Server();
 		
-//		new GameGUI();
+		//new GameGUI(myClient);
 
 		/*Server myServer = new Server();
 		myServer.start();

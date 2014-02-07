@@ -7,6 +7,7 @@ import server.ServerConstants;
 
 public class ServerGame implements ServerConstants {
 
+	private GameState myPrevious;
 	private GameState myGame;
 	private int unitID=0;
 
@@ -17,8 +18,20 @@ public class ServerGame implements ServerConstants {
 	public GameState getGameState(){
 		return myGame;
 	}
+	
+	public void setInitialUnits(CommandList cl){
+		// List will only contain MoveCommands.
+		for(Command place : cl.getCommands()){
+			Player serverPlayer = myGame.getPlayer(place.getPlayer().getName());
+			Territory serverTerritory = myGame.getMap().getTerritory(place.getFrom().getID());
+			serverPlayer.getUnits().addAll(place.getUnits());
+			serverTerritory.addUnits(place.getUnits());
+		}
+	}
 
 	public void performCommands(CommandList cl){
+		
+		myPrevious = myGame.clone();
 		
 		cl = this.createServerCommandList(cl);
 		
@@ -76,8 +89,7 @@ public class ServerGame implements ServerConstants {
 			to.addUnits(units);
 		}
 		else{
-			// ERROR: invalid input. Should never occur (check for this on client-side first).
-			// Undo all changes (will store server-side gamestate before a final is sent out).
+			this.redoTurnErrorFound("Invalid move!");
 		}
 	}
 
@@ -108,7 +120,7 @@ public class ServerGame implements ServerConstants {
 	public void checkValidAttacks(List<Command> cl){
 		for(Command c : cl){
 			if(!myGame.getMap().canAttack(c.getFrom(),c.getTo(),c.getPlayer())){
-				// ERROR !!! Revert state and re-do round.
+				this.redoTurnErrorFound("Invalid attack!");
 			}					
 		}
 	}
@@ -177,6 +189,11 @@ public class ServerGame implements ServerConstants {
 				t.addUnit(new Unit(p,unitID++));
 			}
 		}
+	}
+	
+	private void redoTurnErrorFound(String message){
+		myGame = myPrevious;
+		// return myGame (unaltered) to the clients, send error message, and request turn startover.
 	}
 
 }
