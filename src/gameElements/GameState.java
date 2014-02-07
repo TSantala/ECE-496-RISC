@@ -6,7 +6,7 @@ import java.util.List;
 public class GameState {
 
 	GameMap myMap;
-	List<Player> myPlayers;
+	List<Player> myPlayers = new ArrayList<Player>();
 
 	public GameState(int numPlayers, int numTerritories){
 		for(int i = 0; i<numPlayers; i++){

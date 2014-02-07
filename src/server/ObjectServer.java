@@ -1,5 +1,7 @@
 package server;
 
+import gameElements.ServerGame;
+
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
@@ -8,8 +10,10 @@ public class ObjectServer extends Thread implements ServerConstants{
 	
 	private HashSet<ObjectSocket> myConnections = new HashSet<ObjectSocket>();
 	private int myNumPlayers;
+	private ServerGame myModel;
 	
-	public ObjectServer(){
+	public ObjectServer(ServerGame sg){
+		myModel = sg;
 	}
 	
 	public void run(){

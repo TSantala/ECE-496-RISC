@@ -13,6 +13,7 @@ public class ServerGame implements ServerConstants {
 
 	public ServerGame(GameState gs){
 		myGame = gs;
+		myPrevious = gs;
 	}
 
 	public GameState getGameState(){

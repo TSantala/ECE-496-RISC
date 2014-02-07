@@ -1,5 +1,7 @@
 package server;
 
+import gameElements.CommandList;
+import gameElements.GameState;
 import gui.GameGUI;
 
 import java.net.*;
@@ -14,9 +16,11 @@ import javax.swing.SwingUtilities;
  */
 public class ObjectClient extends Thread implements ServerConstants{
 	private GameGUI myGUI;
+	private GameState myGame;
 	private ObjectOutputStream oos;
 	
-	public ObjectClient() {
+	public ObjectClient(GameState gs) {
+		myGame = gs;
 	}
 
 	public synchronized void run(){
@@ -25,7 +29,7 @@ public class ObjectClient extends Thread implements ServerConstants{
 		System.out.println("ObjectClient initialized");
 		try {
 
-			InetAddress address = InetAddress.getByName("10.190.50.220");
+			InetAddress address = InetAddress.getByName("10.190.218.39");
 			System.out.println("Address is: "+InetAddress.getLocalHost().getHostAddress());
 
 			Socket connection = new Socket(address, port);
@@ -73,6 +77,19 @@ public class ObjectClient extends Thread implements ServerConstants{
 		} catch (IOException e) {
 			System.out.println("ObjectClient could not send the message.");
 		}
+	}
+	
+	public void sendCommandList(CommandList cl){
+		try {
+			oos.writeObject(cl);
+			oos.flush();
+		} catch (IOException e) {
+			System.out.println("ObjectClient could not send the message.");
+		}
+	}
+	
+	public GameState getGameState(){
+		return myGame;
 	}
 	
 	public synchronized void closeClient(){

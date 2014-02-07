@@ -17,8 +17,8 @@ public class GameMap
 			myTerritories.get(i).addNeighbor(myTerritories.get(i+1));
 			myTerritories.get(i+1).addNeighbor(myTerritories.get(i));
 		}
-		myTerritories.get(num).addNeighbor(myTerritories.get(0));
-		myTerritories.get(0).addNeighbor(myTerritories.get(num));
+		myTerritories.get(num-1).addNeighbor(myTerritories.get(0));
+		myTerritories.get(0).addNeighbor(myTerritories.get(num-1));
 	}
 	
 	public Territory createTerritory(){
