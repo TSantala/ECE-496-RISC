@@ -37,8 +37,9 @@ public class GameGraphic extends JPanel{
 	}
 
 	@Override
-	public void paint(Graphics g) {
+	public void paintComponent(Graphics g) {
 		//paint map
+	        super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D) g;
 		for (MapTerritory t : myTerritories){
 			g2d.setColor(t.getColor());
@@ -65,7 +66,10 @@ public class GameGraphic extends JPanel{
 				mt.restoreColor(leftClick);
 			}
 		}
+		this.revalidate();
+	        myGUI.revalidate();
 		this.repaint();		// this seems to be causing weird graphics bugs at random.
+		myGUI.repaint();
 	}
 
 }
