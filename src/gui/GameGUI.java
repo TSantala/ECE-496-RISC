@@ -29,6 +29,7 @@ public class GameGUI extends JFrame implements ServerConstants {
 	private JTextField input;
 	private JTextArea output;
 	private JTextArea territoryInfo;
+	private JTextArea commandInfo;
 	private JScrollPane scrollingOutput;
 	private JPanel mainPane;
 	private ObjectClient myClient;
@@ -111,7 +112,13 @@ public class GameGUI extends JFrame implements ServerConstants {
 		territoryInfo = new JTextArea(7, 7);
 		territoryInfo.setEditable(false);
 		rightPane.add(territoryInfo,BorderLayout.CENTER);
-
+		
+		JPanel leftPane = new JPanel();
+		leftPane.setLayout(new BorderLayout());
+		commandInfo = new JTextArea(7,7);
+		commandInfo.setEditable(false);
+		leftPane.add(commandInfo, BorderLayout.CENTER);
+		
 		JPanel buttonPane = new JPanel();
 		buttonPane.setLayout(new BorderLayout());
 		buttonPane.add(new MoveButton(this,leftClick,rightClick,selectedUnits),BorderLayout.NORTH);
@@ -120,7 +127,8 @@ public class GameGUI extends JFrame implements ServerConstants {
 		rightPane.add(buttonPane,BorderLayout.SOUTH);
 
 		mainPane.add(rightPane,BorderLayout.EAST);
-
+		mainPane.add(leftPane, BorderLayout.WEST);
+	
 		System.out.println("6");
 		pane.add(bottomPane,BorderLayout.SOUTH);
 		pane.add(mainPane,BorderLayout.CENTER);
@@ -136,17 +144,21 @@ public class GameGUI extends JFrame implements ServerConstants {
 
 	public void addCommand(Command c){
 		myCommandList.addCommand(c);
+		
+		//String cmds = myCommandList.toString();
+		//commandInfo.setText(cmds);
 	}
 
 	public void sendCommandList(){
 		// pop up an "Are you sure?" message maybe?	
 		myClient.sendMessage(myCommandList);
 		myCommandList.getCommands().clear();
+		commandInfo.setText("");;
 		myCommitButton.setEnabled(false);
 	}
 
 	public void updateTerritoryInfo(Territory t){
-		territoryInfo.setText("  Territory owner = "+t.getOwner().getName()+"  \n"+
+		territoryInfo.setText("Territory owner = "+t.getOwner().getName()+"  \n"+
 				"  Number of Units = "+t.getUnits().size()+"  \n");
 	}
 
@@ -170,4 +182,20 @@ public class GameGUI extends JFrame implements ServerConstants {
 		return myGameGraphic;
 	}
 
+	public Territory getLeftClick()
+	{
+	    return leftClick;
+	}
+	public void setLeftClick(Territory t)
+	{
+	    leftClick = t;
+	}
+	public Territory getRightClick()
+	{
+	    return rightClick;
+	}
+	public void setRightClick(Territory t)
+	{
+	    rightClick = t;
+	}      
 }

@@ -11,7 +11,7 @@ public abstract class Command
 	
 	public abstract void enact(GameModel sg);
 
-    public Territory getFrom() {
+	public Territory getFrom() {
 		return myTerritoryFrom;
 	}
 	
@@ -26,5 +26,4 @@ public abstract class Command
 	public Player getPlayer(){
 		return myPlayer;
 	}
-	
 }

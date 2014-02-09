@@ -3,7 +3,6 @@ package gameElements;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
 import server.Message;
 import server.ObjectClient;
 import server.ObjectServer;
@@ -45,6 +44,16 @@ public class CommandList extends Message implements Serializable {
 	
 	public void clear(){
 		myCommands.clear();
+	}
+	
+	public String toString()
+	{
+	    String s = "";
+	    for (Command cmd : myCommands)
+	    {
+	        s = s + cmd.toString() + "\n";
+	    }
+	    return s;
 	}
 
 	@Override

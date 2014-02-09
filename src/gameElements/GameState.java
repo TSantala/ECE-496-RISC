@@ -61,7 +61,49 @@ public class GameState extends Message implements Serializable {
 		myPlayers = players;
 	}
 
-	public void setMap(GameMap gm){
+	/*
+	 * FOR TESTING! Just allocating starting units in constructor
+	 */
+	public GameState (int numPlayers, int numTerritories, int numStartUnits) {
+            for(int i = 0; i<numPlayers; i++){
+                myPlayers.add(new Player("Player "+myPlayers.size()));
+            }
+        
+            // Create map of territories.
+            myMap = new GameMap(numTerritories);
+            
+            // Randomly assign initial territories.
+            List<Territory> initialTerritories = new ArrayList<Territory>();
+            initialTerritories.addAll(myMap.getTerritories());
+            int player = 0;
+            while(!initialTerritories.isEmpty()){
+                    player = (player+1)%numPlayers;
+                    int territory = (int) Math.floor(initialTerritories.size()*Math.random());
+                    myPlayers.get(player).addTerritory(initialTerritories.get(territory));
+                    initialTerritories.remove(territory);
+            }
+            
+            //distribute units to each territory 
+            List<Territory> p1t = myPlayers.get(0).getTerritories();
+            List<Territory> p2t = myPlayers.get(1).getTerritories();
+            int id = 0;
+            for (Territory t : p1t)
+            {
+                for (int i=0; i < numStartUnits/p1t.size(); i++)
+                {
+                    t.addUnit(new Unit(myPlayers.get(0), i));
+                }
+            }
+            for (Territory t : p2t)
+            {
+                for (int i=0; i < numStartUnits/p2t.size(); i++)
+                {
+                    t.addUnit(new Unit(myPlayers.get(1), i+14)); //ids must be unique
+                }
+            }
+    }
+
+    public void setMap(GameMap gm){
 		myMap = gm;
 	}
 
