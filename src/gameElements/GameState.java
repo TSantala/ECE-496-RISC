@@ -2,6 +2,7 @@ package gameElements;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import server.Message;
@@ -33,6 +34,26 @@ public class GameState extends Message implements Serializable {
 			myPlayers.get(player).addTerritory(initialTerritories.get(territory));
 			initialTerritories.remove(territory);
 		}
+	}
+	
+	public GameState(Collection<String> players, int numTerritories){
+		for(String s : players){
+			myPlayers.add(new Player(s));
+		}
+		
+		// Create map of territories.
+				myMap = new GameMap(numTerritories);
+				
+				// Randomly assign initial territories.
+				List<Territory> initialTerritories = new ArrayList<Territory>();
+				initialTerritories.addAll(myMap.getTerritories());
+				int player = 0;
+				while(!initialTerritories.isEmpty()){
+					player = (player+1)%myPlayers.size();
+					int territory = (int) Math.floor(initialTerritories.size()*Math.random());
+					myPlayers.get(player).addTerritory(initialTerritories.get(territory));
+					initialTerritories.remove(territory);
+				}
 	}
 
 	public GameState(GameMap gm, List<Player> players){

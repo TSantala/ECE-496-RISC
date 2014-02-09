@@ -16,6 +16,7 @@ public class GameModel implements ServerConstants {
 	public GameModel(GameState gs){
 		myGame = gs;
 		myPrevious = gs;
+		
 	}
 
 	public GameState getGameState(){

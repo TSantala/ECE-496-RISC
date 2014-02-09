@@ -80,4 +80,10 @@ public class GameGraphic extends JPanel{
 		myGUI.repaint();
 	}
 
+	public void assignUnits() {
+		// TODO Auto-generated method stub
+		// ASSIGN UNITS HERE!!!!
+		System.out.println("GAME GRAPHICS SHOULD GO INTO UNIT ASSIGNMENT MODE");
+	}
+
 }

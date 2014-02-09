@@ -17,14 +17,15 @@ public class Main {
 		GameState init = new GameState(NUM_PLAYERS,NUM_TERRITORIES);	// Numbers will be determined by start-wizard later...
 		GameModel gm = new GameModel(init);
 		
-		ObjectServer myServer = new ObjectServer(gm,NUM_PLAYERS);
+		//ObjectServer myServer = new ObjectServer(gm,NUM_PLAYERS);
+		ObjectServer myServer = new ObjectServer();
 		myServer.start();
 		
-		ObjectClient myClient1 = new ObjectClient(init);
+		ObjectClient myClient1 = new ObjectClient();
 		myClient1.start();
 		
-		ObjectClient myClient2 = new ObjectClient(init);
-		myClient2.start();
+		/*ObjectClient myClient2 = new ObjectClient();
+		myClient2.start();*/
 
 		System.out.println("1");
 
