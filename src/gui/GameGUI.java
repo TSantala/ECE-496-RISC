@@ -145,8 +145,8 @@ public class GameGUI extends JFrame implements ServerConstants {
 	public void addCommand(Command c){
 		myCommandList.addCommand(c);
 		
-		//String cmds = myCommandList.toString();
-		//commandInfo.setText(cmds);
+		String cmds = myCommandList.toString();
+		commandInfo.setText(cmds);
 	}
 
 	public void sendCommandList(){

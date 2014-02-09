@@ -8,9 +8,9 @@ import server.ObjectServer;
 
 public class Main {
 	
-	private static int NUM_PLAYERS = 2;
-	private static int NUM_TERRITORIES = 6;
-	private static int NUM_START_UNITS = 12;
+	private static final int NUM_PLAYERS = 2;
+	private static final int NUM_TERRITORIES = 6;
+	private static final int NUM_START_UNITS = 12;
 
 	public static void main(String[] args){
 		

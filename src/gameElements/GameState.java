@@ -13,8 +13,9 @@ public class GameState extends Message implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	GameMap myMap;
-	List<Player> myPlayers = new ArrayList<Player>();
+	private GameMap myMap;
+	private List<Player> myPlayers = new ArrayList<Player>();
+	private static final int DEFAULT_NUM_START_UNITS = 10;
 
 	public GameState(int numPlayers, int numTerritories){
 		for(int i = 0; i<numPlayers; i++){
@@ -157,6 +158,10 @@ public class GameState extends Message implements Serializable {
 	@Override
 	public void sendMessageToClient(ObjectClient oc) {
 		oc.getGUI().updateGameState(this);
+	}
+	
+	public int startUnits(){
+		return DEFAULT_NUM_START_UNITS;
 	}
 
 }

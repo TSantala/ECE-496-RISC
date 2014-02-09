@@ -105,6 +105,8 @@ public class ObjectServer extends Thread implements ServerConstants{
 
 	public void setNumPlayers(int num){
 		numPlayers = num;
+		/////////// HERE IS WHERE I"M MAKING EXTRA CLIENTS FOR TESTING PURPOSES!
+		System.out.println("Extra client created after the host chooses num of players.  ObjectServer ln 110");
 		ObjectClient myClient2 = new ObjectClient();
 		myClient2.start();
 	}

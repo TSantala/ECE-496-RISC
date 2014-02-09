@@ -1,8 +1,10 @@
 package gui;
 
+import gameElements.AddUnitCommand;
 import gameElements.GameState;
 import gameElements.GameModel;
 import gameElements.Territory;
+import gameElements.Unit;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -21,6 +23,8 @@ public class GameGraphic extends JPanel{
 	private final int DEFAULT_RADIUS = 50;
 	private final int DEFAULT_MAP_RADIUS = 100;
 	private final Point MAP_CENTER = new Point(300,200);
+	private boolean initialization = false;
+	private int startUnits;
 
 	public GameGraphic(GameGUI gameGUI, GameState game) {
 		myGUI = gameGUI;
@@ -61,7 +65,7 @@ public class GameGraphic extends JPanel{
 	public void processClick(Point p, boolean leftClick){
 		//System.out.println("Mouse at: (" + p.x +", " + p.y + ").");
 		for(MapTerritory mt : myTerritories){
-			if(mt.isWithin(p)){
+			if(mt.isWithin(p) && !initialization){
 				if(leftClick){
 					mt.setColorLeftClick();
 					myGUI.updateTerritoryInfo(mt.getTerritory());
@@ -70,6 +74,22 @@ public class GameGraphic extends JPanel{
 				else{
 					mt.setColorRightClick();
 					myGUI.setRightClick(mt.getTerritory());
+				}
+			}
+			else if (mt.isWithin(p) && initialization){
+				
+				if(leftClick && mt.getTerritory().getOwner().equals(myGUI.getPlayer())){
+					mt.getTerritory().addUnit(new Unit(mt.getTerritory().getOwner(), 1));
+					startUnits--;
+				}
+				else if (!leftClick && mt.getTerritory().getOwner().equals(myGUI.getPlayer())){
+					if (mt.getTerritory().getUnits().size() > 0){
+						mt.getTerritory().removeUnit(mt.getTerritory().getUnits().get(0));
+						startUnits++;
+					}
+				}
+				if (startUnits == 0){
+					this.endInitialization();
 				}
 			}
 			else{
@@ -83,9 +103,18 @@ public class GameGraphic extends JPanel{
 	}
 
 	public void assignUnits() {
-		// TODO Auto-generated method stub
-		// ASSIGN UNITS HERE!!!!
-		System.out.println("GAME GRAPHICS SHOULD GO INTO UNIT ASSIGNMENT MODE");
+		initialization = true;
+		startUnits = myGame.startUnits();
 	}
 
+	public void endInitialization(){
+		initialization = false;
+		// TODO This is where we need to see how many units were assigned to which territory
+		// and send this information to the server.
+		for (Territory t : myGame.getMap().getTerritories()){
+			if (t.getOwner().equals(myGUI.getPlayer())){
+				myGUI.addCommand(new AddUnitCommand(t.getOwner(),t,t.getUnits()));
+			}
+		}
+	}
 }
