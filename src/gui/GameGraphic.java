@@ -43,15 +43,23 @@ public class GameGraphic extends JPanel{
 		Graphics2D g2d = (Graphics2D) g;
 		for (MapTerritory t : myTerritories){
 			g2d.setColor(t.getColor());
-			g2d.fillOval(t.getCenter().x, t.getCenter().y, t.getRadius(), t.getRadius());
+			g2d.fillOval(t.getCenter().x - t.getRadius()/2, t.getCenter().y- t.getRadius()/2, t.getRadius(), t.getRadius());
 			g2d.setColor(Color.black);
 			g2d.drawString(""+t.getTerritory().getUnits().size(), t.getCenter().x+25, t.getCenter().y+25);
+		}
+		
+		for (MapTerritory from : myTerritories){
+			for (MapTerritory to : myTerritories){
+				if (from.getTerritory().getNeighbors().contains(to.getTerritory())){
+					g2d.drawLine(from.getCenter().x, from.getCenter().y, to.getCenter().x, to.getCenter().y);
+				}
+			}
 		}
 
 	}
 
 	public void processClick(Point p, boolean leftClick){
-		System.out.println("Mouse at: (" + p.x +", " + p.y + ").");
+		//System.out.println("Mouse at: (" + p.x +", " + p.y + ").");
 		for(MapTerritory mt : myTerritories){
 			if(mt.isWithin(p)){
 				if(leftClick){
