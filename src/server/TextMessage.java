@@ -18,11 +18,11 @@ public class TextMessage extends Message implements Serializable {
 
 	@Override
 	public boolean sendMessageToServer(ObjectServer os) {
-		System.out.println("Message received!!! OSocket 59");
+		//System.out.println("Message received!!! OSocket 59");
 		if (myMessage.equals("exit")){
 			return false;
 		}
-		os.broadCastMessage(new TextMessage(myMessage));
+		os.broadCastMessage(new TextMessage(myMessage),myOS);
 		return true;
 	}
 

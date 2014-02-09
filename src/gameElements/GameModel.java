@@ -16,12 +16,13 @@ public class GameModel implements ServerConstants {
 	public GameModel(GameState gs){
 		myGame = gs;
 		myPrevious = gs;
+
 	}
 
 	public GameState getGameState(){
 		return myGame;
 	}
-	
+
 	public void setInitialUnits(CommandList cl){
 		// List will only contain MoveCommands.
 		for(Command place : cl.getCommands()){
@@ -32,12 +33,29 @@ public class GameModel implements ServerConstants {
 		}
 	}
 
+	public void placeUnits(Player p, Territory t, List<Unit> units){
+		if (units.size() > 0){
+			Player serverPlayer = myGame.getPlayer(p.getName());
+			Territory serverTerritory = myGame.getMap().getTerritory(t.getID());
+			serverPlayer.getUnits().addAll(units);
+			serverTerritory.addUnits(units);
+		}
+	}
+
 	public void performCommands(CommandList cl){
-		
+		System.out.println("in perform commands");
 		myPrevious = myGame.clone();
-		
+
+		// TIMO THIS LINE IS BROKEN, CAN YOU FIX IT PLEASE?
 		cl = this.createServerCommandList(cl);
-		
+
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!Model Reached the placeCommands in perform Commands!!!!!!!!!!!!!!!!!!");
+		List<Command> placeCommands = cl.getCommands(AddUnitCommand.class);
+		for(Command place : placeCommands){
+			place.enact(this);
+			cl.removeCommand(place);
+		}
+
 		List<Command> moveCommands = cl.getCommands(MoveCommand.class);
 		for(Command move : moveCommands){
 			move.enact(this);
@@ -64,11 +82,18 @@ public class GameModel implements ServerConstants {
 	private CommandList createServerCommandList(CommandList cl) {
 		CommandList toReturn = new CommandList();
 		List<Command> moveCommands = cl.getCommands(MoveCommand.class);
+		List<Command> placeCommands = cl.getCommands(AddUnitCommand.class);
 		for(Command c : moveCommands){
 			cl.removeCommand(c);
 			toReturn.addCommand(new MoveCommand(myGame.getPlayer(c.getPlayer().getName()),
 					myGame.getMap().getTerritory(c.getFrom().getID()),
 					myGame.getMap().getTerritory(c.getTo().getID()),
+					this.getServerUnits(c.getUnits())));
+		}
+		for(Command c : placeCommands){
+			cl.removeCommand(c);
+			toReturn.addCommand(new AddUnitCommand(myGame.getPlayer(c.getPlayer().getName()),
+					myGame.getMap().getTerritory(c.getFrom().getID()),
 					this.getServerUnits(c.getUnits())));
 		}
 		for(Command c : cl.getCommands()){
@@ -129,7 +154,7 @@ public class GameModel implements ServerConstants {
 			}					
 		}
 	}
-	
+
 	public void checkAttackSwaps(List<Command> cl){
 		for(int i = 0; i<cl.size()-1;i++){
 			for(int j = i+1; j<cl.size();j++){
@@ -144,11 +169,11 @@ public class GameModel implements ServerConstants {
 						move(attackA.getPlayer(),terA,attackA.getTo(),attackA.getUnits(),true);
 						attackA.getPlayer().removeTerritory(terA);
 						attackA.getPlayer().addTerritory(terB);
-						
+
 						move(attackB.getPlayer(),terB,attackB.getTo(),attackB.getUnits(),true);
 						attackB.getPlayer().removeTerritory(terB);
 						attackB.getPlayer().addTerritory(terA);
-						
+
 						// remove the swap-attacks from commandlist.
 						cl.remove(i);
 						cl.remove(j);
@@ -157,7 +182,7 @@ public class GameModel implements ServerConstants {
 			}
 		}
 	}
-	
+
 	public void displaceAttackingUnits(List<Command> cl){
 		for(Command c : cl){
 			for(Unit u : c.getUnits()){
@@ -165,7 +190,7 @@ public class GameModel implements ServerConstants {
 			}
 		}
 	}
-	
+
 	private void combineGroupAttacks(List<Command> cl) {
 		List<Command> newList = new ArrayList<Command>();
 		List<Integer> added = new ArrayList<Integer>();
@@ -177,9 +202,9 @@ public class GameModel implements ServerConstants {
 				Command attackB = cl.get(j);
 				if(attackA.getPlayer().getName().equals(attackB.getPlayer().getName()) 
 						&& attackA.getTo().getID() == attackB.getTo().getID()){
-						// same player attacking same place.
-						attackA.getUnits().addAll(attackB.getUnits());
-						added.add(j);
+					// same player attacking same place.
+					attackA.getUnits().addAll(attackB.getUnits());
+					added.add(j);
 				}
 			}
 			newList.add(attackA);
@@ -187,7 +212,7 @@ public class GameModel implements ServerConstants {
 		cl.clear();
 		cl.addAll(newList);
 	}
-	
+
 	private void endOfRoundAddUnits(){
 		for(Player p : myGame.getPlayers()){
 			for(Territory t : p.getTerritories()){
@@ -195,16 +220,16 @@ public class GameModel implements ServerConstants {
 			}
 		}
 	}
-	
+
 	private void redoTurnErrorFound(String message){
 		myGame = myPrevious;
 		// return myGame (unaltered) to the clients, send error message, and request turn startover.
 	}
-	
+
 	public void setServer(ObjectServer os){
 		myServer = os;
 	}
-	
+
 	private void sendUpdatedGameState(){
 		System.out.println("Model logic completed!!!");
 		myServer.updateGameStates(myGame);

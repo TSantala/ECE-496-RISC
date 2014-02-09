@@ -2,6 +2,7 @@ package gameElements;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import server.Message;
@@ -12,8 +13,9 @@ public class GameState extends Message implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	GameMap myMap;
-	List<Player> myPlayers = new ArrayList<Player>();
+	private GameMap myMap;
+	private List<Player> myPlayers = new ArrayList<Player>();
+	private static final int DEFAULT_NUM_START_UNITS = 10;
 
 	public GameState(int numPlayers, int numTerritories){
 		for(int i = 0; i<numPlayers; i++){
@@ -34,13 +36,75 @@ public class GameState extends Message implements Serializable {
 			initialTerritories.remove(territory);
 		}
 	}
+	
+	public GameState(Collection<String> players, int numTerritories){
+		for(String s : players){
+			myPlayers.add(new Player(s));
+		}
+		
+		// Create map of territories.
+				myMap = new GameMap(numTerritories);
+				
+				// Randomly assign initial territories.
+				List<Territory> initialTerritories = new ArrayList<Territory>();
+				initialTerritories.addAll(myMap.getTerritories());
+				int player = 0;
+				while(!initialTerritories.isEmpty()){
+					player = (player+1)%myPlayers.size();
+					int territory = (int) Math.floor(initialTerritories.size()*Math.random());
+					myPlayers.get(player).addTerritory(initialTerritories.get(territory));
+					initialTerritories.remove(territory);
+				}
+	}
 
 	public GameState(GameMap gm, List<Player> players){
 		myMap = gm;
 		myPlayers = players;
 	}
 
-	public void setMap(GameMap gm){
+	/*
+	 * FOR TESTING! Just allocating starting units in constructor
+	 */
+	public GameState (int numPlayers, int numTerritories, int numStartUnits) {
+            for(int i = 0; i<numPlayers; i++){
+                myPlayers.add(new Player("Player "+myPlayers.size()));
+            }
+        
+            // Create map of territories.
+            myMap = new GameMap(numTerritories);
+            
+            // Randomly assign initial territories.
+            List<Territory> initialTerritories = new ArrayList<Territory>();
+            initialTerritories.addAll(myMap.getTerritories());
+            int player = 0;
+            while(!initialTerritories.isEmpty()){
+                    player = (player+1)%numPlayers;
+                    int territory = (int) Math.floor(initialTerritories.size()*Math.random());
+                    myPlayers.get(player).addTerritory(initialTerritories.get(territory));
+                    initialTerritories.remove(territory);
+            }
+            
+            //distribute units to each territory 
+            List<Territory> p1t = myPlayers.get(0).getTerritories();
+            List<Territory> p2t = myPlayers.get(1).getTerritories();
+            int id = 0;
+            for (Territory t : p1t)
+            {
+                for (int i=0; i < numStartUnits/p1t.size(); i++)
+                {
+                    t.addUnit(new Unit(myPlayers.get(0), i));
+                }
+            }
+            for (Territory t : p2t)
+            {
+                for (int i=0; i < numStartUnits/p2t.size(); i++)
+                {
+                    t.addUnit(new Unit(myPlayers.get(1), i+14)); //ids must be unique
+                }
+            }
+    }
+
+    public void setMap(GameMap gm){
 		myMap = gm;
 	}
 
@@ -94,6 +158,10 @@ public class GameState extends Message implements Serializable {
 	@Override
 	public void sendMessageToClient(ObjectClient oc) {
 		oc.getGUI().updateGameState(this);
+	}
+	
+	public int startUnits(){
+		return DEFAULT_NUM_START_UNITS;
 	}
 
 }
