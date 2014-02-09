@@ -65,9 +65,11 @@ public class GameGraphic extends JPanel{
 				if(leftClick){
 					mt.setColorLeftClick();
 					myGUI.updateTerritoryInfo(mt.getTerritory());
+					myGUI.setLeftClick(mt.getTerritory());
 				}
 				else{
 					mt.setColorRightClick();
+					myGUI.setRightClick(mt.getTerritory());
 				}
 			}
 			else{

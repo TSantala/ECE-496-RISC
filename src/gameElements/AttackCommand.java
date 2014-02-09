@@ -18,6 +18,10 @@ public class AttackCommand extends Command implements Serializable {
         myUnits = units;
     }
 
+    public String toString(){
+        String temp  = "From: " +  myTerritoryFrom.getID() + " to: " + myTerritoryTo.getID() + " with " + myUnits.size() + " units.\n";
+        return temp;
+    }
 	@Override
 	public void enact(GameModel sg) {
 		sg.attack(myPlayer, myTerritoryFrom, myTerritoryTo,myUnits);

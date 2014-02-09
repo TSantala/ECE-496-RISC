@@ -21,6 +21,7 @@ public class MoveButton extends JButton
 	        public void actionPerformed (ActionEvent arg0) 
 	        {
 	            List<Unit> unitsSend = new ArrayList<Unit>();
+	            List<Unit> updatedUnits = gui.getPlayer().getUnits(); 
 		    String s = (String)JOptionPane.showInputDialog( gui,"Please put in how many units you want to move:\n",
 			                                                   "JohnTimoVinceMovingSwag", 
 			                                                   JOptionPane.PLAIN_MESSAGE,
@@ -29,15 +30,15 @@ public class MoveButton extends JButton
 			                                                   "1");
 		    int numUnits = Integer.parseInt(s);
 		    //error checking should be done by server...but can check here too
-		    for (int i = 0; i < units.size(); i++)
+		    for (int i = 0; i < updatedUnits.size(); i++)
 		    {
 		        if(numUnits > 0)
 		        {
-		            unitsSend.add(units.get(i));
+		            unitsSend.add(updatedUnits.get(i));
 		            numUnits--;
 		        }
 		    }
-		    gui.addCommand(new MoveCommand(gui.getPlayer(),from,to,unitsSend));
+		    gui.addCommand(new MoveCommand(gui.getPlayer(),gui.getLeftClick(),gui.getRightClick(),unitsSend));
 		}
 	    });
 	}
