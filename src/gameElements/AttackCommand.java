@@ -1,5 +1,7 @@
 package gameElements;
-
+/*
+ * Wraps user attack into a command class which will tell server what is inside
+ */
 import java.io.Serializable;
 import java.util.List;
 

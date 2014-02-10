@@ -1,5 +1,7 @@
 package gameElements;
-
+/*
+ * Very similar to AttackCommand right now...will be refactored soon to reduce redundant code
+ */
 import java.io.Serializable;
 import java.util.List;
 

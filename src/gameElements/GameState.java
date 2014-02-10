@@ -1,5 +1,7 @@
 package gameElements;
-
+/*
+ * What is sent to the clients every time, they build the GUI using information in this
+ */
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
