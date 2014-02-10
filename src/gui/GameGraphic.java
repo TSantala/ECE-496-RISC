@@ -50,6 +50,7 @@ public class GameGraphic extends JPanel{
 			g2d.fillOval(t.getCenter().x - t.getRadius()/2, t.getCenter().y- t.getRadius()/2, t.getRadius(), t.getRadius());
 			g2d.setColor(Color.black);
 			g2d.drawString(""+t.getTerritory().getUnits().size(), t.getCenter().x+25, t.getCenter().y+25);
+			g2d.drawString(t.getTerritory().getOwner().getName(), t.getCenter().x+25, t.getCenter().y-25);
 		}
 		
 		for (MapTerritory from : myTerritories){

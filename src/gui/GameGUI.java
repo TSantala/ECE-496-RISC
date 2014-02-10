@@ -32,6 +32,7 @@ public class GameGUI extends JFrame implements ServerConstants {
 	private JScrollPane scrollingOutput;
 	private JPanel mainPane;
 	private ObjectClient myClient;
+	private JFrame myFrame;
 
 	private JPanel dummyPanel;
 	private GameGraphic myGameGraphic;
@@ -74,11 +75,11 @@ public class GameGUI extends JFrame implements ServerConstants {
 	public void run() {
 		System.out.println("3");
 
-		JFrame f = new JFrame("RISC");
-		f.setSize(800, 600);
-		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		f.setLayout(new BorderLayout());
-		Container pane = f.getContentPane();
+		myFrame = new JFrame("RISC");
+		myFrame.setSize(800, 600);
+		myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		myFrame.setLayout(new BorderLayout());
+		Container pane = myFrame.getContentPane();
 
 		System.out.println("4");
 
@@ -139,7 +140,7 @@ public class GameGUI extends JFrame implements ServerConstants {
 		pane.add(bottomPane,BorderLayout.SOUTH);
 		pane.add(mainPane,BorderLayout.CENTER);
 
-		f.setVisible(true);
+		myFrame.setVisible(true);
 	}
 
 	public void printMessage(String s){
@@ -174,6 +175,7 @@ public class GameGUI extends JFrame implements ServerConstants {
 	
 	public void setPlayer(String player){
 		myPlayer = myGame.getPlayer(player);
+		myFrame.setTitle("RISC - " + player);
 	}
 
 	public void beginGame(GameState gs){
