@@ -15,7 +15,7 @@ public class GameState extends Message implements Serializable {
 	
 	private GameMap myMap;
 	private List<Player> myPlayers = new ArrayList<Player>();
-	private static final int DEFAULT_NUM_START_UNITS = 1;
+	private static final int DEFAULT_NUM_START_UNITS = 3;
 
 	public GameState(int numPlayers, int numTerritories){
 		for(int i = 0; i<numPlayers; i++){
