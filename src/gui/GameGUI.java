@@ -59,7 +59,7 @@ public class GameGUI extends JFrame implements ServerConstants {
 		}
 		else {
 			mainPane.remove(myGameGraphic);
-			System.out.println(gs.getPlayer("timo").getUnits().size());
+			//System.out.println(gs.getPlayer("timo").getUnits().size());
 			myGameGraphic = new GameGraphic(this, gs);
 			myGameGraphic.revalidate();
 			myGameGraphic.repaint();
