@@ -71,12 +71,12 @@ public class GameModel implements ServerConstants {
 		// attacking units don't defend; remove them from the territories.
 		this.displaceAttackingUnits(cl.getCommands());
 		// combine attack commands from same player to same destination.
-		//this.combineGroupAttacks(cl.getCommands());
+		this.combineGroupAttacks(cl.getCommands());
 		// attack!
 		for(Command attack : cl.getCommands())
 			attack.enact(this);
 		// add 1 unit to each territory.
-		//this.endOfRoundAddUnits();
+		this.endOfRoundAddUnits();
 		// return updated game after commands enacted to clients.
 		this.sendUpdatedGameState();
 	}
@@ -186,6 +186,7 @@ public class GameModel implements ServerConstants {
 						// remove the swap-attacks from commandlist.
 						cl.remove(i);
 						cl.remove(j);
+						System.out.println("SWAP FINISHED");
 					}
 				}
 			}
@@ -203,7 +204,7 @@ public class GameModel implements ServerConstants {
 	private void combineGroupAttacks(List<Command> cl) {
 		List<Command> newList = new ArrayList<Command>();
 		List<Integer> added = new ArrayList<Integer>();
-		for(int i = 0; i<cl.size()-1;i++){
+		for(int i = 0; i<cl.size();i++){
 			if(added.contains(i)) continue;
 			Command attackA = cl.get(i);
 			for(int j = 0; j<cl.size();j++){
