@@ -5,7 +5,7 @@ import java.util.List;
 
 public class MoveCommand extends Command implements Serializable {
 	
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 6L;
 
 	public MoveCommand(){
 		//testing...
@@ -19,7 +19,7 @@ public class MoveCommand extends Command implements Serializable {
     }
 
     public String toString(){
-        String temp  = "From: " +  myTerritoryFrom.getID() + " to: " + myTerritoryTo.getID() + " with " + myUnits.size() + " units.\n";
+        String temp  = "Move: " +  myTerritoryFrom.getID() + " to: " + myTerritoryTo.getID() + " with " + myUnits.size() + " units.\n";
         return temp;
     }
 	@Override

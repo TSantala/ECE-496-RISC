@@ -11,11 +11,11 @@ import server.ObjectServer;
 
 public class GameState extends Message implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 5L;
 	
 	private GameMap myMap;
 	private List<Player> myPlayers = new ArrayList<Player>();
-	private static final int DEFAULT_NUM_START_UNITS = 10;
+	private static final int DEFAULT_NUM_START_UNITS = 1;
 
 	public GameState(int numPlayers, int numTerritories){
 		for(int i = 0; i<numPlayers; i++){
@@ -157,7 +157,7 @@ public class GameState extends Message implements Serializable {
 
 	@Override
 	public void sendMessageToClient(ObjectClient oc) {
-		oc.getGUI().updateGameState(this);
+		oc.receiveGameState(this);
 	}
 	
 	public int startUnits(){

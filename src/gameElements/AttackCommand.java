@@ -5,7 +5,7 @@ import java.util.List;
 
 public class AttackCommand extends Command implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2L;
 
 	public AttackCommand(){
 		//testing...
@@ -19,7 +19,7 @@ public class AttackCommand extends Command implements Serializable {
     }
 
     public String toString(){
-        String temp  = "From: " +  myTerritoryFrom.getID() + " to: " + myTerritoryTo.getID() + " with " + myUnits.size() + " units.\n";
+        String temp  = "Attack: " +  myTerritoryFrom.getID() + " to: " + myTerritoryTo.getID() + " with " + myUnits.size() + " units.\n";
         return temp;
     }
 	@Override

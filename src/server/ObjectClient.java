@@ -1,6 +1,10 @@
 package server;
 
+import gameElements.AddUnitCommand;
+import gameElements.CommandList;
 import gameElements.GameState;
+import gameElements.Player;
+import gameElements.Territory;
 import gui.GameGUI;
 
 import java.net.*;
@@ -13,10 +17,6 @@ public class ObjectClient extends Thread implements ServerConstants{
 	private GameState myGame;
 	private ObjectOutputStream oos;
 
-	public ObjectClient(GameState gs) {
-		myGame = gs;
-	}
-
 	public ObjectClient(){
 
 	}
@@ -27,7 +27,7 @@ public class ObjectClient extends Thread implements ServerConstants{
 		System.out.println("ObjectClient initialized");
 		try {
 
-			InetAddress address = InetAddress.getByName("10.0.0.109");
+			InetAddress address = InetAddress.getByName("10.190.50.116");
 			System.out.println("Address is: "+InetAddress.getLocalHost().getHostAddress());
 
 			Socket connection = new Socket(address, port);
@@ -68,13 +68,8 @@ public class ObjectClient extends Thread implements ServerConstants{
 	}
 
 	public void receiveGameState(GameState gs){
-		if (myGame == null){
-			this.printMessage("GAME IS STARTING NIGGA!");
-		}
-		else {
-			myGame = gs;
-			myGUI.updateGameState(gs);
-		}
+		myGame = gs;
+		myGUI.updateGameState(gs);
 	}
 
 	public void promptPlayers(){

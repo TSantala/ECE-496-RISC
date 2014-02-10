@@ -22,7 +22,7 @@ public class MoveButton extends JButton
 	        {
 	            List<Unit> unitsSend = new ArrayList<Unit>();
 	            List<Unit> updatedUnits = gui.getPlayer().getUnits(); 
-		    String s = (String)JOptionPane.showInputDialog( gui,"Please put in how many units you want to move:\n",
+		    String s = (String)JOptionPane.showInputDialog(gui,"Please put in how many units you want to move:\n",
 			                                                   "JohnTimoVinceMovingSwag", 
 			                                                   JOptionPane.PLAIN_MESSAGE,
 			                                                   getIcon(),

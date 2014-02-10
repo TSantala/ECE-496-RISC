@@ -44,6 +44,7 @@ public class GameModel implements ServerConstants {
 
 	public void performCommands(CommandList cl){
 		System.out.println("in perform commands");
+		System.out.println(cl.getCommands().size());
 		myPrevious = myGame.clone();
 
 		// TIMO THIS LINE IS BROKEN, CAN YOU FIX IT PLEASE?
@@ -83,6 +84,7 @@ public class GameModel implements ServerConstants {
 		CommandList toReturn = new CommandList();
 		List<Command> moveCommands = cl.getCommands(MoveCommand.class);
 		List<Command> placeCommands = cl.getCommands(AddUnitCommand.class);
+
 		for(Command c : moveCommands){
 			cl.removeCommand(c);
 			toReturn.addCommand(new MoveCommand(myGame.getPlayer(c.getPlayer().getName()),
@@ -92,9 +94,8 @@ public class GameModel implements ServerConstants {
 		}
 		for(Command c : placeCommands){
 			cl.removeCommand(c);
-			toReturn.addCommand(new AddUnitCommand(myGame.getPlayer(c.getPlayer().getName()),
-					myGame.getMap().getTerritory(c.getFrom().getID()),
-					this.getServerUnits(c.getUnits())));
+			for(Unit u : c.getUnits())
+				this.addNewUnit(myGame.getMap().getTerritory(c.getFrom().getID()));
 		}
 		for(Command c : cl.getCommands()){
 			toReturn.addCommand(new AttackCommand(myGame.getPlayer(c.getPlayer().getName()),
@@ -213,17 +214,23 @@ public class GameModel implements ServerConstants {
 		cl.addAll(newList);
 	}
 
+	private void addNewUnit(Territory t){
+		t.addUnit(new Unit(t.getOwner(),unitID++));
+	}
+
 	private void endOfRoundAddUnits(){
 		for(Player p : myGame.getPlayers()){
 			for(Territory t : p.getTerritories()){
-				t.addUnit(new Unit(p,unitID++));
+				this.addNewUnit(t);
 			}
 		}
 	}
 
 	private void redoTurnErrorFound(String message){
+		System.out.println("AN ERROR HAS OCCURRED!!!");
 		myGame = myPrevious;
 		// return myGame (unaltered) to the clients, send error message, and request turn startover.
+		sendUpdatedGameState();
 	}
 
 	public void setServer(ObjectServer os){
@@ -232,7 +239,7 @@ public class GameModel implements ServerConstants {
 
 	private void sendUpdatedGameState(){
 		System.out.println("Model logic completed!!!");
-		myServer.updateGameStates(myGame);
+		myServer.sendUpdatedGame(myGame);
 	}
 
 }

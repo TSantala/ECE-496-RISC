@@ -1,6 +1,5 @@
 package gui;
 
-import gameElements.AttackCommand;
 import gameElements.Command;
 import gameElements.CommandList;
 import gameElements.GameState;
@@ -55,14 +54,21 @@ public class GameGUI extends JFrame implements ServerConstants {
 
 	public void updateGameState(GameState gs){
 		if (myGame == null){
-			myGame = gs;
 			myClient.printMessage("STARTING THE GAME!");
 			this.beginGame(gs);
 		}
 		else {
-			myGame = gs;
+			mainPane.remove(myGameGraphic);
+			System.out.println(gs.getPlayer("timo").getUnits().size());
+			myGameGraphic = new GameGraphic(this, gs);
+			myGameGraphic.revalidate();
+			myGameGraphic.repaint();
+			mainPane.add(myGameGraphic,BorderLayout.CENTER);
 			myCommitButton.setEnabled(true);
+			mainPane.revalidate();
+			mainPane.repaint();
 		}
+		myGame = gs;
 	}
 
 	public void run() {

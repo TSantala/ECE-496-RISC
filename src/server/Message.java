@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public abstract class Message implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 11L;
 	protected ObjectSocket myOS;
 	
 	public abstract boolean sendMessageToServer(ObjectServer os);

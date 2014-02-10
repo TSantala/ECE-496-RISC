@@ -6,7 +6,7 @@ import java.util.*;
 public class Territory implements Serializable 
 {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 8L;
 	
 	private Player myOwner;
 	private List<Unit> myUnits;
