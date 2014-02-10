@@ -3,9 +3,6 @@ package gameElements;
 import java.io.Serializable;
 import java.util.List;
 
-import server.Message;
-import server.TextMessage;
-
 public class AddUnitCommand extends Command implements Serializable {
 
 	private static final long serialVersionUID = 1L;
