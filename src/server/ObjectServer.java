@@ -1,8 +1,13 @@
 package server;
 
+import gameElements.AddUnitCommand;
+import gameElements.Command;
 import gameElements.CommandList;
 import gameElements.GameState;
 import gameElements.GameModel;
+import gameElements.Player;
+import gameElements.Territory;
+import gameElements.Unit;
 
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -57,15 +62,9 @@ public class ObjectServer extends Thread implements ServerConstants{
 		}
 	}
 
-	public void updateGameStates(GameState gs){
-		for(ObjectSocket s : this.getConnections()){
-			s.sendGameState(gs);
-		}
-	}
-
 	public void sendUpdatedGame(GameState gs){
 		for(ObjectSocket s : this.getConnections())
-			s.sendGameState(gs);
+			s.sendMessage(gs);
 	}
 
 	public void receiveCommandList(CommandList ls){
@@ -73,8 +72,8 @@ public class ObjectServer extends Thread implements ServerConstants{
 		commandsReceived++;
 		System.out.println(commandsReceived + " " + numPlayers);
 		if(commandsReceived==numPlayers){
-			System.out.println("All commands received! Sending to model!");
-			myModel.performCommands(ls);
+			System.out.println("All commands received! Sending to model! Numcommands = " + turnCommands.getCommands().size());
+			myModel.performCommands(turnCommands);
 			turnCommands.clear();
 			commandsReceived = 0;
 		}		

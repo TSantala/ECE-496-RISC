@@ -1,6 +1,10 @@
 package server;
 
+import gameElements.AddUnitCommand;
+import gameElements.CommandList;
 import gameElements.GameState;
+import gameElements.Player;
+import gameElements.Territory;
 
 import java.net.*;
 import java.io.*;
@@ -31,15 +35,6 @@ public class ObjectSocket extends Thread implements ServerConstants{
 	public synchronized void sendMessage(Message m) {
 		try {
 			oos.writeObject(m);
-			oos.flush();
-		} catch (IOException e) {
-			System.out.println("Object output stream broke in the thread.");
-		}
-	}
-
-	public synchronized void sendGameState(GameState gs){
-		try{
-			oos.writeObject(gs);
 			oos.flush();
 		} catch (IOException e) {
 			System.out.println("Object output stream broke in the thread.");

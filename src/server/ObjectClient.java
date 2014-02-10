@@ -1,6 +1,10 @@
 package server;
 
+import gameElements.AddUnitCommand;
+import gameElements.CommandList;
 import gameElements.GameState;
+import gameElements.Player;
+import gameElements.Territory;
 import gui.GameGUI;
 
 import java.net.*;
@@ -12,10 +16,6 @@ public class ObjectClient extends Thread implements ServerConstants{
 	private GameGUI myGUI;
 	private GameState myGame;
 	private ObjectOutputStream oos;
-
-	public ObjectClient(GameState gs) {
-		myGame = gs;
-	}
 
 	public ObjectClient(){
 
@@ -68,13 +68,8 @@ public class ObjectClient extends Thread implements ServerConstants{
 	}
 
 	public void receiveGameState(GameState gs){
-		if (myGame == null){
-			this.printMessage("GAME IS STARTING NIGGA!");
-		}
-		else {
-			myGame = gs;
-			myGUI.updateGameState(gs);
-		}
+		myGame = gs;
+		myGUI.updateGameState(gs);
 	}
 
 	public void promptPlayers(){

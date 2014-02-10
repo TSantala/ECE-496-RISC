@@ -5,7 +5,7 @@ import java.util.*;
 
 public class GameMap implements Serializable 
 {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 4L;
 	
 	private List<Territory> myTerritories = new ArrayList<Territory>();
 	private int myTerritoryCount=0;
