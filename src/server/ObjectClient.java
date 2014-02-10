@@ -1,10 +1,6 @@
 package server;
 
-import gameElements.AddUnitCommand;
-import gameElements.CommandList;
 import gameElements.GameState;
-import gameElements.Player;
-import gameElements.Territory;
 import gui.GameGUI;
 
 import java.net.*;

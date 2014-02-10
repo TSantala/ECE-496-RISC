@@ -94,8 +94,9 @@ public class GameModel implements ServerConstants {
 		}
 		for(Command c : placeCommands){
 			cl.removeCommand(c);
-			for(Unit u : c.getUnits())
+			for(Unit u : c.getUnits()){
 				this.addNewUnit(myGame.getMap().getTerritory(c.getFrom().getID()));
+			}
 		}
 		for(Command c : cl.getCommands()){
 			toReturn.addCommand(new AttackCommand(myGame.getPlayer(c.getPlayer().getName()),
