@@ -34,6 +34,7 @@ public class ObjectSocket extends Thread implements ServerConstants{
 
 	public synchronized void sendMessage(Message m) {
 		try {
+			oos.reset();
 			oos.writeObject(m);
 			oos.flush();
 		} catch (IOException e) {
