@@ -23,7 +23,7 @@ public class ObjectClient extends Thread implements ServerConstants{
 		System.out.println("ObjectClient initialized");
 		try {
 
-			InetAddress address = InetAddress.getByName("10.190.49.195");
+			InetAddress address = InetAddress.getByName("10.190.50.116");
 			System.out.println("Address is: "+InetAddress.getLocalHost().getHostAddress());
 
 			Socket connection = new Socket(address, port);
@@ -56,6 +56,7 @@ public class ObjectClient extends Thread implements ServerConstants{
 
 	public void sendMessage(Message m){
 		try {
+			oos.reset();
 			oos.writeObject(m);
 			oos.flush();
 		} catch (IOException e) {

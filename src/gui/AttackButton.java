@@ -12,7 +12,7 @@ import javax.swing.JOptionPane;
 
 public class AttackButton extends JButton {
 
-    public AttackButton(final GameGUI gui, final Territory from, final Territory to, final List<Unit> units) //this stuff is all null
+    public AttackButton(final GameGUI gui) //this stuff is all null
     {
         super("Order Attack");
         this.addActionListener(new ActionListener()
@@ -20,7 +20,7 @@ public class AttackButton extends JButton {
             public void actionPerformed (ActionEvent arg0) 
             {
                 List<Unit> unitsSend = new ArrayList<Unit>();
-                List<Unit> updatedUnits = gui.getPlayer().getUnits(); 
+
                 String s = (String)JOptionPane.showInputDialog( gui,"Please put in how many units you want to attack with:\n",
                                                                        "ATTACK SWAG", 
                                                                        JOptionPane.PLAIN_MESSAGE,
@@ -29,14 +29,11 @@ public class AttackButton extends JButton {
                                                                        "1");
                 int numUnits = Integer.parseInt(s);
                 //error checking should be done by server...but can check here too
-                for (int i = 0; i < updatedUnits.size(); i++)
-                {
-                    if(numUnits > 0)
-                    {
-                        unitsSend.add(updatedUnits.get(i));
-                        numUnits--;
-                    }
-                }
+    		    for (int i = 0; i < numUnits; i++)
+    		    {
+    		        if(i<gui.getLeftClick().getUnits().size())
+    		        	unitsSend.add(gui.getLeftClick().getUnits().get(i));
+    		    }
                 gui.addCommand(new AttackCommand(gui.getPlayer(),gui.getLeftClick(),gui.getRightClick(),unitsSend));
             }
         });

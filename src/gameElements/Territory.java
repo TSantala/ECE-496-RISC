@@ -65,6 +65,7 @@ public class Territory implements Serializable
 	
 	public void addUnit(Unit u){
 		myUnits.add(u);
+		myOwner.addUnit(u);
 	}
 	
 	public Unit getUnit(int id){

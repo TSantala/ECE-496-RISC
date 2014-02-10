@@ -127,8 +127,8 @@ public class GameGUI extends JFrame implements ServerConstants {
 		
 		JPanel buttonPane = new JPanel();
 		buttonPane.setLayout(new BorderLayout());
-		buttonPane.add(new MoveButton(this,leftClick,rightClick,selectedUnits),BorderLayout.NORTH);
-		buttonPane.add(new AttackButton(this,leftClick,rightClick,selectedUnits),BorderLayout.SOUTH);
+		buttonPane.add(new MoveButton(this),BorderLayout.NORTH);
+		buttonPane.add(new AttackButton(this),BorderLayout.SOUTH);
 
 		rightPane.add(buttonPane,BorderLayout.SOUTH);
 

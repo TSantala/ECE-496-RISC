@@ -62,6 +62,7 @@ public class GameModel implements ServerConstants {
 			move.enact(this);
 			cl.removeCommand(move);
 		}
+		System.out.println("IS ATTACK STILL HERE?");
 		// In this first implementation, only Attack commands are now left.
 		// first check validity of attacks.
 		this.checkValidAttacks(cl.getCommands());
@@ -70,12 +71,12 @@ public class GameModel implements ServerConstants {
 		// attacking units don't defend; remove them from the territories.
 		this.displaceAttackingUnits(cl.getCommands());
 		// combine attack commands from same player to same destination.
-		this.combineGroupAttacks(cl.getCommands());
+		//this.combineGroupAttacks(cl.getCommands());
 		// attack!
 		for(Command attack : cl.getCommands())
 			attack.enact(this);
 		// add 1 unit to each territory.
-		this.endOfRoundAddUnits();
+		//this.endOfRoundAddUnits();
 		// return updated game after commands enacted to clients.
 		this.sendUpdatedGameState();
 	}
@@ -99,6 +100,7 @@ public class GameModel implements ServerConstants {
 			}
 		}
 		for(Command c : cl.getCommands()){
+			System.out.println("In the attack loop");
 			toReturn.addCommand(new AttackCommand(myGame.getPlayer(c.getPlayer().getName()),
 					myGame.getMap().getTerritory(c.getFrom().getID()),
 					myGame.getMap().getTerritory(c.getTo().getID()),
@@ -126,21 +128,24 @@ public class GameModel implements ServerConstants {
 	}
 
 	public void attack(Player p, Territory from, Territory to, List<Unit> units){
+		System.out.println("BEEP");
 		List<Unit> opposingUnits = to.getUnits();
-		Player opponent = opposingUnits.get(0).getOwner();
-		if(p.getName().equals(opponent.getName())){
-			// swap must have occurred, you own it already!
-			this.move(p, from, to, units, false);
-		}
-		while(!units.isEmpty() && !opposingUnits.isEmpty()){
-			Unit offense = units.get(units.size()-1);					// Pick final unit in arraylist for faster runtime.
-			Unit defense = opposingUnits.get(opposingUnits.size()-1);
-			if(Math.ceil(ATTACK_DIE*Math.random()) > Math.ceil(ATTACK_DIE*Math.random())){
-				opponent.removeUnit(defense);
-				to.removeUnit(defense);
+		if(opposingUnits.size()!=0){
+			Player opponent = opposingUnits.get(0).getOwner();
+			if(p.getName().equals(opponent.getName())){
+				// swap must have occurred, you own it already!
+				this.move(p, from, to, units, false);
 			}
-			else{
-				p.removeUnit(offense);
+			while(!units.isEmpty() && !opposingUnits.isEmpty()){
+				Unit offense = units.get(units.size()-1);					// Pick final unit in arraylist for faster runtime.
+				Unit defense = opposingUnits.get(opposingUnits.size()-1);
+				if(Math.ceil(ATTACK_DIE*Math.random()) > Math.ceil(ATTACK_DIE*Math.random())){
+					opponent.removeUnit(defense);
+					to.removeUnit(defense);
+				}
+				else{
+					p.removeUnit(offense);
+				}
 			}
 		}
 		if(!units.isEmpty()){
@@ -150,6 +155,7 @@ public class GameModel implements ServerConstants {
 	}
 
 	public void checkValidAttacks(List<Command> cl){
+		System.out.println("CHECKING VALID ATTACKS");
 		for(Command c : cl){
 			if(!myGame.getMap().canAttack(c.getFrom(),c.getTo(),c.getPlayer())){
 				this.redoTurnErrorFound("Invalid attack!");
@@ -167,6 +173,7 @@ public class GameModel implements ServerConstants {
 					Territory terA = attackA.getFrom();
 					Territory terB = attackB.getFrom();
 					if(terA.getUnits().size() == attackA.getUnits().size() && terB.getUnits().size() == attackA.getUnits().size()){
+						System.out.println("SWAP OCCURRED");
 						// are committing all units. Should swap!
 						move(attackA.getPlayer(),terA,attackA.getTo(),attackA.getUnits(),true);
 						attackA.getPlayer().removeTerritory(terA);

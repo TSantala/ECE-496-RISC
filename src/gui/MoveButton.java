@@ -13,15 +13,16 @@ import javax.swing.JOptionPane;
 public class MoveButton extends JButton 
 {
 	
-	public MoveButton(final GameGUI gui, final Territory from, final Territory to, final List<Unit> units)
+	public MoveButton(final GameGUI gui)
 	{
 	    super("Order Move");
 	    this.addActionListener(new ActionListener()
 	    {
 	        public void actionPerformed (ActionEvent arg0) 
 	        {
-	            List<Unit> unitsSend = new ArrayList<Unit>();
-	            List<Unit> updatedUnits = gui.getPlayer().getUnits(); 
+	           
+	        List<Unit> unitsSend = new ArrayList<Unit>();
+
 		    String s = (String)JOptionPane.showInputDialog(gui,"Please put in how many units you want to move:\n",
 			                                                   "JohnTimoVinceMovingSwag", 
 			                                                   JOptionPane.PLAIN_MESSAGE,
@@ -30,15 +31,13 @@ public class MoveButton extends JButton
 			                                                   "1");
 		    int numUnits = Integer.parseInt(s);
 		    //error checking should be done by server...but can check here too
-		    for (int i = 0; i < updatedUnits.size(); i++)
+		    for (int i = 0; i < numUnits; i++)
 		    {
-		        if(numUnits > 0)
-		        {
-		            unitsSend.add(updatedUnits.get(i));
-		            numUnits--;
-		        }
+		        if(i<gui.getLeftClick().getUnits().size())
+		        	unitsSend.add(gui.getLeftClick().getUnits().get(i));
 		    }
-		    gui.addCommand(new MoveCommand(gui.getPlayer(),gui.getLeftClick(),gui.getRightClick(),unitsSend));
+		    MoveCommand test = new MoveCommand(gui.getPlayer(),gui.getLeftClick(),gui.getRightClick(),unitsSend);
+		    gui.addCommand(test);
 		}
 	    });
 	}
