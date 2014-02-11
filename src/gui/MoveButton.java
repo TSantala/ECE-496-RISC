@@ -1,5 +1,7 @@
 package gui;
-
+/*
+ * Very similar to Attack button...refactor soon
+ */
 import gameElements.MoveCommand;
 import gameElements.Territory;
 import gameElements.Unit;
@@ -12,7 +14,6 @@ import javax.swing.JOptionPane;
 
 public class MoveButton extends JButton 
 {
-	
 	public MoveButton(final GameGUI gui)
 	{
 	    super("Order Move");

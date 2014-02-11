@@ -147,6 +147,7 @@ public class GameModel implements ServerConstants {
 				else{
 					System.out.println("Defender wins!");
 					p.removeUnit(offense);
+					units.remove(offense);
 				}
 			}
 		}
