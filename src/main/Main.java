@@ -20,8 +20,5 @@ public class Main {
 		
 		ObjectClient myClient1 = new ObjectClient();
 		myClient1.start();
-
-		//System.out.println("1");
-
 	}
 }
