@@ -16,7 +16,6 @@ public class GameModel implements ServerConstants {
 	public GameModel(GameState gs){
 		myGame = gs;
 		myPrevious = gs;
-
 	}
 
 	public GameState getGameState(){
@@ -76,7 +75,7 @@ public class GameModel implements ServerConstants {
 		for(Command attack : cl.getCommands())
 			attack.enact(this);
 		// add 1 unit to each territory.
-		//this.endOfRoundAddUnits();
+		this.endOfRoundAddUnits();
 		// return updated game after commands enacted to clients.
 		this.sendUpdatedGameState();
 	}
@@ -128,10 +127,12 @@ public class GameModel implements ServerConstants {
 	}
 
 	public void attack(Player p, Territory from, Territory to, List<Unit> units){
-		System.out.println("BEEP");
+
 		List<Unit> opposingUnits = to.getUnits();
+		Player opponent = to.getOwner();
+		
 		if(opposingUnits.size()!=0){
-			Player opponent = to.getOwner();
+			
 			if(p.getName().equals(opponent.getName())){
 				// swap must have occurred, you own it already!
 				this.move(p, from, to, units, false);
@@ -153,6 +154,7 @@ public class GameModel implements ServerConstants {
 		}
 		if(!units.isEmpty()){
 			p.addTerritory(to);
+			opponent.removeTerritory(to);
 			to.addUnits(units);
 		}
 	}
@@ -231,10 +233,8 @@ public class GameModel implements ServerConstants {
 	}
 
 	private void endOfRoundAddUnits(){
-		for(Player p : myGame.getPlayers()){
-			for(Territory t : p.getTerritories()){
-				this.addNewUnit(t);
-			}
+		for(Territory t : myGame.getMap().getTerritories()){
+			this.addNewUnit(t);
 		}
 	}
 
