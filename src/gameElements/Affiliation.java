@@ -1,6 +1,7 @@
 package gameElements;
 /*
- * This is for potential future team building- each player has an affiliation 
+ * This is for potential future team building where each player has an affiliation 
+ * This is currently unused
  */
 public class Affiliation 
 {

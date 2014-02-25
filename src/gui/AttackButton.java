@@ -12,7 +12,7 @@ import javax.swing.JOptionPane;
 
 public class AttackButton extends JButton {
 
-    public AttackButton(final GameGUI gui) //this stuff is all null
+    public AttackButton(final GameGUI gui) 
     {
         super("Order Attack");
         this.addActionListener(new ActionListener()

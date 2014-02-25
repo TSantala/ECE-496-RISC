@@ -9,6 +9,9 @@ public class Main {
 		
 		ObjectServer myServer = new ObjectServer();
 		myServer.start();
+	
+		ObjectClient myClient1 = new ObjectClient();
+		myClient1.start();
 		
 		//ObjectClient myClient1 = new ObjectClient();
 		//myClient1.start();

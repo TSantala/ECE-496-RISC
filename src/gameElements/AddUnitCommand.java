@@ -1,5 +1,8 @@
 package gameElements;
-
+/*
+ * Currently used for initialization
+ * Will be used for add unit phase in implementation 2
+ */
 import java.io.Serializable;
 import java.util.List;
 
