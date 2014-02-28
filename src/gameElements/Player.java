@@ -23,7 +23,7 @@ public class Player implements Serializable {
 	public void setName(String s){
 		myName = s;
 	}
-
+	
 	public String getName(){
 		return myName;
 	}
