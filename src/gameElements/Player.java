@@ -7,20 +7,20 @@ public class Player implements Serializable {
 
 	private static final long serialVersionUID = 7L;
 	
+	private TechLevel myTechLvl;
 	private String myName;
 	private List<Unit> myUnits = new ArrayList<Unit>();
 	private List<Territory> myTerritories = new ArrayList<Territory>();
-	
-	
 
 	public Player(String name){
+	        myTechLvl = new TechLevel();
 		myName = name;
 	}
 
 	public void setName(String s){
 		myName = s;
 	}
-
+	
 	public String getName(){
 		return myName;
 	}
@@ -52,6 +52,14 @@ public class Player implements Serializable {
 	
 	public boolean containsTerritory(Territory t){
 		return myTerritories.contains(t);
+	}
+	
+	public void incrementTechLvl(){
+	    myTechLvl.increment();
+	}
+	
+	public int getTechLvl(){
+	    return myTechLvl.getLevel();
 	}
 	
 	public Player clone(GameMap clonedMap){
