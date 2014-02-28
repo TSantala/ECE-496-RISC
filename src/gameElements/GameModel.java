@@ -22,38 +22,30 @@ public class GameModel implements ServerConstants {
 		return myGame;
 	}
 
-	public void setInitialUnits(CommandList cl){
-		// List will only contain MoveCommands.
-		for(Command place : cl.getCommands()){
-			Player serverPlayer = myGame.getPlayer(place.getPlayer().getName());
-			Territory serverTerritory = myGame.getMap().getTerritory(place.getFrom().getID());
-			serverPlayer.getUnits().addAll(place.getUnits());
-			serverTerritory.addUnits(place.getUnits());
-		}
-	}
-
 	public void placeUnits(Player p, Territory t, List<Unit> units){
-		if (units.size() > 0)
-		{
+
+		if (units.size() > 0){
 			Player serverPlayer = myGame.getPlayer(p.getName());
 			Territory serverTerritory = myGame.getMap().getTerritory(t.getID());
-			serverPlayer.getUnits().addAll(units);
+			serverPlayer.addUnits(units);
 			serverTerritory.addUnits(units);
 		}
 	}
 
 	public void performCommands(CommandList cl){
-		System.out.println("in perform commands");
-		System.out.println(cl.getCommands().size());
+		
 		myPrevious = myGame.clone();
-
-		cl = this.createServerCommandList(cl);
-
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!Model Reached the placeCommands in perform Commands!!!!!!!!!!!!!!!!!!");
+		
 		List<Command> placeCommands = cl.getCommands(AddUnitCommand.class);
 		for(Command place : placeCommands){
 			place.enact(this);
 			cl.removeCommand(place);
+		}
+
+		cl = this.createServerCommandList(cl);
+		
+		for(Player p : myGame.getPlayers()){
+			System.out.println(p.getName()+" units: "+p.getNumToFeed());
 		}
 		
 		//for upgrading
@@ -83,13 +75,16 @@ public class GameModel implements ServerConstants {
 		for(Command attack : cl.getCommands())
 			attack.enact(this);
 		// add 1 unit to each territory.
+
 		this.endOfRoundAddUnits();
-		// return updated game after commands enacted to clients.
-		this.sendUpdatedGameState();
 		
 		for(Player p : myGame.getPlayers()){
-			System.out.println(p.getName()+" terrs: "+p.getTerritories().size());
+			System.out.println(p.getName()+" units: "+p.getNumToFeed());
 		}
+		
+		// return updated game after commands enacted to clients.
+		this.sendUpdatedGameState();
+				
 	}
 
 	private CommandList createServerCommandList(CommandList cl) {
@@ -174,7 +169,6 @@ public class GameModel implements ServerConstants {
 	}
 
 	public boolean checkValidAttacks(List<Command> cl){
-		System.out.println("CHECKING VALID ATTACKS");
 		for(Command c : cl){
 			if(!myGame.getMap().canAttack(c.getFrom(),c.getTo(),c.getPlayer())){
 				this.redoTurnErrorFound("Invalid attack!");

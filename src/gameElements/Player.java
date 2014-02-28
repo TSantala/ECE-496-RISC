@@ -11,7 +11,10 @@ public class Player implements Serializable {
 	private List<Unit> myUnits = new ArrayList<Unit>();
 	private List<Territory> myTerritories = new ArrayList<Territory>();
 	
+	private int myTechLevel=0;
 	
+	private Food myFood;
+	private Technology myTech;	
 
 	public Player(String name){
 		myName = name;
@@ -33,6 +36,10 @@ public class Player implements Serializable {
 		myUnits.add(u);
 	}
 	
+	public void addUnits(List<Unit> units) {
+		myUnits.addAll(units);
+	}
+	
 	public void removeUnit(Unit u){
 		myUnits.remove(u);
 	}
@@ -52,6 +59,18 @@ public class Player implements Serializable {
 	
 	public boolean containsTerritory(Territory t){
 		return myTerritories.contains(t);
+	}
+
+	public void adjustResource(Food r) {
+		myFood.increment(r.getAmount());
+	}
+	
+	public void adjustResource(Technology t){
+		myTech.increment(t.getAmount());
+	}
+	
+	public int getNumToFeed(){
+		return myUnits.size();
 	}
 	
 	public Player clone(GameMap clonedMap){
