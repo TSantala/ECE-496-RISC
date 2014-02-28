@@ -12,9 +12,6 @@ public class Main {
 	
 		ObjectClient myClient1 = new ObjectClient();
 		myClient1.start();
-		
-		//ObjectClient myClient1 = new ObjectClient();
-		//myClient1.start();
 
 	}
 }

@@ -47,7 +47,6 @@ public class GameModel implements ServerConstants {
 		System.out.println(cl.getCommands().size());
 		myPrevious = myGame.clone();
 
-		// TIMO THIS LINE IS BROKEN, CAN YOU FIX IT PLEASE?
 		cl = this.createServerCommandList(cl);
 
 		System.out.println("!!!!!!!!!!!!!!!!!!!!!Model Reached the placeCommands in perform Commands!!!!!!!!!!!!!!!!!!");
@@ -56,12 +55,7 @@ public class GameModel implements ServerConstants {
 			place.enact(this);
 			cl.removeCommand(place);
 		}
-
-		List<Command> moveCommands = cl.getCommands(MoveCommand.class);
-		for(Command move : moveCommands){
-			move.enact(this);
-			cl.removeCommand(move);
-		}
+		
 		//for upgrading
 //		List<Command> upgradeCommands = cl.getCommands(UpgradeCommand.class);
 //		for(Command upgrade : upgradeCommands)
@@ -69,10 +63,16 @@ public class GameModel implements ServerConstants {
 //		    upgrade.enact(this);
 //		    cl.removeCommand(upgrade);
 //		}
+
+		List<Command> moveCommands = cl.getCommands(MoveCommand.class);
+		for(Command move : moveCommands){
+			if(!(this.move(move.getPlayer(),move.getFrom(),move.getTo(),move.getUnits(),false))) return;
+			cl.removeCommand(move);
+		}
 		
 		// In this first implementation, only Attack commands are now left.
 		// first check validity of attacks.
-		this.checkValidAttacks(cl.getCommands());
+		if(!checkValidAttacks(cl.getCommands())) return;
 		// check if attack swaps and enact them.
 		this.checkAttackSwaps(cl.getCommands());
 		// attacking units don't defend; remove them from the territories.
@@ -86,6 +86,10 @@ public class GameModel implements ServerConstants {
 		this.endOfRoundAddUnits();
 		// return updated game after commands enacted to clients.
 		this.sendUpdatedGameState();
+		
+		for(Player p : myGame.getPlayers()){
+			System.out.println(p.getName()+" terrs: "+p.getTerritories().size());
+		}
 	}
 
 	private CommandList createServerCommandList(CommandList cl) {
@@ -124,14 +128,16 @@ public class GameModel implements ServerConstants {
 		return toReturn;
 	}
 
-	public void move(Player p, Territory from, Territory to, List<Unit> units, boolean swapOverride){
+	public boolean move(Player p, Territory from, Territory to, List<Unit> units, boolean swapOverride){
 		if(myGame.getMap().hasPath(from,to,p) || swapOverride){
 			from.removeUnits(units);
 			to.addUnits(units);
 		}
 		else{
 			this.redoTurnErrorFound("Invalid move!");
+			return false;
 		}
+		return true;
 	}
 
 	public void attack(Player p, Territory from, Territory to, List<Unit> units){
@@ -167,13 +173,15 @@ public class GameModel implements ServerConstants {
 		}
 	}
 
-	public void checkValidAttacks(List<Command> cl){
+	public boolean checkValidAttacks(List<Command> cl){
 		System.out.println("CHECKING VALID ATTACKS");
 		for(Command c : cl){
 			if(!myGame.getMap().canAttack(c.getFrom(),c.getTo(),c.getPlayer())){
 				this.redoTurnErrorFound("Invalid attack!");
+				return false;
 			}					
 		}
+		return true;
 	}
 
 	public void checkAttackSwaps(List<Command> cl){
@@ -249,7 +257,7 @@ public class GameModel implements ServerConstants {
 	}
 
 	private void redoTurnErrorFound(String message){
-		System.out.println("AN ERROR HAS OCCURRED!!!");
+		System.out.println("AN ERROR HAS OCCURRED!!!: "+message);
 		myGame = myPrevious;
 		// return myGame (unaltered) to the clients, send error message, and request turn startover.
 		sendUpdatedGameState();

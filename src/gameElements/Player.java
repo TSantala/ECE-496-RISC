@@ -10,6 +10,8 @@ public class Player implements Serializable {
 	private String myName;
 	private List<Unit> myUnits = new ArrayList<Unit>();
 	private List<Territory> myTerritories = new ArrayList<Territory>();
+	
+	
 
 	public Player(String name){
 		myName = name;
