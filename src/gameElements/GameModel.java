@@ -33,7 +33,8 @@ public class GameModel implements ServerConstants {
 	}
 
 	public void placeUnits(Player p, Territory t, List<Unit> units){
-		if (units.size() > 0){
+		if (units.size() > 0)
+		{
 			Player serverPlayer = myGame.getPlayer(p.getName());
 			Territory serverTerritory = myGame.getMap().getTerritory(t.getID());
 			serverPlayer.getUnits().addAll(units);
@@ -61,7 +62,14 @@ public class GameModel implements ServerConstants {
 			move.enact(this);
 			cl.removeCommand(move);
 		}
-		System.out.println("IS ATTACK STILL HERE?");
+		//for upgrading
+//		List<Command> upgradeCommands = cl.getCommands(UpgradeCommand.class);
+//		for(Command upgrade : upgradeCommands)
+//		{
+//		    upgrade.enact(this);
+//		    cl.removeCommand(upgrade);
+//		}
+		
 		// In this first implementation, only Attack commands are now left.
 		// first check validity of attacks.
 		this.checkValidAttacks(cl.getCommands());
@@ -229,6 +237,8 @@ public class GameModel implements ServerConstants {
 	}
 
 	private void addNewUnit(Territory t){
+	    //not sure if you want to consume food here timo, or consume at the end of every turn 
+	    //if(t.getOwner().getFood != 0)  
 		t.addUnit(new Unit(t.getOwner(),unitID++));
 	}
 
