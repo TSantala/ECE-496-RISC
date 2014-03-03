@@ -38,6 +38,7 @@ public class GameGraphic extends JPanel{
 		}
 		this.setSize(600, 400);
 		this.addMouseListener(new MapMouseListener(this));
+		myGUI.updatePlayerInfo();
 	}
 
 	@Override
