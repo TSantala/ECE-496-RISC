@@ -3,7 +3,6 @@ package gameElements;
 import java.util.ArrayList;
 import java.util.List;
 
-import server.ObjectServer;
 import server.ServerConstants;
 
 public class GameModel implements ServerConstants {
@@ -35,8 +34,11 @@ public class GameModel implements ServerConstants {
 
 	public void performCommands(CommandList cl){
 		
+		for(Player p : myGame.getPlayers())
+			System.out.println("Food:"+p.getFoodAmount());
+
 		myPrevious = myGame.clone();
-		
+
 		List<Command> placeCommands = cl.getCommands(AddUnitCommand.class);
 		for(Command place : placeCommands){
 			place.enact(this);
@@ -44,25 +46,25 @@ public class GameModel implements ServerConstants {
 		}
 
 		cl = this.createServerCommandList(cl);
-		
+
 		for(Player p : myGame.getPlayers()){
 			System.out.println(p.getName()+" units: "+p.getNumToFeed());
 		}
-		
+
 		//for upgrading
-//		List<Command> upgradeCommands = cl.getCommands(UpgradeCommand.class);
-//		for(Command upgrade : upgradeCommands)
-//		{
-//		    upgrade.enact(this);
-//		    cl.removeCommand(upgrade);
-//		}
+		//		List<Command> upgradeCommands = cl.getCommands(UpgradeCommand.class);
+		//		for(Command upgrade : upgradeCommands)
+		//		{
+		//		    upgrade.enact(this);
+		//		    cl.removeCommand(upgrade);
+		//		}
 
 		List<Command> moveCommands = cl.getCommands(MoveCommand.class);
 		for(Command move : moveCommands){
 			if(!(this.move(move.getPlayer(),move.getFrom(),move.getTo(),move.getUnits(),false))) return;
 			cl.removeCommand(move);
 		}
-		
+
 		// In this first implementation, only Attack commands are now left.
 		// first check validity of attacks.
 		if(!checkValidAttacks(cl.getCommands())) return;
@@ -81,14 +83,14 @@ public class GameModel implements ServerConstants {
 		this.feedUnits();
 		// harvest resources from owned territories
 		this.harvestTerritories();
-		
+
 		for(Player p : myGame.getPlayers()){
 			System.out.println(p.getName()+" units: "+p.getNumToFeed());
 		}
-		
+
 		// return updated game after commands enacted to clients.
 		this.sendUpdatedGameState();
-				
+
 	}
 
 	private CommandList createServerCommandList(CommandList cl) {
@@ -143,9 +145,9 @@ public class GameModel implements ServerConstants {
 
 		List<Unit> opposingUnits = to.getUnits();
 		Player opponent = to.getOwner();
-		
+
 		if(opposingUnits.size()!=0){
-			
+
 			if(p.getName().equals(opponent.getName())){
 				// swap must have occurred, you own it already!
 				this.move(p, from, to, units, false);
@@ -203,8 +205,8 @@ public class GameModel implements ServerConstants {
 						attackB.getPlayer().addTerritory(terA);
 
 						// remove the swap-attacks from commandlist.
-						cl.remove(i);
 						cl.remove(j);
+						cl.remove(i);
 						System.out.println("SWAP FINISHED");
 					}
 				}
@@ -243,8 +245,6 @@ public class GameModel implements ServerConstants {
 	}
 
 	private void addNewUnit(Territory t){
-	    //not sure if you want to consume food here timo, or consume at the end of every turn 
-	    //if(t.getOwner().getFood != 0)  
 		t.addUnit(new Unit(t.getOwner(),unitID++));
 	}
 
@@ -253,17 +253,19 @@ public class GameModel implements ServerConstants {
 			this.addNewUnit(t);
 		}
 	}
-	
+
 	private void feedUnits(){
-		for(Player p : myGame.getPlayers()){
-			for(Unit u : p.getUnits()){
+		for(Territory t : myGame.getMap().getTerritories()){
+			Player p = t.getOwner();
+			for(Unit u : t.getUnits()){
 				if(!p.feedUnit()){
-					p.removeUnit(u);// TO-DO finish this!!
+					t.removeUnit(u);
+					p.removeUnit(u);
 				}
 			}
 		}
 	}
-	
+
 	private void harvestTerritories(){
 		for(Territory t : myGame.getMap().getTerritories()){
 			t.harvestResources();

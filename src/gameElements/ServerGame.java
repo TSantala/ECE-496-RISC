@@ -27,9 +27,9 @@ public class ServerGame extends Thread {
 		    //perform db poll/check
 		    elapsedTime = System.currentTimeMillis() - startTime;
 		    if (elapsedTime > 1*10*1000){
-		    	startTime = System.currentTimeMillis();
-		    	System.out.println("It's been 10 seconds! processing commands");
-		    	this.processCommands();
+		    	//startTime = System.currentTimeMillis();
+		    	//System.out.println("It's been 10 seconds! processing commands");
+		    	//this.processCommands();
 		    }
 		}
 		

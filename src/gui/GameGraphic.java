@@ -29,6 +29,7 @@ public class GameGraphic extends JPanel{
 	public GameGraphic(GameGUI gameGUI, GameState game) {
 		myGUI = gameGUI;
 		myGame = game;
+		myGUI.updatePlayerInfo();
 		int i = 0;
 		int n = myGame.getMap().getTerritories().size();
 		for (Territory t : myGame.getMap().getTerritories()){
@@ -38,7 +39,6 @@ public class GameGraphic extends JPanel{
 		}
 		this.setSize(600, 400);
 		this.addMouseListener(new MapMouseListener(this));
-		myGUI.updatePlayerInfo();
 	}
 
 	@Override
