@@ -8,7 +8,7 @@ public class Player implements Serializable {
 	private static final long serialVersionUID = 7L;
 	
 	private String myName;
-	private List<Unit> myUnits = new ArrayList<Unit>();
+	private Collection<Unit> myUnits = new PriorityQueue<Unit>();
 	private List<Territory> myTerritories = new ArrayList<Territory>();
 	
 	private int myTechLevel=0;
@@ -28,8 +28,16 @@ public class Player implements Serializable {
 		return myName;
 	}
 	
-	public List<Unit> getUnits(){
+	public Collection<Unit> getUnits(){
 		return myUnits;
+	}
+	
+	public Collection<Unit> getReverseOrderUnits(){
+		Stack<Unit> reversed = new Stack<Unit>();
+		for(Unit u : myUnits){
+			reversed.add(u);
+		}
+		return reversed;
 	}
 	
 	public void addUnit (Unit u){
