@@ -6,3 +6,4 @@ public interface GameConstants {
 	public final PlayerTechTree PLAYER_TECH_TREE = new PlayerTechTree();
 
 }
+

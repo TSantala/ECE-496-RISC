@@ -8,14 +8,15 @@ import server.ServerConstants;
 
 public class GameModel implements ServerConstants {
 
-	private ObjectServer myServer;
+	private ServerGame myServer;
 	private GameState myPrevious;
 	private GameState myGame;
 	private int unitID=0;
 
-	public GameModel(GameState gs){
+	public GameModel(GameState gs, ServerGame sg){
 		myGame = gs;
 		myPrevious = gs;
+		myServer = sg;
 	}
 
 	public GameState getGameState(){
@@ -274,13 +275,9 @@ public class GameModel implements ServerConstants {
 		sendUpdatedGameState();
 	}
 
-	public void setServer(ObjectServer os){
-		myServer = os;
-	}
-
 	private void sendUpdatedGameState(){
 		System.out.println("Model logic completed!!!");
-		myServer.sendUpdatedGame(myGame);
+		myServer.updateGame();
 	}
 
 }

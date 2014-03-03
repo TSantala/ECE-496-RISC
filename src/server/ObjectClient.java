@@ -1,9 +1,11 @@
 package server;
 
+import gameElements.GameInfo;
 import gameElements.GameState;
 import gui.GameGUI;
 
 import java.net.*;
+import java.util.Collection;
 import java.io.*;
 
 import javax.swing.JOptionPane;
@@ -12,6 +14,7 @@ public class ObjectClient extends Thread implements ServerConstants{
 	private GameGUI myGUI;
 	private GameState myGame;
 	private ObjectOutputStream oos;
+	private ServerPlayer myPlayer;
 
 	public ObjectClient(){
 
@@ -23,8 +26,7 @@ public class ObjectClient extends Thread implements ServerConstants{
 		System.out.println("ObjectClient initialized");
 		try {
 
-			InetAddress address = InetAddress.getByName("10.190.54.57");
-
+			InetAddress address = InetAddress.getByName("10.190.49.226");
 			System.out.println("Address is: "+InetAddress.getLocalHost().getHostAddress());
 
 			Socket connection = new Socket(address, port);
@@ -70,13 +72,13 @@ public class ObjectClient extends Thread implements ServerConstants{
 		myGUI.updateGameState(gs);
 	}
 
-	public void promptPlayers(){
+/*	public void promptPlayers(){
 		int numPlayers = Integer.parseInt(JOptionPane.showInputDialog("You are beginning a new game.  How many players?" ,"2"));
 		InitialConnect ic = new InitialConnect("");
 		ic.setHost();
 		ic.setNumPlayers(numPlayers);
 		this.sendMessage(ic);
-	}
+	}*/
 
 	public GameState getGameState(){
 		return myGame;
@@ -90,12 +92,17 @@ public class ObjectClient extends Thread implements ServerConstants{
 		this.notify();
 	}
 
-	public void setPlayer(String player) {
-		myGUI.setPlayer(player);
+	public void setPlayer(String name, String pass) {
+		myPlayer = new ServerPlayer(name, pass);
+		myGUI.setPlayer(myPlayer);
 	}
 
 	public void promptTerritories() {
 		this.printMessage("Please left click to assign a unit to a territory; right click to remove.");
 		myGUI.getGameGraphic().assignUnits();
+	}
+
+	public void updateGameInfo(Collection<GameInfo> myUpdate) {
+		myGUI.updateGameInfo(myUpdate);
 	}
 }
