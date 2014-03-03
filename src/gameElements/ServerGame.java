@@ -29,7 +29,7 @@ public class ServerGame extends Thread {
 		    if (elapsedTime > 1*10*1000){
 		    	startTime = System.currentTimeMillis();
 		    	System.out.println("It's been 10 seconds! processing commands");
-		    	this.processCommands();
+//		    	this.processCommands();
 		    }
 		}
 		

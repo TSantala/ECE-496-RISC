@@ -176,7 +176,7 @@ public class GameModel implements ServerConstants {
 	/*
 	 * Returns winner of the middleAttack
 	 */
-	public Player middleAttack(Player p, Territory from, Territory to, List<Unit> units)
+	public void middleAttack(Player p, Territory from, Territory to, List<Unit> units)
 	{
             List<Unit> opposingUnits = to.getUnits();
             Player opponent = to.getOwner();
@@ -202,9 +202,12 @@ public class GameModel implements ServerConstants {
                     p.addTerritory(to);
                     opponent.removeTerritory(to);
                     to.addUnits(units);
-                    return p;
             }	    
-            return opponent;
+            else if (units.isEmpty()){ //aggressor lost
+                    opponent.addTerritory(to);
+                    p.removeTerritory(to);
+                    to.addUnits(opposingUnits);
+            }
 	}
 	
 	public boolean checkValidAttacks(List<Command> cl){
@@ -238,44 +241,47 @@ public class GameModel implements ServerConstants {
 //						attackB.getPlayer().addTerritory(terA);
 //
 //						// remove the swap-attacks from commandlist.
-//						cl.remove(i);
 //						cl.remove(j);
+//						cl.remove(i);
 //						System.out.println("SWAP FINISHED");
 //					}
 //				}
 //			}
 //		}
 //	}
-        public void checkAttackSwaps(List<Command> cl){
-            for(int i = 0; i<cl.size()-1;i++){
-                    for(int j = i+1; j<cl.size();j++){
-                            Command attackA = cl.get(i);
-                            Command attackB = cl.get(j);
-                            if(attackA.getTo() == attackB.getFrom() && attackA.getFrom() == attackB.getTo()){
-                                    // are attacking one another, no longer swap, now fight
-                                    Territory terA = attackA.getFrom();
-                                    Territory terB = attackB.getFrom();
-                                    if(terA.getUnits().size() == attackA.getUnits().size() && terB.getUnits().size() == attackA.getUnits().size()){
-                                        System.out.println("MID ATTACK OCCURRED");
-                                        // are committing all units. Should attack in mid!
-                                        if(Math.random() < 0.5)
-                                        {
-                                            attack(attackA.getPlayer(), terA, terB, attackA.getUnits());
-                                        }
-                                        else
-                                        {
-                                            attack(attackB.getPlayer(), terB, terA, attackB.getUnits());
-                                        }
-                                        
-                                        // remove the mid attacks from commandlist.
-                                        cl.remove(i);
-                                        cl.remove(j);
-                                        System.out.println("MID ATTACKS FINISHED");
-                                }
+    public void checkAttackSwaps(List<Command> cl){
+        for(int i = 0; i<cl.size()-1;i++){
+                for(int j = i+1; j<cl.size();j++){
+                        Command attackA = cl.get(i);
+                        Command attackB = cl.get(j);
+                        if(attackA.getTo() == attackB.getFrom() && attackA.getFrom() == attackB.getTo()){
+                                // are attacking one another, no longer swap, now fight
+                                Territory terA = attackA.getFrom();
+                                Territory terB = attackB.getFrom();
+                                if(terA.getUnits().size() == attackA.getUnits().size() && terB.getUnits().size() == attackA.getUnits().size()){
+                                    System.out.println("MID ATTACK OCCURRED");
+                                    // are committing all units. Should attack in mid!
+                                    Player winner, attackingPlayer;
+
+                                    if(Math.random() < 0.5)
+                                    {
+                                        attackingPlayer = attackA.getPlayer();
+                                        middleAttack(attackingPlayer, terA, terB, terA.getUnits());
+                                    }
+                                    else
+                                    {
+                                        attackingPlayer = attackB.getPlayer();
+                                        middleAttack(attackingPlayer, terB, terA, terB.getUnits());
+                                    }
+                                    // remove the mid attacks from commandlist.
+                                    cl.remove(j);
+                                    cl.remove(i);
+                                    System.out.println("MID ATTACKS FINISHED");
                             }
-                    }
-            }
-    }	
+                        }
+                }
+        }
+}	
 
 	public void displaceAttackingUnits(List<Command> cl){
 		for(Command c : cl){
