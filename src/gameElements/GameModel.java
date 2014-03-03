@@ -76,7 +76,7 @@ public class GameModel implements ServerConstants {
 			attack.enact(this);
 		// add 1 unit to each territory.
 
-		this.endOfRoundAddUnits();
+		this.endOfRoundAddUnitsAndResources();
 		
 		for(Player p : myGame.getPlayers()){
 			System.out.println(p.getName()+" units: "+p.getNumToFeed());
@@ -244,9 +244,10 @@ public class GameModel implements ServerConstants {
 		t.addUnit(new Unit(t.getOwner(),unitID++));
 	}
 
-	private void endOfRoundAddUnits(){
+	private void endOfRoundAddUnitsAndResources(){
 		for(Territory t : myGame.getMap().getTerritories()){
 			this.addNewUnit(t);
+			t.harvestResources();
 		}
 	}
 

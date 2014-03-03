@@ -14,7 +14,7 @@ public class Player implements Serializable {
 	private int myTechLevel=0;
 	
 	private Food myFood;
-	private Technology myTech;	
+	private Technology myTech;
 
 	public Player(String name){
 		myName = name;

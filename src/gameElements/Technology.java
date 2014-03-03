@@ -2,8 +2,8 @@ package gameElements;
 
 public class Technology extends Resource {
 	
-	public Technology(){
-		super();
+	public Technology(int amount){
+		super(amount);
 	}
 	
 	@Override

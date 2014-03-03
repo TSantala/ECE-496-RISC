@@ -12,12 +12,15 @@ public class Territory implements Serializable
 	private List<Unit> myUnits;
 	private List<Territory> myNeighbors;
 	private int myID;
+	private List<Resource> myResources= new ArrayList<Resource>();
 	
 	public Territory(int id)
 	{
 		myID = id;
 		myUnits = new ArrayList<Unit>();
 		myNeighbors = new ArrayList<Territory>();
+		myResources.add(new Food(10));
+		myResources.add(new Technology(10));
 	}
 	
 	public void setOwner(Player p){
@@ -26,6 +29,12 @@ public class Territory implements Serializable
 	
 	public Player getOwner(){
 		return myOwner;
+	}
+	
+	public void harvestResources(){
+		for(Resource r : myResources){
+			r.harvest(myOwner);
+		}
 	}
 	
 	public void addNeighbor(Territory neighbor){
