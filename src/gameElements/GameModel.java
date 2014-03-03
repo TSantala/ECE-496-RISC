@@ -255,11 +255,7 @@ public class GameModel implements ServerConstants {
 	}
 	
 	private void feedUnits(){
-		for(Player p : myGame.getPlayers()){
-			for(Unit u : p.getUnits()){
-				
-			}
-		}
+		
 	}
 	
 	private void harvestTerritories(){
