@@ -8,8 +8,6 @@ import java.net.*;
 import java.util.Collection;
 import java.io.*;
 
-import javax.swing.JOptionPane;
-
 public class ObjectClient extends Thread implements ServerConstants{
 	private GameGUI myGUI;
 	private GameState myGame;
@@ -71,14 +69,6 @@ public class ObjectClient extends Thread implements ServerConstants{
 		myGame = gs;
 		myGUI.updateGameState(gs);
 	}
-
-/*	public void promptPlayers(){
-		int numPlayers = Integer.parseInt(JOptionPane.showInputDialog("You are beginning a new game.  How many players?" ,"2"));
-		InitialConnect ic = new InitialConnect("");
-		ic.setHost();
-		ic.setNumPlayers(numPlayers);
-		this.sendMessage(ic);
-	}*/
 
 	public GameState getGameState(){
 		return myGame;
