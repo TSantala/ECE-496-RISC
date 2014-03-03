@@ -12,7 +12,8 @@ public class GameInfo implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	private String myName;
-	private List<ServerPlayer> myPlayers = new ArrayList<ServerPlayer>();
+	private List<ServerPlayer> myCurrentPlayers = new ArrayList<ServerPlayer>();
+	private List<ServerPlayer> myOriginalPlayers = new ArrayList<ServerPlayer>();
 	private int maxPlayers;
 	private boolean inProgress;
 
@@ -23,21 +24,22 @@ public class GameInfo implements Serializable{
 	}
 	
 	public boolean addPlayer(ServerPlayer player){
-		myPlayers.add(player);
-		if (myPlayers.size() == maxPlayers){
+		myCurrentPlayers.add(player);
+		if (myCurrentPlayers.size() == maxPlayers){
 			inProgress = true;
+			myOriginalPlayers.addAll(myCurrentPlayers);
 		}
 		return inProgress;
 	}
 	
-	public void removePlayer(String player){
+	public void removePlayer(ServerPlayer player){
 		if (inProgress)
 			System.out.println("someone tried to leave an in progress game");
-		myPlayers.remove(player);
+		myCurrentPlayers.remove(player);
 	}
 	
 	public String toString(){
-		String token = myName + " --- " + myPlayers.size()+"/"+maxPlayers;
+		String token = myName + " --- " + myCurrentPlayers.size()+"/"+maxPlayers;
 		if (inProgress){
 			return token + " in Progress!";
 		}
@@ -45,7 +47,11 @@ public class GameInfo implements Serializable{
 	}
 	
 	public List<ServerPlayer> getPlayers(){
-		return myPlayers;
+		return myCurrentPlayers;
+	}
+	
+	public List<ServerPlayer> getOriginalPlayers(){
+		return myOriginalPlayers;
 	}
 
 }

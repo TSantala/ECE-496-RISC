@@ -6,14 +6,15 @@ import server.ObjectServer;
 public class Main {
 
 	public static void main(String[] args){
-		
+
 		ObjectServer myServer = new ObjectServer();
 		myServer.start();
-		
+
 		ObjectClient myClient1 = new ObjectClient();
 		myClient1.start();
+
 		ObjectClient myClient2 = new ObjectClient();
-		myClient2.start();
-		
+		myClient2.start();	
+
 	}
 }
