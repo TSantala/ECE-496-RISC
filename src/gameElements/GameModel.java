@@ -8,14 +8,15 @@ import server.ServerConstants;
 
 public class GameModel implements ServerConstants {
 
-	private ObjectServer myServer;
+	private ServerGame myServer;
 	private GameState myPrevious;
 	private GameState myGame;
 	private int unitID=0;
 
-	public GameModel(GameState gs){
+	public GameModel(GameState gs, ServerGame sg){
 		myGame = gs;
 		myPrevious = gs;
+		myServer = sg;
 	}
 
 	public GameState getGameState(){
@@ -75,8 +76,11 @@ public class GameModel implements ServerConstants {
 		for(Command attack : cl.getCommands())
 			attack.enact(this);
 		// add 1 unit to each territory.
-
 		this.endOfRoundAddUnits();
+		// feed units and remove if out of food
+		this.feedUnits();
+		// harvest resources from owned territories
+		this.harvestTerritories();
 		
 		for(Player p : myGame.getPlayers()){
 			System.out.println(p.getName()+" units: "+p.getNumToFeed());
@@ -314,6 +318,22 @@ public class GameModel implements ServerConstants {
 			this.addNewUnit(t);
 		}
 	}
+	
+	private void feedUnits(){
+		for(Player p : myGame.getPlayers()){
+			for(Unit u : p.getUnits()){
+				if(!p.feedUnit()){
+					p.removeUnit(u);// TO-DO finish this!!
+				}
+			}
+		}
+	}
+	
+	private void harvestTerritories(){
+		for(Territory t : myGame.getMap().getTerritories()){
+			t.harvestResources();
+		}
+	}
 
 	private void redoTurnErrorFound(String message){
 		System.out.println("AN ERROR HAS OCCURRED!!!: "+message);
@@ -322,13 +342,9 @@ public class GameModel implements ServerConstants {
 		sendUpdatedGameState();
 	}
 
-	public void setServer(ObjectServer os){
-		myServer = os;
-	}
-
 	private void sendUpdatedGameState(){
 		System.out.println("Model logic completed!!!");
-		myServer.sendUpdatedGame(myGame);
+		myServer.updateGame();
 	}
 
 }

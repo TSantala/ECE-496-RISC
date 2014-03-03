@@ -2,8 +2,8 @@ package gameElements;
 
 public class Food extends Resource {
 
-	public Food(){
-		super();
+	public Food(int amount){
+		super(amount);
 	}
 
 	@Override

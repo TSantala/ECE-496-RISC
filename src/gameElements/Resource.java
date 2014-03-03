@@ -1,8 +1,15 @@
 package gameElements;
 
-abstract class Resource {
+import java.io.Serializable;
+
+abstract class Resource implements Serializable {
+	private static final long serialVersionUID = 1L;
 	
 	protected int myAmount;
+	
+	public Resource(int amount){
+		myAmount = amount;
+	}
 	
 	abstract void harvest(Player p);
 	

@@ -2,7 +2,7 @@ package gameElements;
 
 import java.io.Serializable;
 
-public class Unit implements Serializable, GameInfo 
+public class Unit implements Serializable, GameConstants, Comparable<Unit>
 {
 	private static final long serialVersionUID = 10L;
 	
@@ -39,6 +39,10 @@ public class Unit implements Serializable, GameInfo
 		myTechLevel+=researches;
 	}
 	
+	public int getTechLevel(){
+		return myTechLevel;
+	}
+	
 	public int getUpgradeCost(){
 		return UNIT_TECH_TREE.getCost(myTechLevel++);
 	}
@@ -50,4 +54,10 @@ public class Unit implements Serializable, GameInfo
 	public String getType(){
 		return UNIT_TECH_TREE.getUnitType(myTechLevel);
 	}
+	
+	@Override
+	public int compareTo(Unit other){
+		return other.getTechLevel() - myTechLevel;
+	}
+
 }
