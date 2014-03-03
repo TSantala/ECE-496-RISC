@@ -257,7 +257,9 @@ public class GameModel implements ServerConstants {
 	private void feedUnits(){
 		for(Player p : myGame.getPlayers()){
 			for(Unit u : p.getUnits()){
-				
+				if(!p.feedUnit()){
+					p.removeUnit(u);// TO-DO finish this!!
+				}
 			}
 		}
 	}

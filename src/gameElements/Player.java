@@ -5,7 +5,7 @@ import java.util.*;
 
 import server.ServerPlayer;
 
-public class Player implements Serializable {
+public class Player implements Serializable, GameConstants {
 
 	private static final long serialVersionUID = 7L;
 	
@@ -15,8 +15,8 @@ public class Player implements Serializable {
 	
 	private int myTechLevel=0;
 	
-	private Food myFood;
-	private Technology myTech;
+	private Food myFood = new Food(INIT_RESOURCES);
+	private Technology myTech = new Technology(INIT_RESOURCES);
 	
 	public Player(ServerPlayer p){
 		myPlayer = p;
@@ -32,6 +32,14 @@ public class Player implements Serializable {
 	
 	public Collection<Unit> getUnits(){
 		return myUnits;
+	}
+	
+	public boolean feedUnit(){
+		if(myFood.getAmount()>0){
+			myFood.increment(-1);
+			return true;
+		}
+		return false;
 	}
 	
 	public Collection<Unit> getReverseOrderUnits(){
