@@ -18,6 +18,7 @@ import java.util.List;
 
 import javax.swing.*;
 
+import server.LeaveRequest;
 import server.ObjectClient;
 import server.ServerConstants;
 import server.ServerPlayer;
@@ -37,7 +38,7 @@ public class GameGUI extends JFrame implements ServerConstants {
 	private ObjectClient myClient;
 	private JFrame myFrame;
 
-	private LobbyPane lobbyPanel;
+	private LobbyPane lobbyPane;
 	private GameGraphic myGameGraphic;
 	private GameState myGame;
 	private Player myPlayer;
@@ -59,6 +60,7 @@ public class GameGUI extends JFrame implements ServerConstants {
 	public void updateGameState(GameState gs){
 		if (myGame == null){
 			myClient.printMessage("STARTING THE GAME!");
+			System.out.println("STARTING THE GAME!");
 			this.beginGame(gs);
 		}
 		else {
@@ -114,8 +116,8 @@ public class GameGUI extends JFrame implements ServerConstants {
 		System.out.println("4.5: ln 93 in GameGUI");
 
 		//GameGraphic game = new GameGraphic(this,myGame);
-		lobbyPanel = new LobbyPane(myClient);
-		mainPane.add(lobbyPanel,BorderLayout.CENTER);
+		lobbyPane = new LobbyPane(myClient);
+		mainPane.add(lobbyPane,BorderLayout.CENTER);
 
 		JPanel rightPane = new JPanel();
 		rightPane.setLayout(new BorderLayout());
@@ -130,9 +132,10 @@ public class GameGUI extends JFrame implements ServerConstants {
 		leftPane.add(commandInfo, BorderLayout.CENTER);
 		
 		JPanel buttonPane = new JPanel();
-		buttonPane.setLayout(new BorderLayout());
-		buttonPane.add(new MoveButton(this),BorderLayout.NORTH);
-		buttonPane.add(new AttackButton(this),BorderLayout.SOUTH);
+		buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.PAGE_AXIS));
+		buttonPane.add(new MoveButton(this));
+		buttonPane.add(new AttackButton(this));
+		buttonPane.add(new LeaveButton(this));
 
 		rightPane.add(buttonPane,BorderLayout.SOUTH);
 
@@ -187,7 +190,7 @@ public class GameGUI extends JFrame implements ServerConstants {
 	}
 
 	public void beginGame(GameState gs){
-		mainPane.remove(lobbyPanel);
+		mainPane.remove(lobbyPane);
 		myGameGraphic = new GameGraphic(this, gs);
 		mainPane.add(myGameGraphic,BorderLayout.CENTER);
 		mainPane.revalidate();
@@ -216,6 +219,14 @@ public class GameGUI extends JFrame implements ServerConstants {
 	}
 
 	public void updateGameInfo(Collection<GameInfo> myUpdate) {
-		lobbyPanel.updateGames(myUpdate);
+		lobbyPane.updateGames(myUpdate);
+	}
+
+	public void leaveGame() {
+		mainPane.remove(myGameGraphic);
+		mainPane.add(lobbyPane, BorderLayout.CENTER);
+		mainPane.repaint();
+		myGame = null;
+		myClient.sendMessage(new LeaveRequest());
 	}      
 }

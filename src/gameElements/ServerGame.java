@@ -13,6 +13,7 @@ public class ServerGame extends Thread {
 	private GameModel myModel;
 	private CommandList turnCommands = new CommandList();
 	private boolean unitsPlaced = false;
+	private boolean inProgress = false;
 
 	public ServerGame(String gameName, int numPlayers, ObjectServer os) {
 		myInfo = new GameInfo(gameName, numPlayers);
@@ -40,11 +41,15 @@ public class ServerGame extends Thread {
 	}
 
 	public void addPlayer(ServerPlayer p){
-		if(myInfo.addPlayer(p)){
+		if(myInfo.addPlayer(p) && !inProgress){
 			myGame = new GameState(myInfo.getPlayers());
 			myModel = new GameModel(myGame, this);
 			this.updateGame(myGame);
 			this.updateGame(new PromptUnits());
+			inProgress = true;
+		}
+		else if (inProgress){
+			this.updateGame();
 		}
 	}
 

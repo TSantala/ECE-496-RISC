@@ -106,6 +106,17 @@ public class ObjectServer extends Thread implements ServerConstants{
 			s.sendMessage(new GameInfoUpdate(myGames));
 	}
 
+	public void leaveGame(ObjectSocket os) {
+		for(ServerGame game : myGames){
+			if(game.getInfo().getPlayers().contains(myConnections.get(os))){
+				game.getInfo().removePlayer(myConnections.get(os));
+				myLobby.add(myConnections.get(os));
+				this.updateGameInfo();
+			}
+		}
+		
+	}
+
 
 	/*public void initialConnect(ObjectSocket os, InitialConnect ic){
 		myConnections.put(os, ic.getName());

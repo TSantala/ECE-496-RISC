@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import server.JoinRequest;
 import server.NewGameRequest;
 import server.ObjectClient;
+import server.ServerPlayer;
 
 public class LobbyPane extends JPanel{
 	
@@ -41,7 +42,12 @@ public class LobbyPane extends JPanel{
 		myGames.addAll(games);
 		gameList.removeAll();
 		for (GameInfo info : games){
-			gameList.add(info.toString());
+			if (info.getOriginalPlayers().contains(myClient.getGUI().getPlayer().getPlayer())){
+				gameList.add(info.toString() + " You are part of this game.");
+			}
+			else{
+				gameList.add(info.toString());
+			}
 		}
 		gameList.revalidate();
 	}
