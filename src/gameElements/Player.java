@@ -3,24 +3,25 @@ package gameElements;
 import java.io.Serializable;
 import java.util.*;
 
+import server.ServerPlayer;
+
 public class Player implements Serializable {
 
 	private static final long serialVersionUID = 7L;
-	
-	private String myName;
 	private List<Unit> myUnits = new ArrayList<Unit>();
 	private List<Territory> myTerritories = new ArrayList<Territory>();
-
-	public Player(String name){
-		myName = name;
+	private ServerPlayer myPlayer;
+	
+	public Player(ServerPlayer p){
+		myPlayer = p;
 	}
-
-	public void setName(String s){
-		myName = s;
+	
+	public ServerPlayer getPlayer(){
+		return myPlayer;
 	}
 
 	public String getName(){
-		return myName;
+		return myPlayer.getName();
 	}
 	
 	public List<Unit> getUnits(){
@@ -53,7 +54,7 @@ public class Player implements Serializable {
 	}
 	
 	public Player clone(GameMap clonedMap){
-		Player toReturn = new Player(myName);
+		Player toReturn = new Player(myPlayer);
 		List<Unit> clonedUnits = new ArrayList<Unit>();
 		for(Unit u : myUnits){
 			for(Territory t : clonedMap.getTerritories()){

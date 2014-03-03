@@ -2,6 +2,7 @@ package gui;
 
 import gameElements.Command;
 import gameElements.CommandList;
+import gameElements.GameInfo;
 import gameElements.GameState;
 import gameElements.Player;
 import gameElements.Territory;
@@ -12,12 +13,14 @@ import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.swing.*;
 
 import server.ObjectClient;
 import server.ServerConstants;
+import server.ServerPlayer;
 import server.TextMessage;
 
 /*
@@ -34,7 +37,7 @@ public class GameGUI extends JFrame implements ServerConstants {
 	private ObjectClient myClient;
 	private JFrame myFrame;
 
-	private JPanel dummyPanel;
+	private LobbyPane lobbyPanel;
 	private GameGraphic myGameGraphic;
 	private GameState myGame;
 	private Player myPlayer;
@@ -42,7 +45,7 @@ public class GameGUI extends JFrame implements ServerConstants {
 	private Territory leftClick;		// maybe hue territory color with blue?
 	private Territory rightClick;		// maybe hue territory color with red?
 	private List<Unit> selectedUnits = new ArrayList<Unit>();
-
+	
 	private JButton myCommitButton = new CommitButton(this);
 
 	private CommandList myCommandList = new CommandList();
@@ -111,8 +114,8 @@ public class GameGUI extends JFrame implements ServerConstants {
 		System.out.println("4.5: ln 93 in GameGUI");
 
 		//GameGraphic game = new GameGraphic(this,myGame);
-		dummyPanel = new JPanel();
-		mainPane.add(dummyPanel,BorderLayout.CENTER);
+		lobbyPanel = new LobbyPane(myClient);
+		mainPane.add(lobbyPanel,BorderLayout.CENTER);
 
 		JPanel rightPane = new JPanel();
 		rightPane.setLayout(new BorderLayout());
@@ -177,9 +180,14 @@ public class GameGUI extends JFrame implements ServerConstants {
 		myPlayer = myGame.getPlayer(player);
 		myFrame.setTitle("RISC - " + player);
 	}
+	
+	public void setPlayer(ServerPlayer sp){
+		myPlayer = new Player(sp);
+		myFrame.setTitle("RISC - " + sp.getName());
+	}
 
 	public void beginGame(GameState gs){
-		mainPane.remove(dummyPanel);
+		mainPane.remove(lobbyPanel);
 		myGameGraphic = new GameGraphic(this, gs);
 		mainPane.add(myGameGraphic,BorderLayout.CENTER);
 		mainPane.revalidate();
@@ -205,5 +213,9 @@ public class GameGUI extends JFrame implements ServerConstants {
 	public void setRightClick(Territory t)
 	{
 	    rightClick = t;
+	}
+
+	public void updateGameInfo(Collection<GameInfo> myUpdate) {
+		lobbyPanel.updateGames(myUpdate);
 	}      
 }

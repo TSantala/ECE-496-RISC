@@ -42,7 +42,7 @@ public class ObjectSocket extends Thread implements ServerConstants{
 		}
 	}
 
-	public synchronized void promptNewGame(){
+	/*public synchronized void promptNewGame(){
 		try{
 			InitialConnect ic = new InitialConnect("");
 			ic.setHost();
@@ -51,16 +51,16 @@ public class ObjectSocket extends Thread implements ServerConstants{
 		} catch (IOException e) {
 			System.out.println("Failed to prompt first user for a new game.");
 		}
-	}
+	}*/
 
 	@Override
-	public void run() {
+	public void run() {/*
 		try {
 			InitialConnect initial = (InitialConnect)ois.readObject();
 			myServer.initialConnect(this, initial);
 		} catch (Exception e){
 			System.out.println("Error reading initial client state");
-		}
+		}*/
 
 		while(true){
 			try {

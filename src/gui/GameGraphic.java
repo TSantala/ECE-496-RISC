@@ -79,11 +79,11 @@ public class GameGraphic extends JPanel{
 			}
 			else if (mt.isWithin(p) && initialization){
 				
-				if(leftClick && mt.getTerritory().getOwner().equals(myGUI.getPlayer())){
+				if(leftClick && mt.getTerritory().getOwner().getPlayer().equals(myGUI.getPlayer().getPlayer())){
 					mt.getTerritory().addUnit(new Unit(mt.getTerritory().getOwner(), 1));
 					startUnits--;
 				}
-				else if (!leftClick && mt.getTerritory().getOwner().equals(myGUI.getPlayer())){
+				else if (!leftClick && mt.getTerritory().getOwner().getPlayer().equals(myGUI.getPlayer().getPlayer())){
 					if (mt.getTerritory().getUnits().size() > 0){
 						mt.getTerritory().removeUnit(mt.getTerritory().getUnits().get(0));
 						startUnits++;
@@ -113,7 +113,7 @@ public class GameGraphic extends JPanel{
 		// TODO This is where we need to see how many units were assigned to which territory
 		// and send this information to the server.
 		for (Territory t : myGame.getMap().getTerritories()){
-			if (t.getOwner().equals(myGUI.getPlayer())){
+			if (t.getOwner().getPlayer().equals(myGUI.getPlayer().getPlayer())){
 				myGUI.addCommand(new AddUnitCommand(t.getOwner(),t,t.getUnits()));
 			}
 		}

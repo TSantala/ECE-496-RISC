@@ -8,50 +8,27 @@ public class InitialConnect extends Message implements Serializable{
 	
 	private static final long serialVersionUID = 8285448565930920999L;
 	private String myID;
-	private boolean host = false;
-	private int numPlayers = 0;
+	private String myPass;
 
 	public InitialConnect() {
 		myID =  JOptionPane.showInputDialog("What is your name?" ,"Player 1");
+		myPass =  JOptionPane.showInputDialog("What is your password?" ,"password");
 	}
-	
-	public InitialConnect(String id){
-		myID = id;
-	}
-	
-	public String getName(){
-		return myID;
-	}
-	
-	public void setHost(){
-		host = true;
-	}
-	
-	public void setNumPlayers(int num){
-		numPlayers = num;
+
+	public InitialConnect(String name, String pass) {
+		myID = name;
+		myPass = pass;
 	}
 
 	@Override
 	public boolean sendMessageToServer(ObjectServer os) {
-		if (host){
-			os.setNumPlayers(numPlayers);
-		}
-		else {
-			
-		}
+		os.newPlayer(myID, myPass, myOS);
 		return false;
 	}
 
 	@Override
 	public void sendMessageToClient(ObjectClient oc) {
-		if(host){
-			oc.promptPlayers();
-		}
-		else {
-			oc.setPlayer(myID);
-			oc.promptTerritories();
-		}
-		
+			oc.setPlayer(myID, myPass);
 	}
 
 }

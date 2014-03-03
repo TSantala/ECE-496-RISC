@@ -6,6 +6,7 @@ import gameElements.CommandList;
 import gameElements.GameState;
 import gameElements.GameModel;
 import gameElements.Player;
+import gameElements.ServerGame;
 import gameElements.Territory;
 import gameElements.Unit;
 
@@ -15,19 +16,10 @@ import java.util.*;
 
 public class ObjectServer extends Thread implements ServerConstants{
 
-	private HashMap<ObjectSocket, String> myConnections = new HashMap<ObjectSocket, String>();
-	private int numPlayers;
-	private HashMap<String, ObjectSocket> myPlayers = new HashMap<String, ObjectSocket>();
-	private int commandsReceived=0;
-	private GameModel myModel;
-	private CommandList turnCommands = new CommandList();
-	private static final int DEFAULT_NUM_TERRITORIES = 6;
-
-	public ObjectServer(GameModel sg, int playerCount){
-		myModel = sg;
-		sg.setServer(this);
-		numPlayers = playerCount;
-	}
+	private HashMap<ObjectSocket, ServerPlayer> myConnections = new HashMap<ObjectSocket, ServerPlayer>();
+	private HashMap<ServerPlayer, ObjectSocket> myPlayers = new HashMap<ServerPlayer, ObjectSocket>();
+	private List<ServerPlayer> myLobby = new ArrayList<ServerPlayer>();
+	private List<ServerGame> myGames = new ArrayList<ServerGame>();
 
 	public ObjectServer(){
 
@@ -43,7 +35,7 @@ public class ObjectServer extends Thread implements ServerConstants{
 			while (true) {
 				Socket connection = socket1.accept();
 				ObjectSocket runnable = new ObjectSocket(connection, ++count, this);
-				myConnections.put(runnable, "Default");
+				//myConnections.put(runnable, null);
 				Thread thread = new Thread(runnable);
 				thread.start();
 			}
@@ -52,34 +44,72 @@ public class ObjectServer extends Thread implements ServerConstants{
 	}
 
 	public Collection<ObjectSocket> getConnections(){
-		//System.out.println("Number of connections = "+myConnections.size());
 		return myConnections.keySet();
 	}
 
-	public void broadCastMessage(TextMessage m, ObjectSocket os) {
-		for(ObjectSocket s : this.getConnections()){
-			s.sendMessage(new TextMessage(myConnections.get(os) + ": " + m.getMessage()));
+	public synchronized void broadCastMessage(TextMessage m, ObjectSocket os) {
+		for (ServerGame game : myGames){
+			if (game.getInfo().getPlayers().contains(myConnections.get(os))){
+				for (ServerPlayer player : game.getInfo().getPlayers()){
+					myPlayers.get(player).sendMessage(new TextMessage(myConnections.get(os).getName()+": "+m.getMessage()));
+				}
+				return;
+			}
+		}
+
+		for (ServerPlayer player : myLobby){
+			myPlayers.get(player).sendMessage(new TextMessage(myConnections.get(os).getName()+": "+m.getMessage()));
+		}
+		/*for(ObjectSocket s : this.getConnections()){
+			s.sendMessage(new TextMessage(myConnections.get(os).getName() + ": " + m.getMessage()));
+		}*/
+	}
+
+	public void sendUpdatedGame(GameState gs, ServerGame serverGame){
+		for(ServerPlayer player : serverGame.getInfo().getPlayers())
+			myPlayers.get(player).sendMessage(gs);
+	}
+
+	public synchronized void receiveCommandList(CommandList ls){
+		for (ServerGame game : myGames){
+			if (game.getInfo().getPlayers().contains(myConnections.get(ls.getObjectSocket()))){
+				game.receiveCommandList(ls);
+			}
 		}
 	}
 
-	public void sendUpdatedGame(GameState gs){
+	public synchronized void removeConnection(ObjectSocket ms){
+		myConnections.remove(ms);
+	}
+
+	public synchronized void joinGame(int myNum, ObjectSocket os) {
+		if (myLobby.contains(myConnections.get(os))){
+			myGames.get(myNum).addPlayer(myConnections.get(os));
+			myLobby.remove(myConnections.get(os));
+		}
+		this.updateGameInfo();
+	}
+
+	public void BeginNewGame(int numPlayers, String name) {
+		myGames.add(new ServerGame(name,numPlayers,this));
+		this.updateGameInfo();
+	}
+
+	public synchronized void newPlayer(String name, String pass, ObjectSocket os){
+		ServerPlayer temp = new ServerPlayer(name, pass);
+		myPlayers.put(temp, os);
+		myConnections.put(os, temp);
+		myLobby.add(temp);
+		os.sendMessage(new InitialConnect(name,pass));
+	}
+
+	public synchronized void updateGameInfo(){
 		for(ObjectSocket s : this.getConnections())
-			s.sendMessage(gs);
+			s.sendMessage(new GameInfoUpdate(myGames));
 	}
 
-	public void receiveCommandList(CommandList ls){
-		turnCommands.addCommands(ls.getCommands());
-		commandsReceived++;
-		System.out.println(commandsReceived + " " + numPlayers);
-		if(commandsReceived==numPlayers){
-			System.out.println("All commands received! Sending to model! Numcommands = " + turnCommands.getCommands().size());
-			myModel.performCommands(turnCommands);
-			turnCommands.clear();
-			commandsReceived = 0;
-		}		
-	}
 
-	public void initialConnect(ObjectSocket os, InitialConnect ic){
+	/*public void initialConnect(ObjectSocket os, InitialConnect ic){
 		myConnections.put(os, ic.getName());
 		myPlayers.put(ic.getName(),os);
 		if (myPlayers.keySet().size() == 1){
@@ -100,18 +130,14 @@ public class ObjectServer extends Thread implements ServerConstants{
 				myPlayers.get(player).sendMessage(new InitialConnect(player));
 			}
 		}
-	}
+	}*/
 
-	public void setNumPlayers(int num){
+	/*public void setNumPlayers(int num){
 		numPlayers = num;
 		/////////// HERE IS WHERE I"M MAKING EXTRA CLIENTS FOR TESTING PURPOSES!
 		System.out.println("Extra client created after the host chooses num of players.  ObjectServer ln 110");
-		//ObjectClient myClient2 = new ObjectClient();
-		//myClient2.start();
-	}
-
-	public void removeConnection(ObjectSocket ms){
-		myConnections.remove(ms);
-	}
+		ObjectClient myClient2 = new ObjectClient();
+		myClient2.start();
+	}*/
 
 }

@@ -8,6 +8,7 @@ import java.util.List;
 import server.Message;
 import server.ObjectClient;
 import server.ObjectServer;
+import server.ServerPlayer;
 
 public class GameState extends Message implements Serializable {
 
@@ -16,8 +17,9 @@ public class GameState extends Message implements Serializable {
 	private GameMap myMap;
 	private List<Player> myPlayers = new ArrayList<Player>();
 	private static final int DEFAULT_NUM_START_UNITS = 3;
+	private static final int DEFAULT_NUM_START_TERRITORIES = 6;
 
-	public GameState(int numPlayers, int numTerritories){
+/*	public GameState(int numPlayers, int numTerritories){
 		for(int i = 0; i<numPlayers; i++){
 			myPlayers.add(new Player("Player "+myPlayers.size()));
 		}
@@ -55,14 +57,33 @@ public class GameState extends Message implements Serializable {
 					myPlayers.get(player).addTerritory(initialTerritories.get(territory));
 					initialTerritories.remove(territory);
 				}
-	}
+	}*/
 
 	public GameState(GameMap gm, List<Player> players){
 		myMap = gm;
 		myPlayers = players;
 	}
 
-    public void setMap(GameMap gm){
+    public GameState(List<ServerPlayer> players) {
+		for(ServerPlayer player : players){
+			myPlayers.add(new Player(player));
+		}
+		// Create map of territories.
+		myMap = new GameMap(DEFAULT_NUM_START_TERRITORIES);
+		
+		// Randomly assign initial territories.
+		List<Territory> initialTerritories = new ArrayList<Territory>();
+		initialTerritories.addAll(myMap.getTerritories());
+		int player = 0;
+		while(!initialTerritories.isEmpty()){
+			player = (player+1)%myPlayers.size();
+			int territory = (int) Math.floor(initialTerritories.size()*Math.random());
+			myPlayers.get(player).addTerritory(initialTerritories.get(territory));
+			initialTerritories.remove(territory);
+		}
+	}
+
+	public void setMap(GameMap gm){
 		myMap = gm;
 	}
 
