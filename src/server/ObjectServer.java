@@ -63,9 +63,9 @@ public class ObjectServer extends Thread implements ServerConstants{
 		}*/
 	}
 
-	public void sendUpdatedGame(GameState gs, ServerGame serverGame){
+	public void sendUpdatedGame(Message m, ServerGame serverGame){
 		for(ServerPlayer player : serverGame.getInfo().getPlayers())
-			myPlayers.get(player).sendMessage(gs);
+			myPlayers.get(player).sendMessage(m);
 	}
 
 	public synchronized void receiveCommandList(CommandList ls){

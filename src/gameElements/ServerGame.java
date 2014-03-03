@@ -1,6 +1,8 @@
 package gameElements;
 
+import server.Message;
 import server.ObjectServer;
+import server.PromptUnits;
 import server.ServerPlayer;
 
 public class ServerGame extends Thread {
@@ -10,6 +12,7 @@ public class ServerGame extends Thread {
 	private int commandsReceived=0;
 	private GameModel myModel;
 	private CommandList turnCommands = new CommandList();
+	private boolean unitsPlaced = false;
 
 	public ServerGame(String gameName, int numPlayers, ObjectServer os) {
 		myInfo = new GameInfo(gameName, numPlayers);
@@ -40,8 +43,8 @@ public class ServerGame extends Thread {
 		if(myInfo.addPlayer(p)){
 			myGame = new GameState(myInfo.getPlayers());
 			myModel = new GameModel(myGame, this);
-			this.updateGame();
-			this.start();
+			this.updateGame(myGame);
+			this.updateGame(new PromptUnits());
 		}
 	}
 
@@ -51,6 +54,10 @@ public class ServerGame extends Thread {
 		System.out.println(commandsReceived + " " + myInfo.getPlayers().size());
 		if(commandsReceived==myInfo.getPlayers().size()){
 			this.processCommands();
+			if (!unitsPlaced){
+				unitsPlaced = true;
+				this.start();
+			}
 		}		
 	}
 	
@@ -59,6 +66,10 @@ public class ServerGame extends Thread {
 		myModel.performCommands(turnCommands);
 		turnCommands.clear();
 		commandsReceived = 0;
+	}
+
+	public void updateGame(Message m) {
+		myServer.sendUpdatedGame(m, this);
 	}
 
 	public void updateGame() {
