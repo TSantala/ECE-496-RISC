@@ -2,7 +2,7 @@ package gameElements;
 
 import java.io.Serializable;
 
-public class Unit implements Serializable, GameInfo 
+public class Unit implements Serializable, GameConstants 
 {
 	private static final long serialVersionUID = 10L;
 	

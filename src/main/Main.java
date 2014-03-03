@@ -14,8 +14,5 @@ public class Main {
 		myClient1.start();
 		ObjectClient myClient2 = new ObjectClient();
 		myClient2.start();
-
-		ObjectClient myClient2 = new ObjectClient();
-		myClient2.start();
 	}
 }

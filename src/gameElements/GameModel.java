@@ -76,8 +76,11 @@ public class GameModel implements ServerConstants {
 		for(Command attack : cl.getCommands())
 			attack.enact(this);
 		// add 1 unit to each territory.
-
-		this.endOfRoundAddUnitsAndResources();
+		this.endOfRoundAddUnits();
+		// feed units and remove if out of food
+		this.feedUnits();
+		// harvest resources from owned territories
+		this.harvestTerritories();
 		
 		for(Player p : myGame.getPlayers()){
 			System.out.println(p.getName()+" units: "+p.getNumToFeed());
@@ -245,9 +248,18 @@ public class GameModel implements ServerConstants {
 		t.addUnit(new Unit(t.getOwner(),unitID++));
 	}
 
-	private void endOfRoundAddUnitsAndResources(){
+	private void endOfRoundAddUnits(){
 		for(Territory t : myGame.getMap().getTerritories()){
 			this.addNewUnit(t);
+		}
+	}
+	
+	private void feedUnits(){
+		
+	}
+	
+	private void harvestTerritories(){
+		for(Territory t : myGame.getMap().getTerritories()){
 			t.harvestResources();
 		}
 	}
