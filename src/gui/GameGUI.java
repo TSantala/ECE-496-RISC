@@ -126,10 +126,10 @@ public class GameGUI extends JFrame implements ServerConstants {
 		leftPane.setLayout(new BorderLayout());
 		commandInfo = new JTextArea(7,7);
 		commandInfo.setEditable(false);
-		leftPane.add(commandInfo, BorderLayout.NORTH);
+		leftPane.add(commandInfo, BorderLayout.CENTER);
 		playerInfo = new JTextArea(7,7);
 		playerInfo.setEditable(false);
-		leftPane.add(playerInfo, BorderLayout.SOUTH);
+		leftPane.add(playerInfo, BorderLayout.NORTH);
 		
 		JPanel buttonPane = new JPanel();
 		buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.PAGE_AXIS));
@@ -159,7 +159,7 @@ public class GameGUI extends JFrame implements ServerConstants {
 		myCommandList.addCommand(c);
 		
 		String cmds = myCommandList.toString();
-		commandInfo.setText(cmds);
+		commandInfo.setText("  COMMAND LIST INFORMATION\n"+cmds);
 	}
 
 	public void sendCommandList(){
@@ -171,14 +171,16 @@ public class GameGUI extends JFrame implements ServerConstants {
 	}
 
 	public void updateTerritoryInfo(Territory t){
-		territoryInfo.setText("Territory owner = "+t.getOwner().getName()+"  \n"+
+		territoryInfo.setText("  TERRITORY INFORMATION\n" +
+				"  Territory owner = "+t.getOwner().getName()+"  \n"+
 				"  Number of Units = "+t.getUnits().size()+"  \n");
 	}
 	
 	public void updatePlayerInfo(){
-		playerInfo.setText("Player: "+myPlayer.getName()+"\n"+
-				"Food = "+myPlayer.getFoodAmount()+"\n"+
-				"Technology = "+myPlayer.getTechAmount()+"\n");
+		playerInfo.setText("  PLAYER INFORMATION\n"+
+				"  Player: "+myPlayer.getName()+"\n"+
+				"  Food = "+myPlayer.getFoodAmount()+"\n"+
+				"  Technology = "+myPlayer.getTechAmount()+"\n");
 	}
 
 	public Player getPlayer(){

@@ -53,7 +53,7 @@ public class CommandList extends Message implements Serializable {
 	    String s = "";
 	    for (Command cmd : myCommands)
 	    {
-	        s = s + cmd.toString() + "\n";
+	        s = s + "  " + cmd.toString() + "\n";
 	    }
 	    return s;
 	}
