@@ -30,6 +30,14 @@ public class Player implements Serializable, GameConstants {
 		return myPlayer.getName();
 	}
 	
+	public int getFoodAmount(){
+		return myFood.getAmount();
+	}
+	
+	public int getTechAmount(){
+		return myTech.getAmount();
+	}
+	
 	public Collection<Unit> getUnits(){
 		return myUnits;
 	}

@@ -32,6 +32,7 @@ public class GameGUI extends JFrame implements ServerConstants {
 	private JTextArea output;
 	private JTextArea territoryInfo;
 	private JTextArea commandInfo;
+	private JTextArea playerInfo;
 	private JScrollPane scrollingOutput;
 	private JPanel mainPane;
 	private ObjectClient myClient;
@@ -44,7 +45,7 @@ public class GameGUI extends JFrame implements ServerConstants {
 
 	private Territory leftClick;		// maybe hue territory color with blue?
 	private Territory rightClick;		// maybe hue territory color with red?
-	private List<Unit> selectedUnits = new ArrayList<Unit>();
+	//private List<Unit> selectedUnits = new ArrayList<Unit>();
 	
 	private JButton myCommitButton = new CommitButton(this);
 
@@ -53,7 +54,6 @@ public class GameGUI extends JFrame implements ServerConstants {
 	public GameGUI(ObjectClient client){
 		myClient = client;
 		myGame = myClient.getGameState();
-		System.out.println("2");
 	}
 
 	public void updateGameState(GameState gs){
@@ -63,7 +63,6 @@ public class GameGUI extends JFrame implements ServerConstants {
 		}
 		else {
 			mainPane.remove(myGameGraphic);
-			//System.out.println(gs.getPlayer("timo").getUnits().size());
 			myGameGraphic = new GameGraphic(this, gs);
 			myGameGraphic.revalidate();
 			myGameGraphic.repaint();
@@ -111,8 +110,6 @@ public class GameGUI extends JFrame implements ServerConstants {
 		mainPane = new JPanel();
 		mainPane.setLayout(new BorderLayout());
 
-		System.out.println("4.5: ln 93 in GameGUI");
-
 		//GameGraphic game = new GameGraphic(this,myGame);
 		lobbyPanel = new LobbyPane(myClient);
 		mainPane.add(lobbyPanel,BorderLayout.CENTER);
@@ -127,7 +124,10 @@ public class GameGUI extends JFrame implements ServerConstants {
 		leftPane.setLayout(new BorderLayout());
 		commandInfo = new JTextArea(7,7);
 		commandInfo.setEditable(false);
-		leftPane.add(commandInfo, BorderLayout.CENTER);
+		leftPane.add(commandInfo, BorderLayout.NORTH);
+		playerInfo = new JTextArea(7,7);
+		playerInfo.setEditable(false);
+		leftPane.add(playerInfo, BorderLayout.SOUTH);
 		
 		JPanel buttonPane = new JPanel();
 		buttonPane.setLayout(new BorderLayout());
@@ -171,14 +171,15 @@ public class GameGUI extends JFrame implements ServerConstants {
 		territoryInfo.setText("Territory owner = "+t.getOwner().getName()+"  \n"+
 				"  Number of Units = "+t.getUnits().size()+"  \n");
 	}
+	
+	public void updatePlayerInfo(){
+		playerInfo.setText("Player: "+myPlayer.getName()+"\n"+
+				"Food = "+myPlayer.getFoodAmount()+"\n"+
+				"Technology = "+myPlayer.getTechAmount()+"\n");
+	}
 
 	public Player getPlayer(){
 		return myPlayer;
-	}
-	
-	public void setPlayer(String player){
-		myPlayer = myGame.getPlayer(player);
-		myFrame.setTitle("RISC - " + player);
 	}
 	
 	public void setPlayer(ServerPlayer sp){
