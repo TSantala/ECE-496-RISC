@@ -23,49 +23,49 @@ public class GameModel implements ServerConstants {
 		return myGame;
 	}
 
-	public void setInitialUnits(CommandList cl){
-		// List will only contain MoveCommands.
-		for(Command place : cl.getCommands()){
-			Player serverPlayer = myGame.getPlayer(place.getPlayer().getName());
-			Territory serverTerritory = myGame.getMap().getTerritory(place.getFrom().getID());
-			serverPlayer.getUnits().addAll(place.getUnits());
-			serverTerritory.addUnits(place.getUnits());
-		}
-	}
-
 	public void placeUnits(Player p, Territory t, List<Unit> units){
+
 		if (units.size() > 0){
 			Player serverPlayer = myGame.getPlayer(p.getName());
 			Territory serverTerritory = myGame.getMap().getTerritory(t.getID());
-			serverPlayer.getUnits().addAll(units);
+			serverPlayer.addUnits(units);
 			serverTerritory.addUnits(units);
 		}
 	}
 
 	public void performCommands(CommandList cl){
-		System.out.println("in perform commands");
-		System.out.println(cl.getCommands().size());
+		
 		myPrevious = myGame.clone();
-
-		// TIMO THIS LINE IS BROKEN, CAN YOU FIX IT PLEASE?
-		cl = this.createServerCommandList(cl);
-
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!Model Reached the placeCommands in perform Commands!!!!!!!!!!!!!!!!!!");
+		
 		List<Command> placeCommands = cl.getCommands(AddUnitCommand.class);
 		for(Command place : placeCommands){
 			place.enact(this);
 			cl.removeCommand(place);
 		}
 
+		cl = this.createServerCommandList(cl);
+		
+		for(Player p : myGame.getPlayers()){
+			System.out.println(p.getName()+" units: "+p.getNumToFeed());
+		}
+		
+		//for upgrading
+//		List<Command> upgradeCommands = cl.getCommands(UpgradeCommand.class);
+//		for(Command upgrade : upgradeCommands)
+//		{
+//		    upgrade.enact(this);
+//		    cl.removeCommand(upgrade);
+//		}
+
 		List<Command> moveCommands = cl.getCommands(MoveCommand.class);
 		for(Command move : moveCommands){
-			move.enact(this);
+			if(!(this.move(move.getPlayer(),move.getFrom(),move.getTo(),move.getUnits(),false))) return;
 			cl.removeCommand(move);
 		}
-		System.out.println("IS ATTACK STILL HERE?");
+		
 		// In this first implementation, only Attack commands are now left.
 		// first check validity of attacks.
-		this.checkValidAttacks(cl.getCommands());
+		if(!checkValidAttacks(cl.getCommands())) return;
 		// check if attack swaps and enact them.
 		this.checkAttackSwaps(cl.getCommands());
 		// attacking units don't defend; remove them from the territories.
@@ -76,9 +76,16 @@ public class GameModel implements ServerConstants {
 		for(Command attack : cl.getCommands())
 			attack.enact(this);
 		// add 1 unit to each territory.
-		//this.endOfRoundAddUnits();
+
+		this.endOfRoundAddUnitsAndResources();
+		
+		for(Player p : myGame.getPlayers()){
+			System.out.println(p.getName()+" units: "+p.getNumToFeed());
+		}
+		
 		// return updated game after commands enacted to clients.
 		this.sendUpdatedGameState();
+				
 	}
 
 	private CommandList createServerCommandList(CommandList cl) {
@@ -117,21 +124,25 @@ public class GameModel implements ServerConstants {
 		return toReturn;
 	}
 
-	public void move(Player p, Territory from, Territory to, List<Unit> units, boolean swapOverride){
+	public boolean move(Player p, Territory from, Territory to, List<Unit> units, boolean swapOverride){
 		if(myGame.getMap().hasPath(from,to,p) || swapOverride){
 			from.removeUnits(units);
 			to.addUnits(units);
 		}
 		else{
 			this.redoTurnErrorFound("Invalid move!");
+			return false;
 		}
+		return true;
 	}
 
 	public void attack(Player p, Territory from, Territory to, List<Unit> units){
-		System.out.println("BEEP");
+
 		List<Unit> opposingUnits = to.getUnits();
+		Player opponent = to.getOwner();
+		
 		if(opposingUnits.size()!=0){
-			Player opponent = to.getOwner();
+			
 			if(p.getName().equals(opponent.getName())){
 				// swap must have occurred, you own it already!
 				this.move(p, from, to, units, false);
@@ -147,22 +158,25 @@ public class GameModel implements ServerConstants {
 				else{
 					System.out.println("Defender wins!");
 					p.removeUnit(offense);
+					units.remove(offense);
 				}
 			}
 		}
 		if(!units.isEmpty()){
 			p.addTerritory(to);
+			opponent.removeTerritory(to);
 			to.addUnits(units);
 		}
 	}
 
-	public void checkValidAttacks(List<Command> cl){
-		System.out.println("CHECKING VALID ATTACKS");
+	public boolean checkValidAttacks(List<Command> cl){
 		for(Command c : cl){
 			if(!myGame.getMap().canAttack(c.getFrom(),c.getTo(),c.getPlayer())){
 				this.redoTurnErrorFound("Invalid attack!");
+				return false;
 			}					
 		}
+		return true;
 	}
 
 	public void checkAttackSwaps(List<Command> cl){
@@ -226,19 +240,20 @@ public class GameModel implements ServerConstants {
 	}
 
 	private void addNewUnit(Territory t){
+	    //not sure if you want to consume food here timo, or consume at the end of every turn 
+	    //if(t.getOwner().getFood != 0)  
 		t.addUnit(new Unit(t.getOwner(),unitID++));
 	}
 
-	private void endOfRoundAddUnits(){
-		for(Player p : myGame.getPlayers()){
-			for(Territory t : p.getTerritories()){
-				this.addNewUnit(t);
-			}
+	private void endOfRoundAddUnitsAndResources(){
+		for(Territory t : myGame.getMap().getTerritories()){
+			this.addNewUnit(t);
+			t.harvestResources();
 		}
 	}
 
 	private void redoTurnErrorFound(String message){
-		System.out.println("AN ERROR HAS OCCURRED!!!");
+		System.out.println("AN ERROR HAS OCCURRED!!!: "+message);
 		myGame = myPrevious;
 		// return myGame (unaltered) to the clients, send error message, and request turn startover.
 		sendUpdatedGameState();

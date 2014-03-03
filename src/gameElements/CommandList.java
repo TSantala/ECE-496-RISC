@@ -1,5 +1,7 @@
 package gameElements;
-
+/*
+ * What's sent to server from client every time
+ */
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
