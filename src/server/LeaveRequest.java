@@ -2,6 +2,11 @@ package server;
 
 public class LeaveRequest extends Message{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public LeaveRequest() {
 		// TODO Auto-generated constructor stub
 	}

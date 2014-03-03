@@ -1,13 +1,13 @@
 package server;
 
 import gameElements.CommandList;
-import gameElements.GameState;
-import gameElements.GameModel;
-import gameElements.Player;
+import gameElements.SaveGame;
 import gameElements.ServerGame;
-import gameElements.Territory;
-import gameElements.Unit;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
@@ -19,8 +19,25 @@ public class ObjectServer extends Thread implements ServerConstants{
 	private List<ServerPlayer> myLobby = new ArrayList<ServerPlayer>();
 	private List<ServerGame> myGames = new ArrayList<ServerGame>();
 
-	public ObjectServer(){
+	public ObjectServer(boolean readData){
+		if (readData){
+			try{
+				FileInputStream saveFile = new FileInputStream(".//serverData.sav");
+				ObjectInputStream save = new ObjectInputStream(saveFile);
 
+				List<SaveGame> tempData = (List<SaveGame>) save.readObject();
+
+				save.close();
+
+				for(SaveGame game : tempData){
+					myGames.add(new ServerGame(game.getInfo(),game.getState(),this));
+				}
+			}
+			catch(Exception exc){
+				exc.printStackTrace();
+				System.out.println("couldn't read the data");
+			}
+		}
 	}
 
 	public void run(){
@@ -33,12 +50,13 @@ public class ObjectServer extends Thread implements ServerConstants{
 			while (true) {
 				Socket connection = socket1.accept();
 				ObjectSocket runnable = new ObjectSocket(connection, ++count, this);
-				//myConnections.put(runnable, null);
 				Thread thread = new Thread(runnable);
 				thread.start();
 			}
 		}
-		catch (Exception e) {}
+		catch (Exception e) {
+			System.out.println("error making a new socket connection in the server");
+		}
 	}
 
 	public Collection<ObjectSocket> getConnections(){
@@ -58,14 +76,12 @@ public class ObjectServer extends Thread implements ServerConstants{
 		for (ServerPlayer player : myLobby){
 			myPlayers.get(player).sendMessage(new TextMessage(myConnections.get(os).getName()+": "+m.getMessage()));
 		}
-		/*for(ObjectSocket s : this.getConnections()){
-			s.sendMessage(new TextMessage(myConnections.get(os).getName() + ": " + m.getMessage()));
-		}*/
 	}
 
 	public void sendUpdatedGame(Message m, ServerGame serverGame){
 		for(ServerPlayer player : serverGame.getInfo().getPlayers())
 			myPlayers.get(player).sendMessage(m);
+		this.backupData();
 	}
 
 	public synchronized void receiveCommandList(CommandList ls){
@@ -77,6 +93,12 @@ public class ObjectServer extends Thread implements ServerConstants{
 	}
 
 	public synchronized void removeConnection(ObjectSocket ms){
+		for(ServerGame game : myGames){
+			if(game.getInfo().getPlayers().contains(myConnections.get(ms))){
+				game.getInfo().removePlayer(myConnections.get(ms));
+			}
+		}
+		myPlayers.remove(myConnections.get(ms));
 		myConnections.remove(ms);
 	}
 
@@ -99,6 +121,7 @@ public class ObjectServer extends Thread implements ServerConstants{
 		myConnections.put(os, temp);
 		myLobby.add(temp);
 		os.sendMessage(new InitialConnect(name,pass));
+		this.updateGameInfo();
 	}
 
 	public synchronized void updateGameInfo(){
@@ -114,40 +137,23 @@ public class ObjectServer extends Thread implements ServerConstants{
 				this.updateGameInfo();
 			}
 		}
-		
 	}
 
+	private void backupData(){
+		List<SaveGame> data = new ArrayList<SaveGame>();
+		for(ServerGame game : myGames){
+			data.add(game.saveGame());
+		}
 
-	/*public void initialConnect(ObjectSocket os, InitialConnect ic){
-		myConnections.put(os, ic.getName());
-		myPlayers.put(ic.getName(),os);
-		if (myPlayers.keySet().size() == 1){
-			os.promptNewGame();
+		try{
+			FileOutputStream saveFile=new FileOutputStream(".//serverData.sav");
+			ObjectOutputStream save = new ObjectOutputStream(saveFile);
+			save.writeObject(data);
+			save.close();
 		}
-		else if (myPlayers.keySet().size() < numPlayers){
-			for(ObjectSocket connection : myConnections.keySet()){
-				connection.sendMessage(new TextMessage(ic.getName()+" has joined the game!\nWaiting for additional Players... "+myPlayers.size()+"/"+numPlayers+"."));
-			}
+		catch(Exception exc){
+			exc.printStackTrace();
 		}
-		else{
-			System.out.println("server sending start game information!");
-			GameState gs = new GameState(myConnections.values(), DEFAULT_NUM_TERRITORIES);
-			myModel = new GameModel(gs);
-			myModel.setServer(this);
-			this.sendUpdatedGame(gs);
-			for(String player : myPlayers.keySet()){
-				myPlayers.get(player).sendMessage(new InitialConnect(player));
-			}
-		}
-	}*/
-
-	/*public void setNumPlayers(int num){
-		numPlayers = num;
-		/////////// HERE IS WHERE I"M MAKING EXTRA CLIENTS FOR TESTING PURPOSES!
-<<<<<<< HEAD
-		System.out.println("Extra client created after the host chooses num of players.  ObjectServer ln 110");
-		ObjectClient myClient2 = new ObjectClient();
-		myClient2.start();
-	}*/
+	}
 
 }

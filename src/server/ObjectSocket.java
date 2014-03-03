@@ -1,27 +1,17 @@
 package server;
 
-import gameElements.AddUnitCommand;
-import gameElements.CommandList;
-import gameElements.GameState;
-import gameElements.Player;
-import gameElements.Territory;
-
 import java.net.*;
 import java.io.*;
 
 public class ObjectSocket extends Thread implements ServerConstants{
 
 	private Socket myConnection;
-	//private String myTimeStamp;
 	private ObjectServer myServer;
-	//private int myID;
 	private ObjectOutputStream oos ;
 	private ObjectInputStream ois;
-	//private String id;
 
 	public ObjectSocket(Socket socket, int id, ObjectServer server) {
 		myConnection = socket;
-		//myID = id;
 		myServer = server;
 		try {
 			ois = new ObjectInputStream(myConnection.getInputStream());
@@ -42,25 +32,8 @@ public class ObjectSocket extends Thread implements ServerConstants{
 		}
 	}
 
-	/*public synchronized void promptNewGame(){
-		try{
-			InitialConnect ic = new InitialConnect("");
-			ic.setHost();
-			oos.writeObject(ic);
-			oos.flush();
-		} catch (IOException e) {
-			System.out.println("Failed to prompt first user for a new game.");
-		}
-	}*/
-
 	@Override
-	public void run() {/*
-		try {
-			InitialConnect initial = (InitialConnect)ois.readObject();
-			myServer.initialConnect(this, initial);
-		} catch (Exception e){
-			System.out.println("Error reading initial client state");
-		}*/
+	public void run() {
 
 		while(true){
 			try {
@@ -69,7 +42,8 @@ public class ObjectSocket extends Thread implements ServerConstants{
 				m.sendMessageToServer(myServer);
 			}
 			catch (Exception e) {
-				System.out.println(e);
+				System.out.println("The socket connection was closed unexpectedly");
+				myServer.removeConnection(this);
 				try {
 					myConnection.close();
 				} catch (IOException e1) {

@@ -1,12 +1,17 @@
 package gameElements;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import server.ServerConstants;
 
-public class GameModel implements ServerConstants {
+public class GameModel implements ServerConstants, Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private ServerGame myServer;
 	private GameState myPrevious;
 	private GameState myGame;

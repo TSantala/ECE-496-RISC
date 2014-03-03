@@ -5,7 +5,8 @@ import server.ObjectServer;
 import server.PromptUnits;
 import server.ServerPlayer;
 
-public class ServerGame extends Thread {
+public class ServerGame extends Thread{
+	
 	private GameInfo myInfo;
 	private GameState myGame;
 	private ObjectServer myServer;
@@ -18,6 +19,19 @@ public class ServerGame extends Thread {
 	public ServerGame(String gameName, int numPlayers, ObjectServer os) {
 		myInfo = new GameInfo(gameName, numPlayers);
 		myServer = os;
+	}
+	
+	public ServerGame(GameInfo info, GameState game, ObjectServer os){
+		myInfo = info;
+		myInfo.getPlayers().clear();
+		myGame = game;
+		myServer = os;
+		myModel = new GameModel(myGame,this);
+		if(!myInfo.getOriginalPlayers().isEmpty()){
+			unitsPlaced = true;
+			inProgress = true;
+			this.start();
+		}
 	}
 	
 	public void run(){
@@ -79,6 +93,10 @@ public class ServerGame extends Thread {
 
 	public void updateGame() {
 		myServer.sendUpdatedGame(myGame, this);
+	}
+	
+	public SaveGame saveGame(){
+		return new SaveGame(myInfo,myGame);
 	}
 
 }
