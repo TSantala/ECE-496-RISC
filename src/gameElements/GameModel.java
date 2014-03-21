@@ -44,12 +44,6 @@ public class GameModel implements ServerConstants, Serializable {
 
 		myPrevious = myGame.clone();
 
-		List<Command> placeCommands = cl.getCommands(AddUnitCommand.class);
-		for(Command place : placeCommands){
-			place.enact(this);
-			cl.removeCommand(place);
-		}
-
 		cl = this.createServerCommandList(cl);
 
 		for(Player p : myGame.getPlayers()){
@@ -190,7 +184,7 @@ public class GameModel implements ServerConstants, Serializable {
 		if(opposingUnits.size()!=0){
 
 			while(!units.isEmpty() && !opposingUnits.isEmpty()){
-				Unit offense = units.get(units.size()-1);                                       // Pick final unit in arraylist for faster runtime.
+				Unit offense = units.get(units.size()-1);                    // Pick final unit in arraylist for faster runtime.
 				Unit defense = opposingUnits.get(opposingUnits.size()-1);
 				if(Math.ceil(ATTACK_DIE*Math.random()) > Math.ceil(ATTACK_DIE*Math.random())){
 					System.out.println("Attacker wins!");
@@ -359,6 +353,14 @@ public class GameModel implements ServerConstants, Serializable {
 	private void sendUpdatedGameState(){
 		System.out.println("Model logic completed!!!");
 		myServer.updateGame();
+	}
+
+	public void upgradeUnit(Unit u) {
+		myGame.upgradeUnit(u);
+	}
+	
+	public void upgradePlayer(Player p){
+		myGame.upgradePlayer(p);
 	}
 
 }
