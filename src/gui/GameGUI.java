@@ -8,6 +8,7 @@ import gameElements.GameInfo;
 import gameElements.GameState;
 import gameElements.MoveCommand;
 import gameElements.Player;
+import gameElements.SpyCommand;
 import gameElements.Territory;
 import gameElements.Unit;
 import gameElements.UpgradePlayerCommand;
@@ -143,6 +144,7 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 		buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.PAGE_AXIS));
 		buttonPane.add(new MoveButton(this));
 		buttonPane.add(new AttackButton(this));
+		buttonPane.add(new SpyButton(this));
 		buttonPane.add(new UpgradeUnitButton(this));
 		buttonPane.add(myPlayerButton);
 		buttonPane.add(new LeaveButton(this));
@@ -181,7 +183,7 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 
 	public void updateTerritoryInfo(Territory t){
 		territoryInfo.setText("  TERRITORY INFORMATION\n" +
-				"  Territory owner = "+t.getOwner().getName()+"  \n"+
+				"  Territory owner = "+t.getOwner().getName()+", Level: "+t.getOwner().getTechLevel()+"\n"+
 				"  Number of Units = "+t.getUnits().size()+"  \n"+
 				t.getUnitInfo()+
 				"  Food Collection Rate = 10\n"+
@@ -273,5 +275,11 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 		List<Unit> toSend = new ArrayList<Unit>();
 		toSend.addAll(u);
 		this.addCommand(new AttackCommand(myGame.getPlayer(myPlayer.getName()),this.getLeftClick(),this.getRightClick(),toSend));
+	}
+	
+	public void addSpyCommand(Collection<Unit> u){
+		List<Unit> toSend = new ArrayList<Unit>();
+		toSend.addAll(u);
+		this.addCommand(new SpyCommand(toSend));
 	}
 }

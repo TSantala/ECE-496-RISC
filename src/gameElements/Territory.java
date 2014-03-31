@@ -9,7 +9,7 @@ public class Territory implements Serializable, GameConstants
 	private static final long serialVersionUID = 8L;
 
 	private Player myOwner;
-	private Collection<Unit> myUnits = new PriorityQueue<Unit>();
+	private List<Unit> myUnits = new ArrayList<Unit>();
 	private List<Territory> myNeighbors;
 	private int myID;
 	private List<Resource> myResources= new ArrayList<Resource>();
@@ -50,13 +50,8 @@ public class Territory implements Serializable, GameConstants
 	}
 
 	public List<Unit> getUnits(){
-		Collection<Unit> temp = new PriorityQueue<Unit>();
-		for(Unit u : myUnits){
-			temp.add(u);
-		}
-		myUnits = new PriorityQueue<Unit>();
-		myUnits.addAll(temp);
-		return new ArrayList<Unit>(myUnits);
+		Collections.sort(myUnits);
+		return myUnits;
 	}
 
 	public int getID() {

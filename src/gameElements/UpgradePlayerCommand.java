@@ -14,7 +14,7 @@ public class UpgradePlayerCommand extends Command implements Serializable {
 	}
 
 	public String toString(){
-		String temp  = "Upgrade " +  myPlayer.getName() + " units.\n";
+		String temp  = "Upgrade " +  myPlayer.getName() + ".\n";
 		return temp;
 	}
 

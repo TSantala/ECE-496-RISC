@@ -45,9 +45,11 @@ public class GameModel implements ServerConstants, Serializable {
 		myPrevious = myGame.clone();
 
 		cl = this.createServerCommandList(cl);
-
-		for(Player p : myGame.getPlayers()){
-			System.out.println(p.getName()+" units: "+p.getNumToFeed());
+		
+		List<Command> spies = cl.getCommands(SpyCommand.class);
+		for(Command c : spies){
+			this.makeSpies(c.getUnits());
+			cl.removeCommand(c);
 		}
 		
 		List<Command> upgradePlayers = cl.getCommands(UpgradePlayerCommand.class);
@@ -86,11 +88,7 @@ public class GameModel implements ServerConstants, Serializable {
 		this.feedUnits();
 		// harvest resources from owned territories
 		this.harvestTerritories();
-
-		for(Player p : myGame.getPlayers()){
-			System.out.println(p.getName()+" units: "+p.getNumToFeed());
-		}
-
+		
 		this.catchSpies();
 
 		// return updated game after commands enacted to clients.
@@ -105,6 +103,12 @@ public class GameModel implements ServerConstants, Serializable {
 		List<Command> moveCommands = cl.getCommands(MoveCommand.class);
 		List<Command> placeCommands = cl.getCommands(AddUnitCommand.class);
 		List<Command> unitCommands = cl.getCommands(UpgradeUnitCommand.class);
+		List<Command> spyCommands = cl.getCommands(SpyCommand.class);
+		
+		for(Command c : spyCommands){
+			cl.removeCommand(c);
+			toReturn.addCommand(new SpyCommand(this.getServerUnits(c.getUnits())));
+		}
 		
 		for(Command c : playerCommands){
 			cl.removeCommand(c);
@@ -355,21 +359,15 @@ public class GameModel implements ServerConstants, Serializable {
 		}
 	}
 
-	private void catchSpies()
-	{
-		for (Territory t : myGame.getMap().getTerritories())
-		{
-			for (Unit u : t.getUnits())
-			{
-				if(u.isSpy())
-				{
+	private void catchSpies(){
+		for (Territory t : myGame.getMap().getTerritories()){
+			for (Unit u : t.getUnits()){
+				if(u.isSpy()){
 					int percentChance = u.getTurnCount()*7+1;
-					if(Math.random()*100 < percentChance)
-					{
+					if(Math.random()*100 < percentChance){
 						killSpy(u, t);
 					}
-					else 
-					{
+					else {
 						u.setTurnCount(u.getTurnCount()+1);
 					}
 				}
@@ -377,8 +375,7 @@ public class GameModel implements ServerConstants, Serializable {
 		}
 	}
 
-	private void killSpy(Unit spy, Territory territory)
-	{
+	private void killSpy(Unit spy, Territory territory){
 		territory.removeUnit(spy);
 	}
 
@@ -386,7 +383,7 @@ public class GameModel implements ServerConstants, Serializable {
 		System.out.println("AN ERROR HAS OCCURRED!!!: "+message);
 		myGame = myPrevious;
 		// return myGame (unaltered) to the clients, send error message, and request turn startover.
-		sendUpdatedGameState();
+		this.sendUpdatedGameState();
 	}
 
 	private void sendUpdatedGameState(){
@@ -402,6 +399,11 @@ public class GameModel implements ServerConstants, Serializable {
 
 	public void upgradePlayer(Player p){
 		myGame.upgradePlayer(p);
+	}
+
+	public void makeSpies(List<Unit> l) {
+		for(Unit u : l)
+			myGame.makeSpy(u);
 	}
 
 }

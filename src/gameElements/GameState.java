@@ -112,5 +112,13 @@ public class GameState extends Message implements Serializable {
 	public void upgradePlayer(Player p) {
 		this.getPlayer(p.getName()).upgradePlayer();
 	}
+	
+	public void makeSpy(Unit u){
+		this.getUnit(u.getID()).toggleSpy();
+	}
+
+	public void clearMap() {
+		//myMap.clear();			TO-DO...
+	}
 
 }

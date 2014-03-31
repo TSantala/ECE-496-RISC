@@ -9,7 +9,6 @@ public class UpgradePlayerButton extends JButton{
 
 	private static final long serialVersionUID = 1L;
 	private GameGUI myGUI;
-	private JButton myButton = this;
 
 	public UpgradePlayerButton(GameGUI gui) {
 		super("Tech Up!");

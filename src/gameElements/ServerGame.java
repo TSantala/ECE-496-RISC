@@ -7,7 +7,7 @@ import server.PromptUnits;
 import server.ServerPlayer;
 
 public class ServerGame extends Thread{
-	
+
 	private GameInfo myInfo;
 	private GameState myGame;
 	private ObjectServer myServer;
@@ -21,7 +21,7 @@ public class ServerGame extends Thread{
 		myInfo = new GameInfo(gameName, numPlayers);
 		myServer = os;
 	}
-	
+
 	public ServerGame(GameInfo info, GameState game, ObjectServer os){
 		myInfo = info;
 		myInfo.getPlayers().clear();
@@ -34,21 +34,21 @@ public class ServerGame extends Thread{
 			this.start();
 		}
 	}
-	
+
 	public void run(){
 		long startTime = System.currentTimeMillis();
 		long elapsedTime = 0L;
 
 		while (true) {
-		    //perform db poll/check
-		    elapsedTime = System.currentTimeMillis() - startTime;
-		    if (elapsedTime > 1*10*1000){
-		    	//startTime = System.currentTimeMillis();
-		    	//System.out.println("It's been 10 seconds! processing commands");
-		    	//this.processCommands();
-		    }
+			//perform db poll/check
+			elapsedTime = System.currentTimeMillis() - startTime;
+			if (elapsedTime > 1*10*1000){
+				//startTime = System.currentTimeMillis();
+				//System.out.println("It's been 10 seconds! processing commands");
+				//this.processCommands();
+			}
 		}
-		
+
 	}
 
 	public GameInfo getInfo(){
@@ -80,14 +80,14 @@ public class ServerGame extends Thread{
 			}
 		}		
 	}
-	
+
 	public void processCommands(){
 		System.out.println("All commands received! Sending to model! Numcommands = " + turnCommands.getCommands().size());
 		myModel.performCommands(turnCommands);
 		turnCommands.clear();
 		commandsReceived = 0;
 	}
-	
+
 	public void updateGame(Message m) {
 		myServer.sendUpdatedGame(m, this);
 	}
@@ -95,24 +95,21 @@ public class ServerGame extends Thread{
 	public void updateGame() {
 		myServer.sendUpdatedGame(myGame, this);
 	}
-	
-	public void editVision() //maps players to updated vision restricted gamestates
-	{
-	    HashMap<Player, GameState> playerToGameState  = new HashMap<Player, GameState>();
-	    for (Player p : myGame.getPlayers())
-	    {
-                GameState individualGame = myGame.clone();
-                playerToGameState.put(p, individualGame);
-	        for (Territory t : individualGame.getMap().getTerritories())
-	        {
-	            if (t.getOwner().equals(p) || t.isAdjacentTo(p) || t.hasSpy()) //3 conditions for revealing vision
-	            {
-	                
-	            }
-	        }
-	    }
+
+	public void editVision(){
+		HashMap<Player, GameState> playerToGameState  = new HashMap<Player, GameState>();
+		for (Player p : myGame.getPlayers()){
+			GameState individualGame = myGame.clone();
+			individualGame.clearMap();
+			playerToGameState.put(p, individualGame);
+			for (Territory t : individualGame.getMap().getTerritories()){
+				if (t.getOwner().equals(p) || t.isAdjacentTo(p) || t.hasSpy()){
+					
+				}
+			}
+		}
 	}
-	
+
 	public SaveGame saveGame(){
 		return new SaveGame(myInfo,myGame);
 	}

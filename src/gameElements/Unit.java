@@ -47,20 +47,23 @@ public class Unit implements Serializable, GameConstants, Comparable<Unit>
 		myTechLevel = i;
 	}
 
+	public boolean toggleSpy(){
+		if(myOwner.getTechAmount()>=5) {
+			myOwner.adjustResource(new Technology(-5));
+			isSpy = !isSpy;
+			return true;
+		}
+		return false;
+	}
+
 	public boolean upgradeUnit(){ //must differentiate between spy and not spy
-		if (isSpy)
-		{
-			if(myOwner.getTechAmount()>5) //HARD CODED 5 AS VALUE TO RETURN SPY
-			{
-				myOwner.adjustResource(new Technology(-5));
-				return true;
-			}
-			return false;
+		if (isSpy){
+			return this.toggleSpy();
 		}
 		else{
 			System.out.println("UPGRADING!! Not a spy...");
 			if(myOwner.getTechLevel()>myTechLevel){
-				if(myOwner.getTechAmount()>UNIT_TECH_TREE.getCost(myTechLevel)){
+				if(myOwner.getTechAmount()>=UNIT_TECH_TREE.getCost(myTechLevel)){
 					myOwner.adjustResource(new Technology(-UNIT_TECH_TREE.getCost(myTechLevel)));
 					myTechLevel++;
 					return true;
@@ -74,11 +77,11 @@ public class Unit implements Serializable, GameConstants, Comparable<Unit>
 	}
 
 	public int getCombatBonus(){
-		return UNIT_TECH_TREE.getCombatBonus(myTechLevel);
+		return isSpy ? 0 : UNIT_TECH_TREE.getCombatBonus(myTechLevel);
 	}
 
 	public String getType(){
-		return UNIT_TECH_TREE.getUnitType(myTechLevel);
+		return isSpy ? "Spy" : UNIT_TECH_TREE.getUnitType(myTechLevel);
 	}
 
 	public boolean isSpy(){
