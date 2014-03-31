@@ -100,7 +100,29 @@ public class Territory implements Serializable, GameConstants
 		toReturn.addUnits(newUnits);
 		return toReturn;
 	}
-
+	
+        public boolean isAdjacentTo (Player p) //if the territory is adjacent to any of the player's territories
+        { 
+            for (Territory t : p.getTerritories())
+            {
+                if (myNeighbors.contains(t))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        public boolean hasSpy()
+        {
+            for (Unit u : myUnits)
+            {
+                if (u.isSpy())
+                    return true;
+            }
+            return false;
+        }
+	
 	public String getUnitInfo(){
 		if(myUnits.size()==0) return "No units!";
 		String toReturn = "";
