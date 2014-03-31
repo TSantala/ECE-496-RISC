@@ -42,8 +42,14 @@ public class Player implements Serializable, GameConstants {
 		return myTech.getAmount();
 	}
 	
-	public Collection<Unit> getUnits(){
-		return (List<Unit>) myUnits;
+	public List<Unit> getUnits(){
+		Collection<Unit> temp = new PriorityQueue<Unit>();
+		for(Unit u : myUnits){
+			temp.add(u);
+		}
+		myUnits = new PriorityQueue<Unit>();
+		myUnits.addAll(temp);
+		return new ArrayList<Unit>(myUnits);
 	}
 	
 	public boolean feedUnit(){

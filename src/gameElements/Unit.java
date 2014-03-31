@@ -42,6 +42,10 @@ public class Unit implements Serializable, GameConstants, Comparable<Unit>
 	public int getTechLevel(){
 		return myTechLevel;
 	}
+	
+	public void setTechLevel(int i){
+		myTechLevel = i;
+	}
 
 	public boolean upgradeUnit(){ //must differentiate between spy and not spy
 	    if (isSpy)

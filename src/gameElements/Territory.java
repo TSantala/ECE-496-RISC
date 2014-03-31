@@ -3,7 +3,7 @@ package gameElements;
 import java.io.Serializable;
 import java.util.*;
 
-public class Territory implements Serializable 
+public class Territory implements Serializable, GameConstants 
 {
 
 	private static final long serialVersionUID = 8L;
@@ -50,7 +50,13 @@ public class Territory implements Serializable
 	}
 	
 	public List<Unit> getUnits(){
-		return (List<Unit>) myUnits;
+		Collection<Unit> temp = new PriorityQueue<Unit>();
+		for(Unit u : myUnits){
+			temp.add(u);
+		}
+		myUnits = new PriorityQueue<Unit>();
+		myUnits.addAll(temp);
+		return new ArrayList<Unit>(myUnits);
 	}
 	
 	public int getID() {
@@ -97,7 +103,7 @@ public class Territory implements Serializable
 		toReturn.addUnits(newUnits);
 		return toReturn;
 	}
-
+	
         public boolean isAdjacentTo (Player p) //if the territory is adjacent to any of the player's territories
         { 
             for (Territory t : p.getTerritories())
@@ -119,4 +125,32 @@ public class Territory implements Serializable
             }
             return false;
         }
+	
+	public String getUnitInfo(){
+		if(myUnits.size()==0) return "No units!";
+		String toReturn = "";
+		List<Unit> sortedUnits = this.getUnits();
+		int spies = 0;
+		for(Unit u : sortedUnits){
+			if(u.isSpy()){
+				spies++;
+			}
+		}
+		toReturn += "("+spies+") Spy\n";
+		int techLev = sortedUnits.get(0).getTechLevel();
+		int count = 0;
+		for(Unit u : sortedUnits){
+			if(!u.isSpy()){
+				if(u.getTechLevel() == techLev)
+					count++;
+				else{
+					toReturn+="("+count+") "+UNIT_TECH_TREE.getUnitType(techLev)+"\n";
+					count = 0;
+					techLev= u.getTechLevel();
+				}
+			}
+		}
+		toReturn+="("+count+") "+UNIT_TECH_TREE.getUnitType(techLev)+"\n";
+		return toReturn;
+	}
 }
