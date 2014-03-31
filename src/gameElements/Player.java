@@ -30,6 +30,10 @@ public class Player implements Serializable, GameConstants {
 		return myPlayer.getName();
 	}
 	
+	public int getTechLevel(){
+		return myTechLevel;
+	}
+	
 	public int getFoodAmount(){
 		return myFood.getAmount();
 	}
@@ -45,6 +49,15 @@ public class Player implements Serializable, GameConstants {
 	public boolean feedUnit(){
 		if(myFood.getAmount()>0){
 			myFood.increment(-1);
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean upgradePlayer(){
+		if(myTech.getAmount()>PLAYER_TECH_TREE.getCost(myTechLevel)){
+			myTech.increment(-PLAYER_TECH_TREE.getCost(myTechLevel));
+			myTechLevel++;
 			return true;
 		}
 		return false;
