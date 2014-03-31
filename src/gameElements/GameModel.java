@@ -153,7 +153,8 @@ public class GameModel implements ServerConstants, Serializable {
 			while(!units.isEmpty() && !opposingUnits.isEmpty()){
 				Unit offense = units.get(units.size()-1);					// Pick final unit in arraylist for faster runtime.
 				Unit defense = opposingUnits.get(opposingUnits.size()-1);
-				if(Math.ceil(ATTACK_DIE*Math.random()) > Math.ceil(ATTACK_DIE*Math.random())){
+				if(Math.ceil(ATTACK_DIE*Math.random()) + offense.getCombatBonus() > 
+				Math.ceil(ATTACK_DIE*Math.random()) + defense.getCombatBonus()){
 					System.out.println("Attacker wins!");
 					opponent.removeUnit(defense);
 					to.removeUnit(defense);
@@ -163,12 +164,17 @@ public class GameModel implements ServerConstants, Serializable {
 					p.removeUnit(offense);
 					units.remove(offense);
 				}
+				opposingUnits = to.getUnits();
 			}
 		}
 		if(!units.isEmpty()){
+			System.out.println("Territory has been conquered!");
 			p.addTerritory(to);
 			opponent.removeTerritory(to);
 			to.addUnits(units);
+		}
+		else{
+			System.out.println("Defender has survived!");
 		}
 	}
 
@@ -187,7 +193,7 @@ public class GameModel implements ServerConstants, Serializable {
 				Unit offense = units.get(units.size()-1);                    // Pick final unit in arraylist for faster runtime.
 				Unit defense = opposingUnits.get(opposingUnits.size()-1);
 				if(Math.ceil(ATTACK_DIE*Math.random()) > Math.ceil(ATTACK_DIE*Math.random())){
-					System.out.println("Attacker wins!");
+					System.out.println("ATTACKER wins!");
 					opponent.removeUnit(defense);
 					to.removeUnit(defense);
 				}
@@ -219,36 +225,6 @@ public class GameModel implements ServerConstants, Serializable {
 		}
 		return true;
 	}
-
-	//	public void checkAttackSwaps(List<Command> cl){
-	//		for(int i = 0; i<cl.size()-1;i++){
-	//			for(int j = i+1; j<cl.size();j++){
-	//				Command attackA = cl.get(i);
-	//				Command attackB = cl.get(j);
-	//				if(attackA.getTo() == attackB.getFrom() && attackA.getFrom() == attackB.getTo()){
-	//					// are attacking one another.
-	//					Territory terA = attackA.getFrom();
-	//					Territory terB = attackB.getFrom();
-	//					if(terA.getUnits().size() == attackA.getUnits().size() && terB.getUnits().size() == attackA.getUnits().size()){
-	//						System.out.println("SWAP OCCURRED");
-	//						// are committing all units. Should swap!
-	//						move(attackA.getPlayer(),terA,attackA.getTo(),attackA.getUnits(),true);
-	//	                                        attackA.getPlayer().removeTerritory(terA);
-	//						attackA.getPlayer().addTerritory(terB);
-	//
-	//						move(attackB.getPlayer(),terB,attackB.getTo(),attackB.getUnits(),true);
-	//						attackB.getPlayer().removeTerritory(terB);
-	//						attackB.getPlayer().addTerritory(terA);
-	//
-	//						// remove the swap-attacks from commandlist.
-	//						cl.remove(j);
-	//						cl.remove(i);
-	//						System.out.println("SWAP FINISHED");
-	//					}
-	//				}
-	//			}
-	//		}
-	//	}
 	
 	public void checkAttackSwaps(List<Command> cl){
 		for(int i = 0; i<cl.size()-1;i++){
@@ -321,11 +297,16 @@ public class GameModel implements ServerConstants, Serializable {
 
 	private void endOfRoundAddUnits(){
 		for(Territory t : myGame.getMap().getTerritories()){
+			System.out.println("Territory init unit num = "+t.getUnits().size());
 			this.addNewUnit(t);
+			System.out.println("Territory final unit num = "+t.getUnits().size());
 		}
 	}
 
 	private void feedUnits(){
+		for(Player p : myGame.getPlayers()){
+			System.out.println("Starting food = "+p.getFoodAmount());
+		}
 		for(Territory t : myGame.getMap().getTerritories()){
 			Player p = t.getOwner();
 			for(Unit u : t.getUnits()){
@@ -334,6 +315,9 @@ public class GameModel implements ServerConstants, Serializable {
 					p.removeUnit(u);
 				}
 			}
+		}
+		for(Player p : myGame.getPlayers()){
+			System.out.println("Ending food = "+p.getFoodAmount());
 		}
 	}
 
