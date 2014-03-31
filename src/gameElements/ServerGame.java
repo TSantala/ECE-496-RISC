@@ -1,5 +1,6 @@
 package gameElements;
 
+import java.util.HashMap;
 import server.Message;
 import server.ObjectServer;
 import server.PromptUnits;
@@ -86,13 +87,30 @@ public class ServerGame extends Thread{
 		turnCommands.clear();
 		commandsReceived = 0;
 	}
-
+	
 	public void updateGame(Message m) {
 		myServer.sendUpdatedGame(m, this);
 	}
 
 	public void updateGame() {
 		myServer.sendUpdatedGame(myGame, this);
+	}
+	
+	public void editVision() //maps players to updated vision restricted gamestates
+	{
+	    HashMap<Player, GameState> playerToGameState  = new HashMap<Player, GameState>();
+	    for (Player p : myGame.getPlayers())
+	    {
+                GameState individualGame = myGame.clone();
+                playerToGameState.put(p, individualGame);
+	        for (Territory t : individualGame.getMap().getTerritories())
+	        {
+	            if (t.getOwner().equals(p) || t.isAdjacentTo(p) || t.hasSpy()) //3 conditions for revealing vision
+	            {
+	                
+	            }
+	        }
+	    }
 	}
 	
 	public SaveGame saveGame(){
