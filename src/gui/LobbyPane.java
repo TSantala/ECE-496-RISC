@@ -8,15 +8,12 @@ import java.awt.List;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import javax.swing.BoxLayout;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import server.JoinRequest;
 import server.NewGameRequest;
 import server.ObjectClient;
-import server.ServerPlayer;
 
 public class LobbyPane extends JPanel{
 	

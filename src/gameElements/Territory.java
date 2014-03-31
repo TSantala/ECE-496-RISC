@@ -59,9 +59,13 @@ public class Territory implements Serializable
 	}
 
 	public void removeUnits(List<Unit> units) {
+		int initSize = myUnits.size();
 		for(Unit u : units){
 			myUnits.remove(u);
 		}
+		int finalSize = myUnits.size();
+		System.out.println("Init size: " + initSize + " list size: "+ units.size() + " finalSize: "+finalSize);
+		//assert finalSize == (initSize - units.size());
 	}
 	
 	public void removeUnit(Unit u){
