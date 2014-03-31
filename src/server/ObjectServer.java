@@ -25,6 +25,7 @@ public class ObjectServer extends Thread implements ServerConstants{
 				FileInputStream saveFile = new FileInputStream(".//serverData.sav");
 				ObjectInputStream save = new ObjectInputStream(saveFile);
 
+				@SuppressWarnings("unchecked")
 				List<SaveGame> tempData = (List<SaveGame>) save.readObject();
 
 				save.close();
@@ -45,6 +46,7 @@ public class ObjectServer extends Thread implements ServerConstants{
 		int port = 19999;
 		int count = 0;
 		try{
+			@SuppressWarnings("resource")
 			ServerSocket socket1 = new ServerSocket(port);
 			System.out.println("Server Initialized");
 			while (true) {

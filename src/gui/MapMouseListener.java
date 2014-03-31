@@ -6,9 +6,9 @@ import java.util.List;
 
 public class MapMouseListener implements MouseListener{
 	
-	private GameGraphic myGame;
+	private EnhancedGameGraphic myGame;
 
-	public MapMouseListener(GameGraphic game) {
+	public MapMouseListener(EnhancedGameGraphic game) {
 		myGame = game;
 	}
 

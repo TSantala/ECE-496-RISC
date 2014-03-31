@@ -71,7 +71,7 @@ public class ServerGame extends Thread{
 		turnCommands.addCommands(ls.getCommands());
 		commandsReceived++;
 		System.out.println(commandsReceived + " " + myInfo.getPlayers().size());
-		if(commandsReceived==myInfo.getPlayers().size()){
+		if(commandsReceived>=myInfo.getPlayers().size()){
 			this.processCommands();
 			if (!unitsPlaced){
 				unitsPlaced = true;

@@ -11,10 +11,10 @@ public class Territory implements Serializable
 	private Player myOwner;
 	private List<Unit> myUnits;
 	private List<Territory> myNeighbors;
-	private int myID;
+	private String myID;
 	private List<Resource> myResources= new ArrayList<Resource>();
 	
-	public Territory(int id)
+	public Territory(String id)
 	{
 		myID = id;
 		myUnits = new ArrayList<Unit>();
@@ -54,7 +54,7 @@ public class Territory implements Serializable
 		return myUnits;
 	}
 	
-	public int getID() {
+	public String getID() {
 		return myID;
 	}
 
