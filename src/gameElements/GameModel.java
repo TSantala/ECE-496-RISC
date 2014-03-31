@@ -326,7 +326,7 @@ public class GameModel implements ServerConstants, Serializable {
 	}
 
 	private void addNewUnit(Territory t){
-		t.addUnit(new Unit(t.getOwner(),unitID++));
+		t.addUnit(new Unit(unitID++,t.getOwner()));
 	}
 
 	private void endOfRoundAddUnits(){

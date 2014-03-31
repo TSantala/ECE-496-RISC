@@ -12,14 +12,9 @@ public class Unit implements Serializable, GameConstants, Comparable<Unit>
 	private boolean isSpy;
 	private int spyTurnCount=0;
 
-	public Unit(int id){
+	public Unit(int id, Player p){
 		myID = id;
-		isSpy = false;
-	}
-
-	public Unit(Player p, int id){
 		myOwner = p;
-		myID = id;
 		isSpy = false;
 	}
 
@@ -36,7 +31,7 @@ public class Unit implements Serializable, GameConstants, Comparable<Unit>
 	}
 
 	public Unit clone(){
-		return new Unit(myID);
+		return new Unit(myID,myOwner);
 	}
 
 	public int getTechLevel(){
@@ -48,8 +43,13 @@ public class Unit implements Serializable, GameConstants, Comparable<Unit>
 	}
 
 	public boolean toggleSpy(){
-		if(myOwner.getTechAmount()>=5) {
+		if(isSpy && myOwner.getTechAmount()>=5) {
 			myOwner.adjustResource(new Technology(-5));
+			isSpy = !isSpy;
+			return true;
+		}
+		else if(!isSpy && myOwner.getTechAmount()>=35){
+			myOwner.adjustResource(new Technology(-35));
 			isSpy = !isSpy;
 			return true;
 		}
@@ -57,23 +57,18 @@ public class Unit implements Serializable, GameConstants, Comparable<Unit>
 	}
 
 	public boolean upgradeUnit(){ //must differentiate between spy and not spy
-		if (isSpy){
-			return this.toggleSpy();
+		System.out.println("UPGRADING!! Not a spy...");
+		if(myOwner.getTechLevel()>myTechLevel){
+			if(myOwner.getTechAmount()>=UNIT_TECH_TREE.getCost(myTechLevel)){
+				myOwner.adjustResource(new Technology(-UNIT_TECH_TREE.getCost(myTechLevel)));
+				myTechLevel++;
+				return true;
+			}
 		}
 		else{
-			System.out.println("UPGRADING!! Not a spy...");
-			if(myOwner.getTechLevel()>myTechLevel){
-				if(myOwner.getTechAmount()>=UNIT_TECH_TREE.getCost(myTechLevel)){
-					myOwner.adjustResource(new Technology(-UNIT_TECH_TREE.getCost(myTechLevel)));
-					myTechLevel++;
-					return true;
-				}
-			}
-			else{
-				System.out.println("Player is not high enough tech level!");
-			}
-			return false;
+			System.out.println("Player is not high enough tech level!");
 		}
+		return false;
 	}
 
 	public int getCombatBonus(){
