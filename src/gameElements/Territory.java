@@ -9,7 +9,7 @@ public class Territory implements Serializable
 	private static final long serialVersionUID = 8L;
 	
 	private Player myOwner;
-	private List<Unit> myUnits;
+	private Collection<Unit> myUnits = new PriorityQueue<Unit>();
 	private List<Territory> myNeighbors;
 	private int myID;
 	private List<Resource> myResources= new ArrayList<Resource>();
@@ -17,7 +17,6 @@ public class Territory implements Serializable
 	public Territory(int id)
 	{
 		myID = id;
-		myUnits = new ArrayList<Unit>();
 		myNeighbors = new ArrayList<Territory>();
 		myResources.add(new Food(10));
 		myResources.add(new Technology(10));
@@ -51,7 +50,13 @@ public class Territory implements Serializable
 	}
 	
 	public List<Unit> getUnits(){
-		return myUnits;
+		Collection<Unit> temp = new PriorityQueue<Unit>();
+		for(Unit u : myUnits){
+			temp.add(u);
+		}
+		myUnits = new PriorityQueue<Unit>();
+		myUnits.addAll(temp);
+		return new ArrayList<Unit>(myUnits);
 	}
 	
 	public int getID() {
@@ -59,9 +64,13 @@ public class Territory implements Serializable
 	}
 
 	public void removeUnits(List<Unit> units) {
+		int initSize = myUnits.size();
 		for(Unit u : units){
 			myUnits.remove(u);
 		}
+		int finalSize = myUnits.size();
+		System.out.println("Init size: " + initSize + " list size: "+ units.size() + " finalSize: "+finalSize);
+		//assert finalSize == (initSize - units.size());
 	}
 	
 	public void removeUnit(Unit u){
@@ -74,7 +83,7 @@ public class Territory implements Serializable
 	
 	public void addUnit(Unit u){
 		myUnits.add(u);
-		myOwner.addUnit(u);
+		//myOwner.addUnit(u);
 	}
 	
 	public Unit getUnit(int id){
