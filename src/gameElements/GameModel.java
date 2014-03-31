@@ -105,7 +105,7 @@ public class GameModel implements ServerConstants, Serializable {
 		}
 		for(Command c : placeCommands){
 			cl.removeCommand(c);
-			for(Unit u : c.getUnits()){
+			for(int i = 0; i < c.getUnits().size(); i++){
 				this.addNewUnit(myGame.getMap().getTerritory(c.getFrom().getID()));
 			}
 		}
@@ -141,7 +141,7 @@ public class GameModel implements ServerConstants, Serializable {
 
 	public void attack(Player p, Territory from, Territory to, List<Unit> units){
 
-		List<Unit> opposingUnits = to.getUnits();
+		List<Unit> opposingUnits = (List<Unit>) to.getUnits();
 		Player opponent = to.getOwner();
 
 		if(opposingUnits.size()!=0){
@@ -238,7 +238,7 @@ public class GameModel implements ServerConstants, Serializable {
 					if(terA.getUnits().size() == attackA.getUnits().size() && terB.getUnits().size() == attackA.getUnits().size()){
 						System.out.println("MID ATTACK OCCURRED");
 						// are committing all units. Should attack in mid!
-						Player winner, attackingPlayer;
+						Player attackingPlayer;
 
 						if(Math.random() < 0.5)
 						{

@@ -9,7 +9,7 @@ public class Territory implements Serializable
 	private static final long serialVersionUID = 8L;
 	
 	private Player myOwner;
-	private List<Unit> myUnits;
+	private Collection<Unit> myUnits = new PriorityQueue<Unit>();
 	private List<Territory> myNeighbors;
 	private int myID;
 	private List<Resource> myResources= new ArrayList<Resource>();
@@ -17,7 +17,6 @@ public class Territory implements Serializable
 	public Territory(int id)
 	{
 		myID = id;
-		myUnits = new ArrayList<Unit>();
 		myNeighbors = new ArrayList<Territory>();
 		myResources.add(new Food(10));
 		myResources.add(new Technology(10));
@@ -51,7 +50,7 @@ public class Territory implements Serializable
 	}
 	
 	public List<Unit> getUnits(){
-		return myUnits;
+		return (List<Unit>) myUnits;
 	}
 	
 	public int getID() {

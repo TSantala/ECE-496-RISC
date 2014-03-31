@@ -43,7 +43,7 @@ public class Player implements Serializable, GameConstants {
 	}
 	
 	public Collection<Unit> getUnits(){
-		return myUnits;
+		return (List<Unit>) myUnits;
 	}
 	
 	public boolean feedUnit(){

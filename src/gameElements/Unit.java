@@ -60,7 +60,8 @@ public class Unit implements Serializable, GameConstants, Comparable<Unit>
 
 	@Override
 	public int compareTo(Unit other){
-		return other.getTechLevel() - myTechLevel;
+		int spyBonus = isSpy ? 2 : 0;
+		return other.getTechLevel() - (myTechLevel+spyBonus);
 	}
 
 }

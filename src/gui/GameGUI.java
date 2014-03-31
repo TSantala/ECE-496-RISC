@@ -2,6 +2,7 @@ package gui;
 
 import gameElements.Command;
 import gameElements.CommandList;
+import gameElements.GameConstants;
 import gameElements.GameInfo;
 import gameElements.GameState;
 import gameElements.Player;
@@ -27,7 +28,7 @@ import server.TextMessage;
 /*
  * This is the class that is called when the game begins- has to be passed number of players 
  */
-public class GameGUI extends JFrame implements ServerConstants {
+public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 
 	private JTextField input;
 	private JTextArea output;
