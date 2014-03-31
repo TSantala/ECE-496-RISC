@@ -1,6 +1,8 @@
 package gui;
-
-import gameElements.AttackCommand;
+/*
+ * Very similar to Attack button...refactor soon
+ */
+import gameElements.MoveCommand;
 import gameElements.Territory;
 import gameElements.Unit;
 import java.awt.event.ActionEvent;
@@ -8,35 +10,35 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-public class AttackButton extends JButton {
+public class AttackButton extends JButton 
+{
+	public AttackButton(final GameGUI gui)
+	{
+	    super("Order Attack");
+	    this.addActionListener(new ActionListener()
+	    {
+	        public void actionPerformed (ActionEvent arg0) 
+	        {
+            	if(gui.getLeftClick()==null) return;
 
-    public AttackButton(final GameGUI gui) 
-    {
-        super("Order Attack");
-        this.addActionListener(new ActionListener()
-        {
-            public void actionPerformed (ActionEvent arg0) 
-            {
-                List<Unit> unitsSend = new ArrayList<Unit>();
+            	//Create and set up the window.
+            	JFrame frame = new JFrame("Attack");
+            	frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-                String s = (String)JOptionPane.showInputDialog( gui,"Please put in how many units you want to attack with:\n",
-                                                                       "ATTACK SWAG", 
-                                                                       JOptionPane.PLAIN_MESSAGE,
-                                                                       getIcon(),
-                                                                       null,
-                                                                       "1");
-                int numUnits = Integer.parseInt(s);
-                //error checking should be done by server...but can check here too
-    		    for (int i = 0; i < numUnits; i++)
-    		    {
-    		        if(i<gui.getLeftClick().getUnits().size())
-    		        	unitsSend.add(gui.getLeftClick().getUnits().get(i));
-    		    }
-                gui.addCommand(new AttackCommand(gui.getPlayer(),gui.getLeftClick(),gui.getRightClick(),unitsSend));
-            }
-        });
-    }
+            	//Create and set up the content pane.
+            	JComponent newContentPane = new AttackDialog(gui.getLeftClick().getUnits(),gui,frame,"Attack!");
+            	newContentPane.setOpaque(true); //content panes must be opaque
+            	frame.setContentPane(newContentPane);
+
+            	//Display the window.
+            	frame.pack();
+            	frame.setVisible(true);
+		}
+	    });
+	}
 
 }

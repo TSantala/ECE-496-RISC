@@ -10,6 +10,8 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 public class MoveButton extends JButton 
@@ -21,24 +23,20 @@ public class MoveButton extends JButton
 	    {
 	        public void actionPerformed (ActionEvent arg0) 
 	        {
-	           
-	        List<Unit> unitsSend = new ArrayList<Unit>();
+            	if(gui.getLeftClick()==null) return;
 
-		    String s = (String)JOptionPane.showInputDialog(gui,"Please put in how many units you want to move:\n",
-			                                                   "JohnTimoVinceMovingSwag", 
-			                                                   JOptionPane.PLAIN_MESSAGE,
-			                                                   getIcon(),
-			                                                   null,
-			                                                   "1");
-		    int numUnits = Integer.parseInt(s);
-		    //error checking should be done by server...but can check here too
-		    for (int i = 0; i < numUnits; i++)
-		    {
-		        if(i<gui.getLeftClick().getUnits().size())
-		        	unitsSend.add(gui.getLeftClick().getUnits().get(i));
-		    }
-		    MoveCommand test = new MoveCommand(gui.getPlayer(),gui.getLeftClick(),gui.getRightClick(),unitsSend);
-		    gui.addCommand(test);
+            	//Create and set up the window.
+            	JFrame frame = new JFrame("Move Units");
+            	frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+            	//Create and set up the content pane.
+            	JComponent newContentPane = new MoveDialog(gui.getLeftClick().getUnits(),gui,frame,"Move Units!");
+            	newContentPane.setOpaque(true); //content panes must be opaque
+            	frame.setContentPane(newContentPane);
+
+            	//Display the window.
+            	frame.pack();
+            	frame.setVisible(true);
 		}
 	    });
 	}

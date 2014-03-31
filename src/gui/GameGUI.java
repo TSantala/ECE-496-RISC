@@ -1,13 +1,17 @@
 package gui;
 
+import gameElements.AttackCommand;
 import gameElements.Command;
 import gameElements.CommandList;
 import gameElements.GameConstants;
 import gameElements.GameInfo;
 import gameElements.GameState;
+import gameElements.MoveCommand;
 import gameElements.Player;
 import gameElements.Territory;
 import gameElements.Unit;
+import gameElements.UpgradePlayerCommand;
+import gameElements.UpgradeUnitCommand;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -50,6 +54,7 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 	//private List<Unit> selectedUnits = new ArrayList<Unit>();
 	
 	private JButton myCommitButton = new CommitButton(this);
+	private JButton myPlayerButton = new UpgradePlayerButton(this);
 
 	private CommandList myCommandList = new CommandList();
 
@@ -71,10 +76,12 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 			myGameGraphic.repaint();
 			mainPane.add(myGameGraphic,BorderLayout.CENTER);
 			myCommitButton.setEnabled(true);
+			myPlayerButton.setEnabled(true);
 			mainPane.revalidate();
 			mainPane.repaint();
 		}
 		myGame = gs;
+		this.updatePlayerInfo();
 	}
 
 	public void run() {
@@ -136,6 +143,8 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 		buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.PAGE_AXIS));
 		buttonPane.add(new MoveButton(this));
 		buttonPane.add(new AttackButton(this));
+		buttonPane.add(new UpgradeUnitButton(this));
+		buttonPane.add(myPlayerButton);
 		buttonPane.add(new LeaveButton(this));
 
 		rightPane.add(buttonPane,BorderLayout.SOUTH);
@@ -164,7 +173,6 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 	}
 
 	public void sendCommandList(){
-		// pop up an "Are you sure?" message maybe?	
 		myClient.sendMessage(myCommandList);
 		myCommandList.getCommands().clear();
 		commandInfo.setText("");;
@@ -174,16 +182,24 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 	public void updateTerritoryInfo(Territory t){
 		territoryInfo.setText("  TERRITORY INFORMATION\n" +
 				"  Territory owner = "+t.getOwner().getName()+"  \n"+
-				"  Number of Units = "+t.getUnits().size()+"  \n" +
-				t.getUnitInfo());
+				"  Number of Units = "+t.getUnits().size()+"  \n"+
+				t.getUnitInfo()+
+				"  Food Collection Rate = 10\n"+
+				"  Tech Collection Rate = 10\n");
 	}
 	
 	public void updatePlayerInfo(){
+		if(myPlayer==null)return;
+		if(myGame==null)return;
+		Player p = myGame.getPlayer(myPlayer.getName());
+		if(p==null)return;
 		playerInfo.setText("  PLAYER INFORMATION\n"+
-				"  Player: "+myPlayer.getName()+"\n"+
-				"  Food = "+myPlayer.getFoodAmount()+"\n"+
-				"  Technology = "+myPlayer.getTechAmount()+"\n");
+				"  Player: "+p.getName()+"\n"+
+				"  Food = "+p.getFoodAmount()+"\n"+
+				"  Technology = "+p.getTechAmount()+"\n"+
+				"  Level: "+p.getTechLevel()+" = "+PLAYER_TECH_TREE.getUnitType(p.getTechLevel()));
 	}
+
 
 	public Player getPlayer(){
 		return myPlayer;
@@ -233,5 +249,29 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 		mainPane.repaint();
 		myGame = null;
 		myClient.sendMessage(new LeaveRequest());
-	}      
+	}
+
+	public void addUnitUpgrade(Collection<Unit> u) {
+		System.out.println("GOT HERE!!! " + u.toString());
+		List<Unit> toSend = new ArrayList<Unit>();
+		toSend.addAll(u);
+		this.addCommand(new UpgradeUnitCommand(toSend));		
+	}
+	
+	public void addPlayerUpgrade(){
+		this.addCommand(new UpgradePlayerCommand(myGame.getPlayer(myPlayer.getName())));
+		myPlayerButton.setEnabled(false);
+	}
+	
+	public void addMoveCommand(Collection<Unit> u){
+		List<Unit> toSend = new ArrayList<Unit>();
+		toSend.addAll(u);
+		this.addCommand(new MoveCommand(myGame.getPlayer(myPlayer.getName()),this.getLeftClick(),this.getRightClick(),toSend));
+	}
+	
+	public void addAttackCommand(Collection<Unit> u){
+		List<Unit> toSend = new ArrayList<Unit>();
+		toSend.addAll(u);
+		this.addCommand(new AttackCommand(myGame.getPlayer(myPlayer.getName()),this.getLeftClick(),this.getRightClick(),toSend));
+	}
 }

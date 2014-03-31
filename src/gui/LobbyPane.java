@@ -39,7 +39,7 @@ public class LobbyPane extends JPanel{
 		myGames.addAll(games);
 		gameList.removeAll();
 		for (GameInfo info : games){
-			if (info.getOriginalPlayers().contains(myClient.getGUI().getPlayer().getPlayer())){
+			if (info.getOriginalPlayers().contains(myClient.getGUI().getPlayer())){
 				gameList.add(info.toString() + " You are part of this game.");
 			}
 			else{

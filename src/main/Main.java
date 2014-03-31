@@ -7,10 +7,15 @@ public class Main {
 
 	public static void main(String[] args){
 		
-
+		ObjectServer myServer = new ObjectServer(false);
+		myServer.start();
+				
 		ObjectClient myClient1 = new ObjectClient();
 		myClient1.start();
 
+		ObjectClient myClient2 = new ObjectClient();
+		myClient2.start();
+		
 //		TESTING PROPER FUNCTIONALITY OF PRIORITY UNIT LISTS.
 //		Unit u1 = new Unit(0); u1.setTechLevel(1);
 //		Unit u2 = new Unit(1); u2.setTechLevel(5);

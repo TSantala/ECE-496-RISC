@@ -4,6 +4,7 @@ package gameElements;
  * Will be used for add unit phase in implementation 2
  */
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UpgradeUnitCommand extends Command implements Serializable {
@@ -11,7 +12,7 @@ public class UpgradeUnitCommand extends Command implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	public UpgradeUnitCommand(List<Unit> lu){
-		myUnits.addAll(lu);
+		myUnits = new ArrayList<Unit>(lu);
 	}
 
 	public String toString(){
@@ -21,8 +22,6 @@ public class UpgradeUnitCommand extends Command implements Serializable {
 
 	@Override
 	public void enact(GameModel gm) {
-		for(Unit u : myUnits){
-			gm.upgradeUnit(u);
-		}
+		gm.upgradeUnits(myUnits);
 	}
 }

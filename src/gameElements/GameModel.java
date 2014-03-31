@@ -49,14 +49,19 @@ public class GameModel implements ServerConstants, Serializable {
 		for(Player p : myGame.getPlayers()){
 			System.out.println(p.getName()+" units: "+p.getNumToFeed());
 		}
+		
+		List<Command> upgradePlayers = cl.getCommands(UpgradePlayerCommand.class);
+		for(Command c : upgradePlayers){
+			this.upgradePlayer(c.getPlayer());
+			cl.removeCommand(c);
+		}
 
-		//for upgrading
-		//		List<Command> upgradeCommands = cl.getCommands(UpgradeCommand.class);
-		//		for(Command upgrade : upgradeCommands)
-		//		{
-		//		    upgrade.enact(this);
-		//		    cl.removeCommand(upgrade);
-		//		}
+		List<Command> upgradeUnits = cl.getCommands(UpgradeUnitCommand.class);
+		for(Command upgrade : upgradeUnits)
+		{
+			this.upgradeUnits(upgrade.getUnits());
+			cl.removeCommand(upgrade);
+		}
 
 		List<Command> moveCommands = cl.getCommands(MoveCommand.class);
 		for(Command move : moveCommands){
@@ -85,9 +90,9 @@ public class GameModel implements ServerConstants, Serializable {
 		for(Player p : myGame.getPlayers()){
 			System.out.println(p.getName()+" units: "+p.getNumToFeed());
 		}
-		
+
 		this.catchSpies();
-		
+
 		// return updated game after commands enacted to clients.
 		this.sendUpdatedGameState();
 
@@ -95,8 +100,21 @@ public class GameModel implements ServerConstants, Serializable {
 
 	private CommandList createServerCommandList(CommandList cl) {
 		CommandList toReturn = new CommandList();
+		
+		List<Command> playerCommands = cl.getCommands(UpgradePlayerCommand.class);
 		List<Command> moveCommands = cl.getCommands(MoveCommand.class);
 		List<Command> placeCommands = cl.getCommands(AddUnitCommand.class);
+		List<Command> unitCommands = cl.getCommands(UpgradeUnitCommand.class);
+		
+		for(Command c : playerCommands){
+			cl.removeCommand(c);
+			toReturn.addCommand(new UpgradePlayerCommand(myGame.getPlayer(c.getPlayer().getName())));
+		}
+		
+		for(Command c : unitCommands){
+			cl.removeCommand(c);
+			toReturn.addCommand(new UpgradeUnitCommand(this.getServerUnits(c.getUnits())));
+		}
 
 		for(Command c : moveCommands){
 			cl.removeCommand(c);
@@ -130,16 +148,16 @@ public class GameModel implements ServerConstants, Serializable {
 	}
 
 	public boolean move(Player p, Territory from, Territory to, List<Unit> units){
-	        boolean allSpies = true;
-	        for (Unit u : units)
-	        {
-	            if (!u.isSpy())
-	            {
-	                allSpies = false;
-	                break;
-	            }
-	        }
-	    
+		boolean allSpies = true;
+		for (Unit u : units)
+		{
+			if (!u.isSpy())
+			{
+				allSpies = false;
+				break;
+			}
+		}
+
 		if(myGame.getMap().hasPath(from,to,p) || allSpies){
 			from.removeUnits(units);
 			to.addUnits(units);
@@ -167,7 +185,7 @@ public class GameModel implements ServerConstants, Serializable {
 				Unit defense = opposingUnits.get(opposingUnits.size()-1);
 				if(Math.ceil(ATTACK_DIE*Math.random()) + offense.getCombatBonus() > 
 				Math.ceil(ATTACK_DIE*Math.random()) + defense.getCombatBonus()){
-					System.out.println("Attacker wins!");
+					System.out.println("ATTACKER wins!");
 					opponent.removeUnit(defense);
 					to.removeUnit(defense);
 				}
@@ -223,8 +241,8 @@ public class GameModel implements ServerConstants, Serializable {
 		}	    
 		else if (units.isEmpty()){ //aggressor lost
 			opponent.addTerritory(to);
-		p.removeTerritory(to);
-		to.addUnits(opposingUnits);
+			p.removeTerritory(to);
+			to.addUnits(opposingUnits);
 		}
 	}
 
@@ -237,7 +255,7 @@ public class GameModel implements ServerConstants, Serializable {
 		}
 		return true;
 	}
-	
+
 	public void checkAttackSwaps(List<Command> cl){
 		for(int i = 0; i<cl.size()-1;i++){
 			for(int j = i+1; j<cl.size();j++){
@@ -309,9 +327,7 @@ public class GameModel implements ServerConstants, Serializable {
 
 	private void endOfRoundAddUnits(){
 		for(Territory t : myGame.getMap().getTerritories()){
-			System.out.println("Territory init unit num = "+t.getUnits().size());
 			this.addNewUnit(t);
-			System.out.println("Territory final unit num = "+t.getUnits().size());
 		}
 	}
 
@@ -338,32 +354,32 @@ public class GameModel implements ServerConstants, Serializable {
 			t.harvestResources();
 		}
 	}
-	
+
 	private void catchSpies()
 	{
-	    for (Territory t : myGame.getMap().getTerritories())
-	    {
-	        for (Unit u : t.getUnits())
-	        {
-	            if(u.isSpy())
-	            {
-	                int percentChance = u.getTurnCount()*7+1;
-	                if(Math.random()*100 < percentChance)
-	                {
-	                    killSpy(u, t);
-	                }
-	                else 
-	                {
-	                    u.setTurnCount(u.getTurnCount()+1);
-                        }
-	            }
-	        }
-	    }
+		for (Territory t : myGame.getMap().getTerritories())
+		{
+			for (Unit u : t.getUnits())
+			{
+				if(u.isSpy())
+				{
+					int percentChance = u.getTurnCount()*7+1;
+					if(Math.random()*100 < percentChance)
+					{
+						killSpy(u, t);
+					}
+					else 
+					{
+						u.setTurnCount(u.getTurnCount()+1);
+					}
+				}
+			}
+		}
 	}
-	
+
 	private void killSpy(Unit spy, Territory territory)
 	{
-	    territory.removeUnit(spy);
+		territory.removeUnit(spy);
 	}
 
 	private void redoTurnErrorFound(String message){
@@ -378,10 +394,11 @@ public class GameModel implements ServerConstants, Serializable {
 		myServer.updateGame();
 	}
 
-	public void upgradeUnit(Unit u) {
-		myGame.upgradeUnit(u);
+	public void upgradeUnits(List<Unit> l) {
+		for(Unit u : l)
+			myGame.upgradeUnit(u);
 	}
-	
+
 	public void upgradePlayer(Player p){
 		myGame.upgradePlayer(p);
 	}

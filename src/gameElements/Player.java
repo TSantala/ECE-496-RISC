@@ -64,8 +64,10 @@ public class Player implements Serializable, GameConstants {
 		if(myTech.getAmount()>PLAYER_TECH_TREE.getCost(myTechLevel)){
 			myTech.increment(-PLAYER_TECH_TREE.getCost(myTechLevel));
 			myTechLevel++;
+			System.out.println("PLAYER UPGRADE!!");
 			return true;
 		}
+		System.out.println("Player couldn't afford to level up!");
 		return false;
 	}
 	

@@ -42,31 +42,35 @@ public class Unit implements Serializable, GameConstants, Comparable<Unit>
 	public int getTechLevel(){
 		return myTechLevel;
 	}
-	
+
 	public void setTechLevel(int i){
 		myTechLevel = i;
 	}
 
 	public boolean upgradeUnit(){ //must differentiate between spy and not spy
-	    if (isSpy)
-	    {
-	        if(myOwner.getTechAmount()>5) //HARD CODED 5 AS VALUE TO RETURN SPY
-	        {
-	            myOwner.adjustResource(new Technology(-5));
-	            return true;
-	        }
-	        return false;
-	    }
-	    else{
-		if(myOwner.getTechLevel()>myTechLevel){
-			if(myOwner.getTechAmount()>UNIT_TECH_TREE.getCost(myTechLevel)){
-				myOwner.adjustResource(new Technology(-UNIT_TECH_TREE.getCost(myTechLevel)));
-				myTechLevel++;
+		if (isSpy)
+		{
+			if(myOwner.getTechAmount()>5) //HARD CODED 5 AS VALUE TO RETURN SPY
+			{
+				myOwner.adjustResource(new Technology(-5));
 				return true;
 			}
+			return false;
 		}
-		return false;
-	    }
+		else{
+			System.out.println("UPGRADING!! Not a spy...");
+			if(myOwner.getTechLevel()>myTechLevel){
+				if(myOwner.getTechAmount()>UNIT_TECH_TREE.getCost(myTechLevel)){
+					myOwner.adjustResource(new Technology(-UNIT_TECH_TREE.getCost(myTechLevel)));
+					myTechLevel++;
+					return true;
+				}
+			}
+			else{
+				System.out.println("Player is not high enough tech level!");
+			}
+			return false;
+		}
 	}
 
 	public int getCombatBonus(){
@@ -76,25 +80,30 @@ public class Unit implements Serializable, GameConstants, Comparable<Unit>
 	public String getType(){
 		return UNIT_TECH_TREE.getUnitType(myTechLevel);
 	}
-	
+
 	public boolean isSpy(){
-            return isSpy;
+		return isSpy;
 	}
-	
+
 	public void setTurnCount(int t) //sets spy turn count
 	{
-	    spyTurnCount = t;
+		spyTurnCount = t;
 	}
-	
+
 	public int getTurnCount()
 	{
-	    return spyTurnCount;
+		return spyTurnCount;
 	}
 
 	@Override
 	public int compareTo(Unit other){
 		int spyBonus = isSpy ? 2 : 0;
 		return other.getTechLevel() - (myTechLevel+spyBonus);
+	}
+
+	@Override
+	public String toString(){
+		return this.getType() + " " + this.getID();
 	}
 
 }
