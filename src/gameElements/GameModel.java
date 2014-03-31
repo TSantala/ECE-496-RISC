@@ -60,7 +60,7 @@ public class GameModel implements ServerConstants, Serializable {
 
 		List<Command> moveCommands = cl.getCommands(MoveCommand.class);
 		for(Command move : moveCommands){
-			if(!(this.move(move.getPlayer(),move.getFrom(),move.getTo(),move.getUnits(),false))) return;
+			if(!(this.move(move.getPlayer(),move.getFrom(),move.getTo(),move.getUnits()))) return;
 			cl.removeCommand(move);
 		}
 
@@ -85,7 +85,9 @@ public class GameModel implements ServerConstants, Serializable {
 		for(Player p : myGame.getPlayers()){
 			System.out.println(p.getName()+" units: "+p.getNumToFeed());
 		}
-
+		
+		this.catchSpies();
+		
 		// return updated game after commands enacted to clients.
 		this.sendUpdatedGameState();
 
@@ -127,8 +129,18 @@ public class GameModel implements ServerConstants, Serializable {
 		return toReturn;
 	}
 
-	public boolean move(Player p, Territory from, Territory to, List<Unit> units, boolean swapOverride){
-		if(myGame.getMap().hasPath(from,to,p) || swapOverride){
+	public boolean move(Player p, Territory from, Territory to, List<Unit> units){
+	        boolean allSpies = true;
+	        for (Unit u : units)
+	        {
+	            if (!u.isSpy())
+	            {
+	                allSpies = false;
+	                break;
+	            }
+	        }
+	    
+		if(myGame.getMap().hasPath(from,to,p) || allSpies){
 			from.removeUnits(units);
 			to.addUnits(units);
 		}
@@ -148,7 +160,7 @@ public class GameModel implements ServerConstants, Serializable {
 
 			if(p.getName().equals(opponent.getName())){
 				// swap must have occurred, you own it already!
-				this.move(p, from, to, units, false);
+				this.move(p, from, to, units);
 			}
 			while(!units.isEmpty() && !opposingUnits.isEmpty()){
 				Unit offense = units.get(units.size()-1);					// Pick final unit in arraylist for faster runtime.
@@ -325,6 +337,33 @@ public class GameModel implements ServerConstants, Serializable {
 		for(Territory t : myGame.getMap().getTerritories()){
 			t.harvestResources();
 		}
+	}
+	
+	private void catchSpies()
+	{
+	    for (Territory t : myGame.getMap().getTerritories())
+	    {
+	        for (Unit u : t.getUnits())
+	        {
+	            if(u.isSpy())
+	            {
+	                int percentChance = u.getTurnCount()*7+1;
+	                if(Math.random()*100 < percentChance)
+	                {
+	                    killSpy(u, t);
+	                }
+	                else 
+	                {
+	                    u.setTurnCount(u.getTurnCount()+1);
+                        }
+	            }
+	        }
+	    }
+	}
+	
+	private void killSpy(Unit spy, Territory territory)
+	{
+	    territory.removeUnit(spy);
 	}
 
 	private void redoTurnErrorFound(String message){
