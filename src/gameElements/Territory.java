@@ -3,7 +3,7 @@ package gameElements;
 import java.io.Serializable;
 import java.util.*;
 
-public class Territory implements Serializable 
+public class Territory implements Serializable, GameConstants 
 {
 
 	private static final long serialVersionUID = 8L;
@@ -83,7 +83,7 @@ public class Territory implements Serializable
 	
 	public void addUnit(Unit u){
 		myUnits.add(u);
-		//myOwner.addUnit(u);
+		myOwner.addUnit(u);
 	}
 	
 	public Unit getUnit(int id){
@@ -101,6 +101,34 @@ public class Territory implements Serializable
 		}
 		Territory toReturn = new Territory(myID);
 		toReturn.addUnits(newUnits);
+		return toReturn;
+	}
+	
+	public String getUnitInfo(){
+		if(myUnits.size()==0) return "No units!";
+		String toReturn = "";
+		List<Unit> sortedUnits = this.getUnits();
+		int spies = 0;
+		for(Unit u : sortedUnits){
+			if(u.isSpy()){
+				spies++;
+			}
+		}
+		toReturn += "("+spies+") Spy\n";
+		int techLev = sortedUnits.get(0).getTechLevel();
+		int count = 0;
+		for(Unit u : sortedUnits){
+			if(!u.isSpy()){
+				if(u.getTechLevel() == techLev)
+					count++;
+				else{
+					toReturn+="("+count+") "+UNIT_TECH_TREE.getUnitType(techLev)+"\n";
+					count = 0;
+					techLev= u.getTechLevel();
+				}
+			}
+		}
+		toReturn+="("+count+") "+UNIT_TECH_TREE.getUnitType(techLev)+"\n";
 		return toReturn;
 	}
 }
