@@ -7,13 +7,20 @@ import gameElements.Territory;
 import gameElements.Unit;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 public class GameGraphic extends JPanel{
@@ -25,11 +32,18 @@ public class GameGraphic extends JPanel{
 	private final Point MAP_CENTER = new Point(300,200);
 	private boolean initialization = false;
 	private int startUnits;
+	
+	private BufferedImage map;
 
 	public GameGraphic(GameGUI gameGUI, GameState game) {
 		myGUI = gameGUI;
 		myGame = game;
 		myGUI.updatePlayerInfo();
+//		try {
+//			map = ImageIO.read(new File("../Images/Risk Map.jpg"));
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 		int i = 0;
 		int n = myGame.getMap().getTerritories().size();
 		for (Territory t : myGame.getMap().getTerritories()){
@@ -46,6 +60,9 @@ public class GameGraphic extends JPanel{
 		//paint map
 	    super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D) g;
+		
+		//g2d.drawImage(map, 1, 1, this);
+		
 		for (MapTerritory t : myTerritories){
 			g2d.setColor(t.getColor());
 			g2d.fillOval(t.getCenter().x - t.getRadius()/2, t.getCenter().y- t.getRadius()/2, t.getRadius(), t.getRadius());

@@ -105,4 +105,20 @@ public class GameState extends Message implements Serializable {
 		return DEFAULT_NUM_START_UNITS;
 	}
 
+	public void upgradeUnit(Unit u) {
+		this.getUnit(u.getID()).upgradeUnit();
+	}
+
+	public void upgradePlayer(Player p) {
+		this.getPlayer(p.getName()).upgradePlayer();
+	}
+	
+	public void makeSpy(Unit u){
+		this.getUnit(u.getID()).toggleSpy();
+	}
+
+	public void clearMap() {
+		//myMap.clear();			TO-DO...
+	}
+
 }

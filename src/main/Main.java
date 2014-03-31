@@ -9,7 +9,7 @@ public class Main {
 		
 		ObjectServer myServer = new ObjectServer(false);
 		myServer.start();
-
+				
 		ObjectClient myClient1 = new ObjectClient();
 		myClient1.start();
 

@@ -9,7 +9,7 @@ public class Player implements Serializable, GameConstants {
 
 	private static final long serialVersionUID = 7L;
 	
-	private Collection<Unit> myUnits = new PriorityQueue<Unit>();
+	private List<Unit> myUnits = new ArrayList<Unit>();
 	private List<Territory> myTerritories = new ArrayList<Territory>();
 	private ServerPlayer myPlayer;
 	
@@ -30,6 +30,10 @@ public class Player implements Serializable, GameConstants {
 		return myPlayer.getName();
 	}
 	
+	public int getTechLevel(){
+		return myTechLevel;
+	}
+	
 	public int getFoodAmount(){
 		return myFood.getAmount();
 	}
@@ -38,7 +42,8 @@ public class Player implements Serializable, GameConstants {
 		return myTech.getAmount();
 	}
 	
-	public Collection<Unit> getUnits(){
+	public List<Unit> getUnits(){
+		Collections.sort(myUnits);
 		return myUnits;
 	}
 	
@@ -47,6 +52,17 @@ public class Player implements Serializable, GameConstants {
 			myFood.increment(-1);
 			return true;
 		}
+		return false;
+	}
+	
+	public boolean upgradePlayer(){
+		if(myTech.getAmount()>PLAYER_TECH_TREE.getCost(myTechLevel)){
+			myTech.increment(-PLAYER_TECH_TREE.getCost(myTechLevel));
+			myTechLevel++;
+			System.out.println("PLAYER UPGRADE!!");
+			return true;
+		}
+		System.out.println("Player couldn't afford to level up!");
 		return false;
 	}
 	

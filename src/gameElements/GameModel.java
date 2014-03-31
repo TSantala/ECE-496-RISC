@@ -44,29 +44,30 @@ public class GameModel implements ServerConstants, Serializable {
 
 		myPrevious = myGame.clone();
 
-		List<Command> placeCommands = cl.getCommands(AddUnitCommand.class);
-		for(Command place : placeCommands){
-			place.enact(this);
-			cl.removeCommand(place);
-		}
-
 		cl = this.createServerCommandList(cl);
-
-		for(Player p : myGame.getPlayers()){
-			System.out.println(p.getName()+" units: "+p.getNumToFeed());
+		
+		List<Command> spies = cl.getCommands(SpyCommand.class);
+		for(Command c : spies){
+			this.makeSpies(c.getUnits());
+			cl.removeCommand(c);
+		}
+		
+		List<Command> upgradePlayers = cl.getCommands(UpgradePlayerCommand.class);
+		for(Command c : upgradePlayers){
+			this.upgradePlayer(c.getPlayer());
+			cl.removeCommand(c);
 		}
 
-		//for upgrading
-		//		List<Command> upgradeCommands = cl.getCommands(UpgradeCommand.class);
-		//		for(Command upgrade : upgradeCommands)
-		//		{
-		//		    upgrade.enact(this);
-		//		    cl.removeCommand(upgrade);
-		//		}
+		List<Command> upgradeUnits = cl.getCommands(UpgradeUnitCommand.class);
+		for(Command upgrade : upgradeUnits)
+		{
+			this.upgradeUnits(upgrade.getUnits());
+			cl.removeCommand(upgrade);
+		}
 
 		List<Command> moveCommands = cl.getCommands(MoveCommand.class);
 		for(Command move : moveCommands){
-			if(!(this.move(move.getPlayer(),move.getFrom(),move.getTo(),move.getUnits(),false))) return;
+			if(!(this.move(move.getPlayer(),move.getFrom(),move.getTo(),move.getUnits()))) return;
 			cl.removeCommand(move);
 		}
 
@@ -87,10 +88,8 @@ public class GameModel implements ServerConstants, Serializable {
 		this.feedUnits();
 		// harvest resources from owned territories
 		this.harvestTerritories();
-
-		for(Player p : myGame.getPlayers()){
-			System.out.println(p.getName()+" units: "+p.getNumToFeed());
-		}
+		
+		this.catchSpies();
 
 		// return updated game after commands enacted to clients.
 		this.sendUpdatedGameState();
@@ -99,8 +98,27 @@ public class GameModel implements ServerConstants, Serializable {
 
 	private CommandList createServerCommandList(CommandList cl) {
 		CommandList toReturn = new CommandList();
+		
+		List<Command> playerCommands = cl.getCommands(UpgradePlayerCommand.class);
 		List<Command> moveCommands = cl.getCommands(MoveCommand.class);
 		List<Command> placeCommands = cl.getCommands(AddUnitCommand.class);
+		List<Command> unitCommands = cl.getCommands(UpgradeUnitCommand.class);
+		List<Command> spyCommands = cl.getCommands(SpyCommand.class);
+		
+		for(Command c : spyCommands){
+			cl.removeCommand(c);
+			toReturn.addCommand(new SpyCommand(this.getServerUnits(c.getUnits())));
+		}
+		
+		for(Command c : playerCommands){
+			cl.removeCommand(c);
+			toReturn.addCommand(new UpgradePlayerCommand(myGame.getPlayer(c.getPlayer().getName())));
+		}
+		
+		for(Command c : unitCommands){
+			cl.removeCommand(c);
+			toReturn.addCommand(new UpgradeUnitCommand(this.getServerUnits(c.getUnits())));
+		}
 
 		for(Command c : moveCommands){
 			cl.removeCommand(c);
@@ -111,7 +129,7 @@ public class GameModel implements ServerConstants, Serializable {
 		}
 		for(Command c : placeCommands){
 			cl.removeCommand(c);
-			for(Unit u : c.getUnits()){
+			for(int i = 0; i < c.getUnits().size(); i++){
 				this.addNewUnit(myGame.getMap().getTerritory(c.getFrom().getID()));
 			}
 		}
@@ -133,8 +151,18 @@ public class GameModel implements ServerConstants, Serializable {
 		return toReturn;
 	}
 
-	public boolean move(Player p, Territory from, Territory to, List<Unit> units, boolean swapOverride){
-		if(myGame.getMap().hasPath(from,to,p) || swapOverride){
+	public boolean move(Player p, Territory from, Territory to, List<Unit> units){
+		boolean allSpies = true;
+		for (Unit u : units)
+		{
+			if (!u.isSpy())
+			{
+				allSpies = false;
+				break;
+			}
+		}
+
+		if(myGame.getMap().hasPath(from,to,p) || allSpies){
 			from.removeUnits(units);
 			to.addUnits(units);
 		}
@@ -147,20 +175,21 @@ public class GameModel implements ServerConstants, Serializable {
 
 	public void attack(Player p, Territory from, Territory to, List<Unit> units){
 
-		List<Unit> opposingUnits = to.getUnits();
+		List<Unit> opposingUnits = (List<Unit>) to.getUnits();
 		Player opponent = to.getOwner();
 
 		if(opposingUnits.size()!=0){
 
 			if(p.getName().equals(opponent.getName())){
 				// swap must have occurred, you own it already!
-				this.move(p, from, to, units, false);
+				this.move(p, from, to, units);
 			}
 			while(!units.isEmpty() && !opposingUnits.isEmpty()){
 				Unit offense = units.get(units.size()-1);					// Pick final unit in arraylist for faster runtime.
 				Unit defense = opposingUnits.get(opposingUnits.size()-1);
-				if(Math.ceil(ATTACK_DIE*Math.random()) > Math.ceil(ATTACK_DIE*Math.random())){
-					System.out.println("Attacker wins!");
+				if(Math.ceil(ATTACK_DIE*Math.random()) + offense.getCombatBonus() > 
+				Math.ceil(ATTACK_DIE*Math.random()) + defense.getCombatBonus()){
+					System.out.println("ATTACKER wins!");
 					opponent.removeUnit(defense);
 					to.removeUnit(defense);
 				}
@@ -169,12 +198,17 @@ public class GameModel implements ServerConstants, Serializable {
 					p.removeUnit(offense);
 					units.remove(offense);
 				}
+				opposingUnits = to.getUnits();
 			}
 		}
 		if(!units.isEmpty()){
+			System.out.println("Territory has been conquered!");
 			p.addTerritory(to);
 			opponent.removeTerritory(to);
 			to.addUnits(units);
+		}
+		else{
+			System.out.println("Defender has survived!");
 		}
 	}
 
@@ -190,10 +224,10 @@ public class GameModel implements ServerConstants, Serializable {
 		if(opposingUnits.size()!=0){
 
 			while(!units.isEmpty() && !opposingUnits.isEmpty()){
-				Unit offense = units.get(units.size()-1);                                       // Pick final unit in arraylist for faster runtime.
+				Unit offense = units.get(units.size()-1);                    // Pick final unit in arraylist for faster runtime.
 				Unit defense = opposingUnits.get(opposingUnits.size()-1);
 				if(Math.ceil(ATTACK_DIE*Math.random()) > Math.ceil(ATTACK_DIE*Math.random())){
-					System.out.println("Attacker wins!");
+					System.out.println("ATTACKER wins!");
 					opponent.removeUnit(defense);
 					to.removeUnit(defense);
 				}
@@ -211,8 +245,8 @@ public class GameModel implements ServerConstants, Serializable {
 		}	    
 		else if (units.isEmpty()){ //aggressor lost
 			opponent.addTerritory(to);
-		p.removeTerritory(to);
-		to.addUnits(opposingUnits);
+			p.removeTerritory(to);
+			to.addUnits(opposingUnits);
 		}
 	}
 
@@ -226,36 +260,6 @@ public class GameModel implements ServerConstants, Serializable {
 		return true;
 	}
 
-	//	public void checkAttackSwaps(List<Command> cl){
-	//		for(int i = 0; i<cl.size()-1;i++){
-	//			for(int j = i+1; j<cl.size();j++){
-	//				Command attackA = cl.get(i);
-	//				Command attackB = cl.get(j);
-	//				if(attackA.getTo() == attackB.getFrom() && attackA.getFrom() == attackB.getTo()){
-	//					// are attacking one another.
-	//					Territory terA = attackA.getFrom();
-	//					Territory terB = attackB.getFrom();
-	//					if(terA.getUnits().size() == attackA.getUnits().size() && terB.getUnits().size() == attackA.getUnits().size()){
-	//						System.out.println("SWAP OCCURRED");
-	//						// are committing all units. Should swap!
-	//						move(attackA.getPlayer(),terA,attackA.getTo(),attackA.getUnits(),true);
-	//	                                        attackA.getPlayer().removeTerritory(terA);
-	//						attackA.getPlayer().addTerritory(terB);
-	//
-	//						move(attackB.getPlayer(),terB,attackB.getTo(),attackB.getUnits(),true);
-	//						attackB.getPlayer().removeTerritory(terB);
-	//						attackB.getPlayer().addTerritory(terA);
-	//
-	//						// remove the swap-attacks from commandlist.
-	//						cl.remove(j);
-	//						cl.remove(i);
-	//						System.out.println("SWAP FINISHED");
-	//					}
-	//				}
-	//			}
-	//		}
-	//	}
-	
 	public void checkAttackSwaps(List<Command> cl){
 		for(int i = 0; i<cl.size()-1;i++){
 			for(int j = i+1; j<cl.size();j++){
@@ -268,7 +272,7 @@ public class GameModel implements ServerConstants, Serializable {
 					if(terA.getUnits().size() == attackA.getUnits().size() && terB.getUnits().size() == attackA.getUnits().size()){
 						System.out.println("MID ATTACK OCCURRED");
 						// are committing all units. Should attack in mid!
-						Player winner, attackingPlayer;
+						Player attackingPlayer;
 
 						if(Math.random() < 0.5)
 						{
@@ -332,6 +336,9 @@ public class GameModel implements ServerConstants, Serializable {
 	}
 
 	private void feedUnits(){
+		for(Player p : myGame.getPlayers()){
+			System.out.println("Starting food = "+p.getFoodAmount());
+		}
 		for(Territory t : myGame.getMap().getTerritories()){
 			Player p = t.getOwner();
 			for(Unit u : t.getUnits()){
@@ -341,6 +348,9 @@ public class GameModel implements ServerConstants, Serializable {
 				}
 			}
 		}
+		for(Player p : myGame.getPlayers()){
+			System.out.println("Ending food = "+p.getFoodAmount());
+		}
 	}
 
 	private void harvestTerritories(){
@@ -349,16 +359,51 @@ public class GameModel implements ServerConstants, Serializable {
 		}
 	}
 
+	private void catchSpies(){
+		for (Territory t : myGame.getMap().getTerritories()){
+			for (Unit u : t.getUnits()){
+				if(u.isSpy()){
+					int percentChance = u.getTurnCount()*7+1;
+					if(Math.random()*100 < percentChance){
+						killSpy(u, t);
+					}
+					else {
+						u.setTurnCount(u.getTurnCount()+1);
+					}
+				}
+			}
+		}
+	}
+
+	private void killSpy(Unit spy, Territory territory){
+		territory.removeUnit(spy);
+	}
+
 	private void redoTurnErrorFound(String message){
 		System.out.println("AN ERROR HAS OCCURRED!!!: "+message);
 		myGame = myPrevious;
 		// return myGame (unaltered) to the clients, send error message, and request turn startover.
-		sendUpdatedGameState();
+		this.sendUpdatedGameState();
 	}
 
 	private void sendUpdatedGameState(){
 		System.out.println("Model logic completed!!!");
+		System.out.println("Now doing vision");
 		myServer.updateGame();
+	}
+
+	public void upgradeUnits(List<Unit> l) {
+		for(Unit u : l)
+			myGame.upgradeUnit(u);
+	}
+
+	public void upgradePlayer(Player p){
+		myGame.upgradePlayer(p);
+	}
+
+	public void makeSpies(List<Unit> l) {
+		for(Unit u : l)
+			myGame.makeSpy(u);
 	}
 
 }
