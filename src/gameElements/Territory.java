@@ -50,7 +50,13 @@ public class Territory implements Serializable
 	}
 	
 	public List<Unit> getUnits(){
-		return (List<Unit>) myUnits;
+		Collection<Unit> temp = new PriorityQueue<Unit>();
+		for(Unit u : myUnits){
+			temp.add(u);
+		}
+		myUnits = new PriorityQueue<Unit>();
+		myUnits.addAll(temp);
+		return new ArrayList<Unit>(myUnits);
 	}
 	
 	public int getID() {
@@ -77,7 +83,7 @@ public class Territory implements Serializable
 	
 	public void addUnit(Unit u){
 		myUnits.add(u);
-		myOwner.addUnit(u);
+		//myOwner.addUnit(u);
 	}
 	
 	public Unit getUnit(int id){
