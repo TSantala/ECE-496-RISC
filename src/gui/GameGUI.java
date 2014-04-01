@@ -46,7 +46,7 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 	private JFrame myFrame;
 
 	private LobbyPane lobbyPane;
-	private EnhancedGameGraphic myGameGraphic;
+	private GameGraphic myGameGraphic;
 	private GameState myGame;
 	private Player myPlayer;
 
@@ -72,7 +72,7 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 		}
 		else {
 			mainPane.remove(myGameGraphic);
-			myGameGraphic = new EnhancedGameGraphic(this, gs);
+			myGameGraphic = new GameGraphic(this, gs);
 			myGameGraphic.revalidate();
 			myGameGraphic.repaint();
 			mainPane.add(myGameGraphic,BorderLayout.CENTER);
@@ -89,7 +89,8 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 		System.out.println("3");
 
 		myFrame = new JFrame("RISC");
-		myFrame.setSize(1600, 1080);
+		//myFrame.setSize(1600, 1080);
+		myFrame.setSize(800, 600);
 		myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		myFrame.setLayout(new BorderLayout());
 		Container pane = myFrame.getContentPane();
@@ -214,13 +215,13 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 
 	public void beginGame(GameState gs){
 		mainPane.remove(lobbyPane);
-		myGameGraphic = new EnhancedGameGraphic(this, gs);
+		myGameGraphic = new GameGraphic(this, gs);
 		mainPane.add(myGameGraphic,BorderLayout.CENTER);
 		mainPane.revalidate();
 		mainPane.repaint();
 	}
 	
-	public EnhancedGameGraphic getGameGraphic(){
+	public GameGraphic getGameGraphic(){
 		return myGameGraphic;
 	}
 

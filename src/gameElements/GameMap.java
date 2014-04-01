@@ -327,7 +327,7 @@ public class GameMap implements Serializable
 		myTerritories.add(Alabama);
 	}
 
-	/*public GameMap(int num)		// for now, just create a 'circle' with each connected to numeric neighbors and last to first
+	public GameMap(int num)		// for now, just create a 'circle' with each connected to numeric neighbors and last to first
 	{
 		while(myTerritoryCount<num){
 			Territory newT = this.createTerritory();
@@ -339,12 +339,12 @@ public class GameMap implements Serializable
 		}
 		myTerritories.get(num-1).addNeighbor(myTerritories.get(0));
 		myTerritories.get(0).addNeighbor(myTerritories.get(num-1));
-	}*/
+	}
 
-	/*public Territory createTerritory(){
+	public Territory createTerritory(){
 		myTerritoryCount++;
-		return new Territory(myTerritoryCount);
-	}*/
+		return new Territory(Integer.toString(myTerritoryCount));
+	}
 
 	public GameMap(List<Territory> map){
 		myTerritories = map;

@@ -145,11 +145,18 @@ public class EnhancedGameGraphic extends JPanel{
 			myGUI.setLeftClick(myGame.getMap().getTerritory(lookupState.get(myPoint)));
 			myGUI.updateTerritoryInfo(myGame.getMap().getTerritory(lookupState.get(myPoint)));
 			state = state + "-F.png";
+			if (initialization & startUnits > 0){
+				myGame.getMap().getTerritory(lookupState.get(myPoint)).addUnit(new Unit(myGame.getMap().getTerritory(lookupState.get(myPoint)).getOwner(), 1));
+				startUnits--;
+			}
 		}
 		else{
 			myGUI.setRightClick(myGame.getMap().getTerritory(lookupState.get(myPoint)));
 			state = state + "-T.png";
 		}
+		
+		//TODO
+		//Finish revamping the way initial troop placement is carried out
 		
 		BufferedImage in;
 		try {
@@ -166,6 +173,9 @@ public class EnhancedGameGraphic extends JPanel{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.out.println("Failed to read map file");
+		}
+		if (startUnits == 0){
+			this.endInitialization();
 		}
 		this.revalidate();
 		myGUI.revalidate();
