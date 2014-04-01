@@ -146,7 +146,7 @@ public class EnhancedGameGraphic extends JPanel{
 			myGUI.updateTerritoryInfo(myGame.getMap().getTerritory(lookupState.get(myPoint)));
 			state = state + "-F.png";
 			if (initialization & startUnits > 0){
-				myGame.getMap().getTerritory(lookupState.get(myPoint)).addUnit(new Unit(myGame.getMap().getTerritory(lookupState.get(myPoint)).getOwner(), 1));
+				myGame.getMap().getTerritory(lookupState.get(myPoint)).addUnit(new Unit(1, myGame.getMap().getTerritory(lookupState.get(myPoint)).getOwner()));
 				startUnits--;
 			}
 		}
