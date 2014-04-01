@@ -83,13 +83,11 @@ public class Unit implements Serializable, GameConstants, Comparable<Unit>
 		return isSpy;
 	}
 
-	public void setTurnCount(int t) //sets spy turn count
-	{
+	public void setTurnCount(int t){
 		spyTurnCount = t;
 	}
 
-	public int getTurnCount()
-	{
+	public int getTurnCount(){
 		return spyTurnCount;
 	}
 
