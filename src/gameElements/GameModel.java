@@ -389,6 +389,7 @@ public class GameModel implements ServerConstants, Serializable {
 	private void sendUpdatedGameState(){
 		System.out.println("Model logic completed!!!");
 		System.out.println("Now doing vision");
+		myServer.setGameState(myGame);
 		myServer.updateGame();
 	}
 

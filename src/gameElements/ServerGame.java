@@ -95,6 +95,10 @@ public class ServerGame extends Thread{
 	public void updateGame() {
 		myServer.sendUpdatedGame(myGame, this);
 	}
+	
+	public void setGameState(GameState gs){
+		myGame = gs;
+	}
 
 	public void editVision(){
 		HashMap<Player, GameState> playerToGameState  = new HashMap<Player, GameState>();
