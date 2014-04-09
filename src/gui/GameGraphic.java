@@ -117,7 +117,7 @@ public class GameGraphic extends JPanel{
 		}
 		this.revalidate();
 	    myGUI.revalidate();
-		this.repaint();		// this seems to be causing weird graphics bugs at random.
+		this.repaint();
 		myGUI.repaint();
 	}
 

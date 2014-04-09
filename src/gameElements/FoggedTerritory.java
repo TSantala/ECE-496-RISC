@@ -2,9 +2,10 @@ package gameElements;
 
 public class FoggedTerritory extends Territory{
 
-    public FoggedTerritory (String id) {
+	private static final long serialVersionUID = 1L;
+
+	public FoggedTerritory (String id) {
         super(id);
-        
     }
 
 }
