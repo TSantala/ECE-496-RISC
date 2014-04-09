@@ -21,7 +21,14 @@ public class Territory implements Serializable, GameConstants
 		myResources.add(new Food(10));
 		myResources.add(new Technology(10));
 	}
-
+	
+	public Territory(String id, boolean b)
+	{
+	        myID = id;
+	        myNeighbors = new ArrayList<Territory>();
+	        
+	}
+	
 	public void setOwner(Player p){
 		myOwner = p;
 	}
@@ -110,9 +117,7 @@ public class Territory implements Serializable, GameConstants
             for (Territory t : p.getTerritories())
             {
                 if (myNeighbors.contains(t))
-                {
                     return true;
-                }
             }
             return false;
         }
