@@ -5,7 +5,7 @@ import java.util.*;
 
 import server.ServerPlayer;
 
-public class HiddenTerritory extends Territory implements Serializable, GameConstants 
+public class HiddenTerritory extends Territory 
 {
 
 	private static final long serialVersionUID = 8L;
@@ -14,6 +14,11 @@ public class HiddenTerritory extends Territory implements Serializable, GameCons
 	{
 		super(id);
 		this.setOwner(new Player(new ServerPlayer("???", Double.toString(Math.random()))));
+	}
+	
+	public HiddenTerritory(String id, List<Territory> territories){
+		this(id);
+		myNeighbors = territories;
 	}
 	
 	@Override

@@ -404,5 +404,16 @@ public class GameMap implements Serializable
 		}
 		return toReturn;
 	}
+	
+	public void replaceTerritory(Territory t){
+		HiddenTerritory ht = new HiddenTerritory(t.getID(),t.getNeighbors());
+		List<Territory> neighbors = t.getNeighbors();
+		for (Territory n : neighbors){
+			n.removeNeighbor(t);
+			n.addNeighbor(ht);
+		}
+		myTerritories.remove(t);
+		myTerritories.add(ht);
+	}
 
 }
