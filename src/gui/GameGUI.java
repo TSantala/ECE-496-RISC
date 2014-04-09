@@ -255,12 +255,8 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 	}
 
 	public void addUnitUpgrade(Collection<Unit> u) {
-		for (Unit unit : u){
-			if (!unit.getOwner().getPlayer().equals(this.getPlayer().getPlayer())){
-				System.out.println("tried to use a unit that does not belong to you!");
-				return;
-			}
-		}
+		if(!validateCommand(u))
+			return;
 		System.out.println("GOT HERE!!! " + u.toString());
 		List<Unit> toSend = new ArrayList<Unit>();
 		toSend.addAll(u);
@@ -273,24 +269,16 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 	}
 	
 	public void addMoveCommand(Collection<Unit> u){
-		for (Unit unit : u){
-			if (!unit.getOwner().getPlayer().equals(this.getPlayer().getPlayer())){
-				System.out.println("tried to use a unit that does not belong to you!");
-				return;
-			}
-		}
+		if(!validateCommand(u))
+			return;
 		List<Unit> toSend = new ArrayList<Unit>();
 		toSend.addAll(u);
 		this.addCommand(new MoveCommand(myGame.getPlayer(myPlayer.getName()),this.getLeftClick(),this.getRightClick(),toSend));
 	}
 	
 	public void addAttackCommand(Collection<Unit> u){
-		for (Unit unit : u){
-			if (!unit.getOwner().getPlayer().equals(this.getPlayer().getPlayer())){
-				System.out.println("tried to use a unit that does not belong to you!");
-				return;
-			}
-		}
+		if(!validateCommand(u))
+			return;
 		List<Unit> toSend = new ArrayList<Unit>();
 		toSend.addAll(u);
 		this.addCommand(new AttackCommand(myGame.getPlayer(myPlayer.getName()),this.getLeftClick(),this.getRightClick(),toSend));
@@ -306,5 +294,15 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 		List<Unit> toSend = new ArrayList<Unit>();
 		toSend.addAll(u);
 		this.addCommand(new SpyCommand(toSend));
+	}
+	
+	public boolean validateCommand(Collection<Unit> u){
+		for (Unit unit : u){
+			if (!unit.getOwner().getPlayer().equals(this.getPlayer().getPlayer())){
+				System.out.println("tried to use a unit that does not belong to you!");
+				return false;
+			}
+		}
+		return true;
 	}
 }
