@@ -13,7 +13,7 @@ public class Territory implements Serializable, GameConstants
 	private List<Territory> myNeighbors;
 	private String myID;
 	private List<Resource> myResources= new ArrayList<Resource>();
-	
+
 	public Territory(String id)
 	{
 		myID = id;
@@ -53,7 +53,7 @@ public class Territory implements Serializable, GameConstants
 		Collections.sort(myUnits);
 		return myUnits;
 	}
-	
+
 	public String getID() {
 		return myID;
 	}
@@ -95,7 +95,7 @@ public class Territory implements Serializable, GameConstants
 		toReturn.addUnits(newUnits);
 		return toReturn;
 	}
-	
+
         public boolean isAdjacentTo (Player p) //if the territory is adjacent to any of the player's territories
         { 
             for (Territory t : p.getTerritories())
@@ -117,7 +117,7 @@ public class Territory implements Serializable, GameConstants
             }
             return false;
         }
-	
+
 	public String getUnitInfo(){
 		if(myUnits.size()==0) return "No units!";
 		String toReturn = "";
