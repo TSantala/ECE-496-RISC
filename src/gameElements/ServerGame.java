@@ -100,15 +100,20 @@ public class ServerGame extends Thread{
 		myGame = gs;
 	}
 
-	public void editVision(){
+	public void editVision()
+	{
 		HashMap<Player, GameState> playerToGameState  = new HashMap<Player, GameState>();
-		for (Player p : myGame.getPlayers()){
+		for (Player p : myGame.getPlayers())
+		{
 			GameState individualGame = myGame.clone();
 			individualGame.clearMap();
 			playerToGameState.put(p, individualGame);
-			for (Territory t : individualGame.getMap().getTerritories()){
-				if (t.getOwner().equals(p) || t.isAdjacentTo(p) || t.hasSpy()){
-					
+			for (Territory t : individualGame.getMap().getTerritories())
+			{
+				if (t.getOwner().equals(p) || t.isAdjacentTo(p) || t.hasSpy())
+				{
+					//time to replace t with a new blank territory
+				        
 				}
 			}
 		}
