@@ -10,7 +10,7 @@ public class Territory implements Serializable, GameConstants
 
 	private Player myOwner;
 	private List<Unit> myUnits = new ArrayList<Unit>();
-	private List<Territory> myNeighbors;
+	protected List<Territory> myNeighbors;
 	private String myID;
 	private List<Resource> myResources= new ArrayList<Resource>();
 
@@ -45,6 +45,15 @@ public class Territory implements Serializable, GameConstants
 
 	public void addNeighbor(Territory neighbor){
 		myNeighbors.add(neighbor);
+	}
+	
+	public void removeNeighbor(Territory neighbor){
+		if (myNeighbors.contains(neighbor)){
+			myNeighbors.remove(neighbor);
+		}
+		else{
+			System.out.println("could not remove territory because it was not found");
+		}
 	}
 
 	public List<Territory> getNeighbors(){

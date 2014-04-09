@@ -25,7 +25,6 @@ public class ObjectClient extends Thread implements ServerConstants{
 		try {
 
 			//InetAddress address = InetAddress.getByName("10.190.218.185"); //timo's laptop server
-
 			InetAddress address = InetAddress.getByName("10.190.86.179");
 			//InetAddress address = InetAddress.getByName(InetAddress.getLocalHost().getHostAddress());
 

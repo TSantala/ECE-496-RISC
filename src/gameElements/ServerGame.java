@@ -1,6 +1,8 @@
 package gameElements;
 
 import java.util.HashMap;
+import java.util.List;
+
 import server.Message;
 import server.ObjectServer;
 import server.PromptUnits;
@@ -90,32 +92,31 @@ public class ServerGame extends Thread{
 
 	public void updateGame(Message m) {
 		myServer.sendUpdatedGame(m, this);
+		//this.editVision();
 	}
 
 	public void updateGame() {
 		myServer.sendUpdatedGame(myGame, this);
+		//this.editVision();
 	}
 	
 	public void setGameState(GameState gs){
 		myGame = gs;
 	}
 
-	public void editVision()
-	{
-		HashMap<Player, GameState> playerToGameState  = new HashMap<Player, GameState>();
-		for (Player p : myGame.getPlayers())
-		{
+	public void editVision(){
+		System.out.println("doing vision in ServerGame");
+		//HashMap<Player, GameState> playerToGameState  = new HashMap<Player, GameState>();
+		for (Player p : myGame.getPlayers()){
 			GameState individualGame = myGame.clone();
-			individualGame.clearMap();
-			playerToGameState.put(p, individualGame);
-			for (Territory t : individualGame.getMap().getTerritories())
-			{
-				if (t.getOwner().equals(p) || t.isAdjacentTo(p) || t.hasSpy())
-				{
-					//time to replace t with a new blank territory
-				        
+			//individualGame.clearMap();
+			//playerToGameState.put(p, individualGame);
+			for (Territory t : individualGame.getMap().getTerritories()){
+				if (!t.getOwner().equals(p) && !t.isAdjacentTo(p) && !t.hasSpy()){
+					individualGame.getMap().replaceTerritory(t);
 				}
 			}
+			myServer.sendGameByPlayer(individualGame, p.getPlayer());
 		}
 	}
 
