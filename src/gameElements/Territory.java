@@ -8,11 +8,11 @@ public class Territory implements Serializable, GameConstants
 
 	private static final long serialVersionUID = 8L;
 
-	private Player myOwner;
-	private List<Unit> myUnits = new ArrayList<Unit>();
-	private List<Territory> myNeighbors;
-	private String myID;
-	private List<Resource> myResources= new ArrayList<Resource>();
+	protected Player myOwner;
+	protected List<Unit> myUnits = new ArrayList<Unit>();
+	protected List<Territory> myNeighbors;
+	protected String myID;
+	protected List<Resource> myResources= new ArrayList<Resource>();
 	
 	public Territory(String id)
 	{
@@ -21,7 +21,14 @@ public class Territory implements Serializable, GameConstants
 		myResources.add(new Food(10));
 		myResources.add(new Technology(10));
 	}
-
+	
+	public Territory(String id, boolean b)
+	{
+	        myID = id;
+	        myNeighbors = new ArrayList<Territory>();
+	        
+	}
+	
 	public void setOwner(Player p){
 		myOwner = p;
 	}
@@ -101,9 +108,7 @@ public class Territory implements Serializable, GameConstants
             for (Territory t : p.getTerritories())
             {
                 if (myNeighbors.contains(t))
-                {
                     return true;
-                }
             }
             return false;
         }
