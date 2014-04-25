@@ -3,8 +3,7 @@ package gameElements;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import server.ServerConstants;
+import server.*;
 
 public class GameModel implements ServerConstants, Serializable {
 
@@ -45,6 +44,19 @@ public class GameModel implements ServerConstants, Serializable {
 		myPrevious = myServerGame.getSavedState();
 
 		cl = this.createServerCommandList(cl);
+		
+//		List<Command> tradeOrders = cl.getCommands(TradeCommand.class);
+//		for(Command c: tradeOrders)
+//		{
+//		    this.trade(c);
+//		}
+		
+//		List<Command> allianceOrders = cl.getCommands(AllianceCommand.class);
+//		for(Command c : allianceOrders)
+//		{
+//		    this.makeAlliance(c);
+//		}
+		
 		
 		List<Command> spies = cl.getCommands(SpyCommand.class);
 		for(Command c : spies){
@@ -400,6 +412,10 @@ public class GameModel implements ServerConstants, Serializable {
 
 	public void upgradePlayer(Player p){
 		myGame.upgradePlayer(p);
+		if (p.getTechLevel() == 6)
+		{
+		    myServer.updateGame(new TextMessage("A PLAYER NOW HAS NUKES. YOU ARE NOT PREPARED."));
+		}
 	}
 
 	public void makeSpies(List<Unit> l) {
