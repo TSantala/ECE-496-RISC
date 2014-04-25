@@ -414,7 +414,7 @@ public class GameModel implements ServerConstants, Serializable {
 		myGame.upgradePlayer(p);
 		if (p.getTechLevel() == 6)
 		{
-		    myServer.updateGame(new TextMessage("A PLAYER NOW HAS NUKES. YOU ARE NOT PREPARED."));
+		    myServerGame.updateGame(new TextMessage("A PLAYER NOW HAS NUKES. YOU ARE NOT PREPARED."));
 		}
 	}
 
