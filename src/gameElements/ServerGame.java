@@ -108,7 +108,7 @@ public class ServerGame extends Thread{
 		System.out.println("doing vision in ServerGame");
 		//HashMap<Player, GameState> playerToGameState  = new HashMap<Player, GameState>();
 		for (Player p : myGame.getPlayers()){
-			GameState individualGame = myGame.clone();
+			GameState individualGame = this.getSavedState();
 			//individualGame.clearMap();
 			//playerToGameState.put(p, individualGame);
 			for (Territory t : individualGame.getMap().getTerritories()){
@@ -122,6 +122,10 @@ public class ServerGame extends Thread{
 
 	public SaveGame saveGame(){
 		return new SaveGame(myInfo,myGame);
+	}
+	
+	public GameState getSavedState(){
+		return myServer.getSavedState(this);
 	}
 
 }

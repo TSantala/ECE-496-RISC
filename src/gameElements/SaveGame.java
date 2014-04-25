@@ -23,5 +23,11 @@ public class SaveGame implements Serializable{
 	public GameState getState(){
 		return myGame;
 	}
+	
+	@Override
+	public boolean equals(Object other){
+		SaveGame toCompare = (SaveGame) other;
+		return myInfo.equals(toCompare.getInfo());
+	}
 
 }

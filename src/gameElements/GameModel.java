@@ -12,7 +12,7 @@ public class GameModel implements ServerConstants, Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private ServerGame myServer;
+	private ServerGame myServerGame;
 	private GameState myPrevious;
 	private GameState myGame;
 	private int unitID=0;
@@ -20,7 +20,7 @@ public class GameModel implements ServerConstants, Serializable {
 	public GameModel(GameState gs, ServerGame sg){
 		myGame = gs;
 		myPrevious = gs;
-		myServer = sg;
+		myServerGame = sg;
 	}
 
 	public GameState getGameState(){
@@ -42,7 +42,7 @@ public class GameModel implements ServerConstants, Serializable {
 		for(Player p : myGame.getPlayers())
 			System.out.println("Food:"+p.getFoodAmount());
 
-		myPrevious = myGame.clone();
+		myPrevious = myServerGame.getSavedState();
 
 		cl = this.createServerCommandList(cl);
 		
@@ -389,8 +389,8 @@ public class GameModel implements ServerConstants, Serializable {
 	private void sendUpdatedGameState(){
 		System.out.println("Model logic completed!!!");
 		System.out.println("Now doing vision");
-		myServer.setGameState(myGame);
-		myServer.updateGame();
+		myServerGame.setGameState(myGame);
+		myServerGame.updateGame();
 	}
 
 	public void upgradeUnits(List<Unit> l) {

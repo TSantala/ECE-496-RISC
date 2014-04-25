@@ -30,10 +30,6 @@ public class Unit implements Serializable, GameConstants, Comparable<Unit>
 		return myID;
 	}
 
-	public Unit clone(){
-		return new Unit(myID,myOwner);
-	}
-
 	public int getTechLevel(){
 		return myTechLevel;
 	}

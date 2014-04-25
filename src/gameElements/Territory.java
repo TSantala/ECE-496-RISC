@@ -102,16 +102,6 @@ public class Territory implements Serializable, GameConstants
 		return null;
 	}
 
-	public Territory clone(){
-		List<Unit> newUnits = new ArrayList<Unit>();
-		for(Unit u : myUnits){
-			newUnits.add(u.clone());
-		}
-		Territory toReturn = new Territory(myID);
-		toReturn.addUnits(newUnits);
-		return toReturn;
-	}
-
         public boolean isAdjacentTo (Player p) //if the territory is adjacent to any of the player's territories
         { 
             for (Territory t : p.getTerritories())

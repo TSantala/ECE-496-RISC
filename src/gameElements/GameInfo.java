@@ -53,5 +53,20 @@ public class GameInfo implements Serializable{
 	public List<ServerPlayer> getOriginalPlayers(){
 		return myOriginalPlayers;
 	}
+	
+	public String getName(){
+		return myName;
+	}
+	
+	public int getMaxPlayers(){
+		return maxPlayers;
+	}
+	
+	@Override
+	public boolean equals(Object other){
+		GameInfo toCompare = (GameInfo) other;
+		return myName == toCompare.getName() && maxPlayers == toCompare.getMaxPlayers();
+		
+	}
 
 }

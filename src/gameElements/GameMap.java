@@ -390,20 +390,6 @@ public class GameMap implements Serializable
 	public List<Territory> getTerritories(){
 		return myTerritories;
 	}
-
-	public GameMap clone(){
-		List<Territory> clonedTerritories = new ArrayList<Territory>();
-		for(Territory t : myTerritories){
-			clonedTerritories.add(t.clone());
-		}
-		GameMap toReturn = new GameMap(clonedTerritories);
-		for(Territory t : clonedTerritories){
-			Territory original = this.getTerritory(t.getID());
-			for(Territory n : original.getNeighbors())
-				t.addNeighbor(toReturn.getTerritory(n.getID()));
-		}
-		return toReturn;
-	}
 	
 	public void replaceTerritory(Territory t){
 		HiddenTerritory ht = new HiddenTerritory(t.getID(),t.getNeighbors());

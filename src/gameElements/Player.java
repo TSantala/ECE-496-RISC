@@ -114,24 +114,5 @@ public class Player implements Serializable, GameConstants {
 	public int getNumToFeed(){
 		return myUnits.size();
 	}
-	
-	public Player clone(GameMap clonedMap){
-		Player toReturn = new Player(myPlayer);
-		List<Unit> clonedUnits = new ArrayList<Unit>();
-		for(Unit u : myUnits){
-			for(Territory t : clonedMap.getTerritories()){
-				if(t.getUnit(u.getID()) != null){
-					clonedUnits.add(t.getUnit(u.getID()));
-					t.getUnit(u.getID()).setOwner(toReturn);
-				}
-			}
-		}
-		for(Territory t : myTerritories){
-			Territory clonedT = clonedMap.getTerritory(t.getID());
-			toReturn.addTerritory(clonedT);
-			clonedT.setOwner(toReturn);
-		}
-		return toReturn;
-	}
 
 }

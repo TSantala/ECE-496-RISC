@@ -81,15 +81,6 @@ public class GameState extends Message implements Serializable {
 		return null;
 	}
 
-	public GameState clone(){
-		GameMap mapClone = myMap.clone();
-		List<Player> playersClone = new ArrayList<Player>();
-		for(Player p : myPlayers){
-			playersClone.add(p.clone(mapClone));
-		}
-		return new GameState(mapClone,playersClone);
-	}
-
 	@Override
 	public boolean sendMessageToServer(ObjectServer os) {
 		// should never happen

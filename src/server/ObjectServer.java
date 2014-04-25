@@ -1,11 +1,14 @@
 package server;
 
 import gameElements.CommandList;
+import gameElements.GameState;
 import gameElements.SaveGame;
 import gameElements.ServerGame;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
@@ -39,6 +42,36 @@ public class ObjectServer extends Thread implements ServerConstants{
 				System.out.println("couldn't read the data");
 			}
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<SaveGame> getSaveGameList(){
+		FileInputStream saveFile;
+		ObjectInputStream save;
+		List<SaveGame> tempData = null;
+		try {
+			saveFile = new FileInputStream(".//serverData.sav");
+			save = new ObjectInputStream(saveFile);
+			tempData = (List<SaveGame>) save.readObject();
+			save.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}		
+		return tempData;
+	}
+	
+	public GameState getSavedState(ServerGame current){
+		List<SaveGame> list = this.getSaveGameList();
+		for(SaveGame sg : list){
+			if(sg.equals(current))
+				return sg.getState();
+		}
+		System.out.println("SAVED GAMESTATE NOT FOUND!!!");
+		return null;
 	}
 
 	public void run(){
