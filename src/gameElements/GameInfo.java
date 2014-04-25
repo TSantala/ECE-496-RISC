@@ -65,7 +65,7 @@ public class GameInfo implements Serializable{
 	@Override
 	public boolean equals(Object other){
 		GameInfo toCompare = (GameInfo) other;
-		return myName == toCompare.getName() && maxPlayers == toCompare.getMaxPlayers();
+		return myName.equals(toCompare.getName()) && maxPlayers == toCompare.getMaxPlayers();
 		
 	}
 
