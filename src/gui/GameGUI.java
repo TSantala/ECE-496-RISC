@@ -238,7 +238,8 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 				"  Player: "+p.getName()+"\n"+
 				"  Food = "+p.getFoodAmount()+"\n"+
 				"  Technology = "+p.getTechAmount()+"\n"+
-				"  Level: "+p.getTechLevel()+" = "+PLAYER_TECH_TREE.getUnitType(p.getTechLevel()));
+				"  Level: "+p.getTechLevel()+" = "+PLAYER_TECH_TREE.getUnitType(p.getTechLevel())+"\n"+
+				"  Allies: "+p.getAlliesString());
 	}
 
 
@@ -440,9 +441,11 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 				"ALLIANCE REQUESTED!",  JOptionPane.YES_NO_OPTION);
 		if (reply == JOptionPane.YES_OPTION){
 		   System.out.println("Request accepted!");
+		   this.addCommand(new DiplomacyCommand(from,to,true));
 		}
 		else {
 			System.out.println("Request rejected!");
+			
 		}
 	}
 	

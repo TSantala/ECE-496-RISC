@@ -100,8 +100,7 @@ public class ObjectClient extends Thread implements ServerConstants{
 		myGUI.updateGameInfo(myUpdate);
 	}
 	
-	public void setGameOver()
-	{
+	public void setGameOver(){
 	    
 	}
 

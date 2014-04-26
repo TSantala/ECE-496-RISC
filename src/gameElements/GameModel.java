@@ -1,5 +1,7 @@
 package gameElements;
 
+import gui.DiplomacyCommand;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -124,12 +126,29 @@ public class GameModel implements ServerConstants, Serializable {
 		List<Command> spyCommands = cl.getCommands(SpyCommand.class);
 		List<Command> nukeCommands = cl.getCommands(NukeCommand.class);
 		List<Command> intCommands = cl.getCommands(InterceptorCommand.class);
+		List<Command> allyCommands = cl.getCommands(DiplomacyCommand.class);
 
+		
+		for(Command c : placeCommands){
+			cl.removeCommand(c);
+			for(int i = 0; i < c.getUnits().size(); i++){
+				this.addNewUnit(myGame.getMap().getTerritory(c.getFrom().getID()),
+						myGame.getPlayer(c.getPlayer().getName()));
+			}
+		}
+		
+		for(Command c : allyCommands){
+			cl.removeCommand(c);
+			DiplomacyCommand dc = (DiplomacyCommand) c;
+			this.setDiplomacy(myGame.getPlayer(dc.getPlayer().getName()), 
+					myGame.getPlayer(dc.getOtherPlayer().getName()), dc.nowAlly());
+		}
+		
 		for(Command c : nukeCommands){
 			cl.removeCommand(c);
 			toReturn.addCommand(new NukeCommand(myGame.getMap().getTerritory(c.getTo().getID())));
 		}
-
+		
 		for(Command c : intCommands){
 			cl.removeCommand(c);
 			toReturn.addCommand(new InterceptorCommand(myGame.getMap().getTerritory(c.getTo().getID()),
@@ -157,13 +176,6 @@ public class GameModel implements ServerConstants, Serializable {
 					myGame.getMap().getTerritory(c.getFrom().getID()),
 					myGame.getMap().getTerritory(c.getTo().getID()),
 					this.getServerUnits(c.getUnits())));
-		}
-		for(Command c : placeCommands){
-			cl.removeCommand(c);
-			for(int i = 0; i < c.getUnits().size(); i++){
-				this.addNewUnit(myGame.getMap().getTerritory(c.getFrom().getID()),
-						myGame.getPlayer(c.getPlayer().getName()));
-			}
 		}
 		for(Command c : cl.getCommands()){
 			System.out.println("In the attack loop");
@@ -501,6 +513,17 @@ public class GameModel implements ServerConstants, Serializable {
 		if(p.getTechAmount() >= 10){
 			p.adjustResource(new Technology(-10));
 			to.placeInterceptor();
+		}
+	}
+
+	public void setDiplomacy(Player myPlayer, Player otherPlayer, boolean allies) {
+		if(allies){
+			myPlayer.addAlly(otherPlayer);
+			otherPlayer.addAlly(myPlayer);
+		}
+		else{
+			myPlayer.removeAlly(otherPlayer);
+			otherPlayer.removeAlly(myPlayer);
 		}
 	}
 
