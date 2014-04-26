@@ -176,7 +176,7 @@ public class GameModel implements ServerConstants, Serializable {
 		System.out.println("ALL SPIES? " + allSpies);
 		boolean ownersNotDifferent = !to.getOwner().getName().equals(from.getOwner().getName());
 		System.out.println(ownersNotDifferent + " OWNERS ARE DIFFERENT?");
-		if (ownersNotDifferent && allSpies) //spies moving
+		if (allSpies) //spies moving
 		{
 		    if (from.getNeighbors().contains(to)) //is 1 away
 		    {
