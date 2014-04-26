@@ -30,7 +30,7 @@ public class AttackButton extends JButton
             	frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
             	//Create and set up the content pane.
-            	JComponent newContentPane = new AttackDialog(gui.getLeftClick().getUnits(),gui,frame,"Attack!");
+            	JComponent newContentPane = new AttackDialog(gui.getLeftClickUnits(),gui,frame,"Attack!");
             	newContentPane.setOpaque(true); //content panes must be opaque
             	frame.setContentPane(newContentPane);
 

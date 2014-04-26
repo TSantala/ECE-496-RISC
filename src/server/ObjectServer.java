@@ -196,5 +196,19 @@ public class ObjectServer extends Thread implements ServerConstants{
 			exc.printStackTrace();
 		}
 	}
+	
+	public void endGame(String serverGameName)
+	{
+	    for (Iterator<ServerGame> iterator = myGames.iterator(); iterator.hasNext();)
+	    {
+	        ServerGame sg = iterator.next();
+	        if (sg.getInfo().getName().equals(serverGameName)) //found the game to remove 
+	        {
+	            iterator.remove();
+	            break;
+	        }
+	    }
+	    this.updateGameInfo();
+	}
 
 }

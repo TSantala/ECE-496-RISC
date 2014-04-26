@@ -9,13 +9,11 @@ public class GameModel implements ServerConstants, Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private ServerGame myServerGame;
-	private GameState myPrevious;
 	private GameState myGame;
 	private int unitID=0;
 
 	public GameModel(GameState gs, ServerGame sg){
 		myGame = gs;
-		myPrevious = gs;
 		myServerGame = sg;
 	}
 
@@ -28,28 +26,26 @@ public class GameModel implements ServerConstants, Serializable {
 		for(Player p : myGame.getPlayers())
 			System.out.println("Food:"+p.getFoodAmount());
 
-		myPrevious = myServerGame.getSavedState();
-		System.out.println("gets the saved state");
 		cl = this.createServerCommandList(cl);
-		
-//		List<Command> tradeOrders = cl.getCommands(TradeCommand.class);
-//		for(Command c: tradeOrders)
-//		{
-//		    this.trade(c);
-//		}
-		
-//		List<Command> allianceOrders = cl.getCommands(AllianceCommand.class);
-//		for(Command c : allianceOrders)
-//		{
-//		    this.makeAlliance(c);
-//		}
-		
+
+		//		List<Command> tradeOrders = cl.getCommands(TradeCommand.class);
+		//		for(Command c: tradeOrders)
+		//		{
+		//		    this.trade(c);
+		//		}
+
+		//		List<Command> allianceOrders = cl.getCommands(AllianceCommand.class);
+		//		for(Command c : allianceOrders)
+		//		{
+		//		    this.makeAlliance(c);
+		//		}
+
 		List<Command> spies = cl.getCommands(SpyCommand.class);
 		for(Command c : spies){
 			this.makeSpies(c.getUnits());
 			cl.removeCommand(c);
 		}
-		
+
 		List<Command> upgradePlayers = cl.getCommands(UpgradePlayerCommand.class);
 		for(Command c : upgradePlayers){
 			this.upgradePlayer(c.getPlayer());
@@ -70,60 +66,86 @@ public class GameModel implements ServerConstants, Serializable {
 			cl.removeCommand(move);
 		}
 
-		// ONLY ATTACK COMMANDS MUST BE LEFT.
-		
+		List<Command> attackCommands = cl.getCommands(AttackCommand.class);
+
 		// first check validity of attacks.
-		cl = this.checkValidAttacks(cl.getCommands());
+		attackCommands = this.checkValidAttacks(attackCommands);
 		//if(!checkValidAttacks(cl.getCommands())) return;
-		
+
 		// check if attack swaps and enact them.  ******CHECK MIDCOMBAT ATTACKS NOW*******
-		this.checkAttackSwaps(cl.getCommands());
-		
+		this.checkAttackSwaps(attackCommands);
+
 		// attacking units don't defend; remove them from the territories.
-		this.displaceAttackingUnits(cl.getCommands());
-		
+		this.displaceAttackingUnits(attackCommands);
+
 		// combine attack commands from same player to same destination.
-		this.combineGroupAttacks(cl.getCommands());
-		
+		this.combineGroupAttacks(attackCommands);
+
 		// attack!
-		for(Command attack : cl.getCommands())
+		for(Command attack : attackCommands)
 			attack.enact(this);
-		
+
+		List<Command> intCommands = cl.getCommands(InterceptorCommand.class);
+		for(Command interceptor : intCommands)
+			interceptor.enact(this);
+
+		List<Command> nukeCommands = cl.getCommands(NukeCommand.class);
+		for(Command nuke : nukeCommands)
+			nuke.enact(this);
+
 		// add 1 unit to each territory.
 		this.endOfRoundAddUnits();
-		
+
 		// feed units and remove if out of food
 		this.feedUnits();
-		
+
 		// harvest resources from owned territories
 		this.harvestTerritories();
-		
+
 		this.catchSpies();
+
+		for(Player p : myGame.getPlayers())
+			p.checkNukesReady();
 
 		// return updated game after commands enacted to clients.
 		this.sendUpdatedGameState();
+
+		this.checkWin();
 
 	}
 
 	private CommandList createServerCommandList(CommandList cl) {
 		CommandList toReturn = new CommandList();
-		
+
 		List<Command> playerCommands = cl.getCommands(UpgradePlayerCommand.class);
 		List<Command> moveCommands = cl.getCommands(MoveCommand.class);
 		List<Command> placeCommands = cl.getCommands(AddUnitCommand.class);
 		List<Command> unitCommands = cl.getCommands(UpgradeUnitCommand.class);
 		List<Command> spyCommands = cl.getCommands(SpyCommand.class);
-		
+		List<Command> nukeCommands = cl.getCommands(NukeCommand.class);
+		List<Command> intCommands = cl.getCommands(InterceptorCommand.class);
+
+		for(Command c : nukeCommands){
+			cl.removeCommand(c);
+			toReturn.addCommand(new NukeCommand(myGame.getMap().getTerritory(c.getTo().getID())));
+		}
+
+		for(Command c : intCommands){
+			cl.removeCommand(c);
+			toReturn.addCommand(new InterceptorCommand(myGame.getMap().getTerritory(c.getTo().getID()),
+					myGame.getPlayer(c.getPlayer().getName())));
+		}
+
 		for(Command c : spyCommands){
 			cl.removeCommand(c);
 			toReturn.addCommand(new SpyCommand(this.getServerUnits(c.getUnits())));
 		}
-		
+
 		for(Command c : playerCommands){
 			cl.removeCommand(c);
 			toReturn.addCommand(new UpgradePlayerCommand(myGame.getPlayer(c.getPlayer().getName())));
 		}
-		
+
 		for(Command c : unitCommands){
 			cl.removeCommand(c);
 			toReturn.addCommand(new UpgradeUnitCommand(this.getServerUnits(c.getUnits())));
@@ -163,18 +185,35 @@ public class GameModel implements ServerConstants, Serializable {
 
 	public void move(Player p, Territory from, Territory to, List<Unit> units){
 		boolean allSpies = true;
-		for (Unit u : units){
-			if (!u.isSpy()){
+		for (Unit u : units)
+		{
+			if (!u.isSpy())
+			{
 				allSpies = false;
 				break;
 			}
 		}
-		if((!to.getOwner().equals(from.getOwner()) && allSpies)  || myGame.getMap().hasPath(from,to,p)) //you're moving spies to an enemy territory
+		System.out.println("ALL SPIES? " + allSpies);
+		boolean ownersNotDifferent = !to.getOwner().getName().equals(from.getOwner().getName());
+		System.out.println(ownersNotDifferent + " OWNERS ARE DIFFERENT?");
+		if (allSpies) //spies moving
 		{
-		    from.removeUnits(units);
-		    to.addUnits(units);
+			if (from.getNeighbors().contains(to)) //is 1 away
+			{
+				from.removeUnits(units);
+				to.addUnits(units);
+				return;
+			}
 		}
-		else{
+
+		else if(myGame.getMap().hasPath(from,to,p))
+		{
+			from.removeUnits(units);
+			to.addUnits(units);
+		}
+
+		else
+		{
 			//this.redoTurnErrorFound("Invalid move!");
 			this.broadcastGameMessage("Player "+p.getName()+" has committed an invalid move. Ignoring command.");		
 		}
@@ -257,7 +296,7 @@ public class GameModel implements ServerConstants, Serializable {
 		}
 	}
 
-	public CommandList checkValidAttacks(List<Command> cl){
+	public List<Command> checkValidAttacks(List<Command> cl){
 		List<Command> toReturn = new ArrayList<Command>();
 		for(Command c : cl){
 			if(!myGame.getMap().canAttack(c.getFrom(),c.getTo(),c.getPlayer())){
@@ -268,7 +307,7 @@ public class GameModel implements ServerConstants, Serializable {
 				toReturn.add(c);
 			}
 		}
-		return new CommandList(toReturn);
+		return toReturn;
 	}
 
 	public void checkAttackSwaps(List<Command> cl){
@@ -337,7 +376,7 @@ public class GameModel implements ServerConstants, Serializable {
 	private void addNewUnit(Territory t){
 		t.addUnit(new Unit(unitID++,t.getOwner()));
 	}
-	
+
 	private void addNewUnit(Territory t, Player p){
 		t.addUnit(new Unit(unitID++,p));
 	}
@@ -350,9 +389,6 @@ public class GameModel implements ServerConstants, Serializable {
 
 	private void feedUnits(){
 		List<Unit> toRemove = new ArrayList<Unit>();
-		for(Player p : myGame.getPlayers()){
-			System.out.println("Starting food = "+p.getFoodAmount());
-		}
 		for(Territory t : myGame.getMap().getTerritories()){
 			Player p = t.getOwner();
 			for(Unit u : t.getUnits()){
@@ -365,9 +401,6 @@ public class GameModel implements ServerConstants, Serializable {
 				t.removeUnit(removing);
 				removing.getOwner().removeUnit(removing);
 			}
-		}
-		for(Player p : myGame.getPlayers()){
-			System.out.println("Ending food = "+p.getFoodAmount());
 		}
 	}
 
@@ -397,16 +430,9 @@ public class GameModel implements ServerConstants, Serializable {
 		territory.removeUnit(spy);
 	}
 
-	private void redoTurnErrorFound(String message){
-		System.out.println("AN ERROR HAS OCCURRED!!!: "+message);
-		myGame = myPrevious;
-		// return myGame (unaltered) to the clients, send error message, and request turn startover.
-		this.sendUpdatedGameState();
-	}
-
 	private void sendUpdatedGameState(){
 		System.out.println("Model logic completed!!!");
-		System.out.println("Now doing vision");
+
 		myServerGame.setGameState(myGame);
 		myServerGame.updateGame();
 	}
@@ -419,10 +445,10 @@ public class GameModel implements ServerConstants, Serializable {
 	public void upgradePlayer(Player p){
 		myGame.upgradePlayer(p);
 		if (p.getTechLevel() == 6){
-		    this.broadcastGameMessage("A PLAYER NOW HAS NUKES. YOU ARE NOT PREPARED.");
+			this.broadcastGameMessage("A PLAYER NOW HAS NUKES. YOU ARE NOT PREPARED.");
 		}
 	}
-	
+
 	public void broadcastGameMessage(String message){
 		myServerGame.updateGame(new TextMessage(message));
 	}
@@ -430,6 +456,46 @@ public class GameModel implements ServerConstants, Serializable {
 	public void makeSpies(List<Unit> l) {
 		for(Unit u : l)
 			myGame.makeSpy(u);
+	}
+
+	public void checkWin(){
+		int numAlive = myGame.getPlayers().size();
+		for (Player p : myGame.getPlayers()){
+			if (p.getTerritories().size() == 0){
+				numAlive--;
+			}
+		}
+		if (numAlive == 1){
+			String name = myGame.getMap().getTerritories().get(0).getOwner().getName();
+			this.broadcastGameMessage(name + " HAS WON!  CONGRATULATIONS!");
+			myServerGame.endGame();
+		}
+	}
+
+	public void nuclearAttack(Territory target) {
+		if(target.hasInterceptor()){
+			this.broadcastGameMessage("A nuclear missile has been disarmed by an interceptor");
+			return;
+		}
+		this.broadcastGameMessage("NUCLEAR MISSILE HAS LANDED. Ouch...");
+		List<Unit> toRemove = new ArrayList<Unit>();
+		for(Unit u : target.getUnits()){
+			toRemove.add(u);
+		}
+		while(!toRemove.isEmpty()){
+			Unit u = toRemove.remove(0);
+			u.getOwner().removeUnit(u);
+			target.removeUnit(u);
+		}
+		target.getOwner().removeTerritory(target);
+		myGame.getMap().destroyTerritory(target);
+	}
+
+	public void buyInterceptor(Territory to, Player p) {
+		if(p.getTechAmount() >= 10 && !to.hasInterceptor()){
+			p.adjustResource(new Technology(-10));
+			to.placeInterceptor();
+		}
 	}
 
 }

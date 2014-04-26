@@ -104,16 +104,20 @@ public class ServerGame extends Thread{
 		myGame = gs;
 	}
 
-	public void editVision(){
-		System.out.println("doing vision in ServerGame");
+	public void editVision()
+	{
+		System.out.println("editing vision now in servergame");
 		HashMap<Player, GameState> playerToGameState  = new HashMap<Player, GameState>();
-		for (Player p : myGame.getPlayers()){
+		for (Player p : myGame.getPlayers())
+		{
 			GameState individualGame = this.getSavedState();
-			//individualGame.clearMap();
-			//playerToGameState.put(p, individualGame);
-			for (Territory t : individualGame.getMap().getTerritories()){
-				if (!t.getOwner().equals(p) && !t.isAdjacentTo(p) && !t.hasSpy()){
-					individualGame.getMap().replaceTerritory(t);
+			playerToGameState.put(p, individualGame);
+			for (Territory t : individualGame.getMap().getTerritories())
+			{
+				if (!t.getOwner().getName().equals(p.getName()) && !t.isAdjacentTo(p) && !t.hasSpy())
+				{//if territory is not yours AND you're not adjacent to it AND you don't have a spy there
+				 //hide it from your view with a fogged territory
+					individualGame.getMap().replaceTerritory(t); 
 				}
 			}
 			myServer.sendGameByPlayer(individualGame, p.getPlayer());
@@ -127,5 +131,10 @@ public class ServerGame extends Thread{
 	public GameState getSavedState(){
 		return myServer.getSavedState(this);
 	}
+
+        public void endGame () 
+        {
+            myServer.endGame(myInfo.getName());
+        }
 
 }

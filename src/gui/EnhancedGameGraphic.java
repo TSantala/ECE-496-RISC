@@ -163,15 +163,14 @@ public class EnhancedGameGraphic extends JPanel{
 
 	public void processClick(Point p, boolean leftClick){
 		//System.out.println("Mouse at: (" + p.x +", " + p.y + ").");
-
 		Point myPoint = findClosestPoint(p);
 		//System.out.println("I Clicked: "+ lookupState.get(myPoint) + "!");
 		//String state = "src/map/" + lookupState.get(myPoint);
+		if(myGame.getMap().getTerritory(lookupState.get(myPoint))==null) return;
 		String state = lookupState.get(myPoint);
 
 		if (leftClick){
 			myGUI.setLeftClick(myGame.getMap().getTerritory(lookupState.get(myPoint)));
-			myGUI.updateTerritoryInfo(myGame.getMap().getTerritory(lookupState.get(myPoint)));
 			state = state + "-F.png";
 		}
 		else if(!leftClick){
@@ -179,20 +178,22 @@ public class EnhancedGameGraphic extends JPanel{
 			state = state + "-T.png";
 		}
 
-
 		if (leftClick && initialization && startUnits > 0){
-			myGame.getMap().getTerritory(lookupState.get(myPoint)).addUnit(new Unit(1, myGame.getMap().getTerritory(lookupState.get(myPoint)).getOwner()));
+			Territory clicked = myGame.getMap().getTerritory(lookupState.get(myPoint));
+			if(!clicked.getOwner().getName().equals(myGUI.getPlayer().getName())) return;
+			clicked.addUnit(new Unit(1, clicked.getOwner()));
 			startUnits--;
 		}
 		else if (!leftClick && initialization){
-			if (!myGame.getMap().getTerritory(lookupState.get(myPoint)).getUnits().isEmpty()){
+			Territory clicked = myGame.getMap().getTerritory(lookupState.get(myPoint));
+			if(!clicked.getOwner().getName().equals(myGUI.getPlayer().getName())) return;
+			if (!clicked.getUnits().isEmpty()){
 				myGame.getMap().getTerritory(lookupState.get(myPoint)).removeUnit(myGame.getMap().getTerritory(lookupState.get(myPoint)).getUnits().get(0));
 				startUnits++;
 			}
 		}
-
-		//TODO
-		//Finish revamping the way initial troop placement is carried out
+		
+		myGUI.updateTerritoryInfo();
 
 		/*BufferedImage in;
 		try {

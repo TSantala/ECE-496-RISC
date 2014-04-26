@@ -13,6 +13,7 @@ public class Territory implements Serializable, GameConstants
 	protected List<Territory> myNeighbors;
 	private String myID;
 	private List<Resource> myResources= new ArrayList<Resource>();
+	private boolean hasInterceptor = false;
 
 	public Territory(String id)
 	{
@@ -20,13 +21,6 @@ public class Territory implements Serializable, GameConstants
 		myNeighbors = new ArrayList<Territory>();
 		myResources.add(new Food(10));
 		myResources.add(new Technology(10));
-	}
-	
-	public Territory(String id, boolean b)
-	{
-	        myID = id;
-	        myNeighbors = new ArrayList<Territory>();
-	        
 	}
 	
 	public void setOwner(Player p){
@@ -78,7 +72,6 @@ public class Territory implements Serializable, GameConstants
 		for(Unit u : units){
 			myUnits.remove(u);
 		}
-		//assert finalSize == (initSize - units.size());
 	}
 
 	public void removeUnit(Unit u){
@@ -123,7 +116,7 @@ public class Territory implements Serializable, GameConstants
         }
 
 	public String getUnitInfo(){
-		if(myUnits.size()==0) return "No units!";
+		if(myUnits.size()==0) return "No units!\n";
 		String toReturn = "";
 		List<Unit> sortedUnits = this.getUnits();
 		int spies = 0;
@@ -146,4 +139,21 @@ public class Territory implements Serializable, GameConstants
 		}
 		return toReturn;
 	}
+	
+	public boolean hasUnitHere(Player p){
+		for(Unit u : myUnits){
+			if(u.getOwner().getName().equals(p.getName()))
+				return true;
+		}
+		return false;
+	}
+
+	public boolean hasInterceptor() {
+		return hasInterceptor;
+	}
+	
+	public void placeInterceptor(){
+		hasInterceptor = true;
+	}
+	
 }
