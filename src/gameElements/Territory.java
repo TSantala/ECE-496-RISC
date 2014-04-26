@@ -13,6 +13,7 @@ public class Territory implements Serializable, GameConstants
 	protected List<Territory> myNeighbors;
 	private String myID;
 	private List<Resource> myResources= new ArrayList<Resource>();
+	private boolean hasInterceptor = false;
 
 	public Territory(String id)
 	{
@@ -122,7 +123,7 @@ public class Territory implements Serializable, GameConstants
         }
 
 	public String getUnitInfo(){
-		if(myUnits.size()==0) return "No units!";
+		if(myUnits.size()==0) return "No units!\n";
 		String toReturn = "";
 		List<Unit> sortedUnits = this.getUnits();
 		int spies = 0;
@@ -153,4 +154,13 @@ public class Territory implements Serializable, GameConstants
 		}
 		return false;
 	}
+
+	public boolean hasInterceptor() {
+		return hasInterceptor;
+	}
+	
+	public void placeInterceptor(){
+		hasInterceptor = true;
+	}
+	
 }

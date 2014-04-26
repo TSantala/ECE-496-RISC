@@ -390,4 +390,12 @@ public class GameMap implements Serializable
 		myTerritories.add(ht);
 	}
 
+	public void destroyTerritory(Territory target) {
+		for(Territory t : myTerritories){
+			if(t.getNeighbors().contains(target))
+				t.getNeighbors().remove(target);
+		}
+		myTerritories.remove(target);
+	}
+
 }

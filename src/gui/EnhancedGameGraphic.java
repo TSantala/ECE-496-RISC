@@ -136,9 +136,10 @@ public class EnhancedGameGraphic extends JPanel{
 
 	public void processClick(Point p, boolean leftClick){
 		//System.out.println("Mouse at: (" + p.x +", " + p.y + ").");
-
 		Point myPoint = findClosestPoint(p);
+		if(myGame.getMap().getTerritory(lookupState.get(myPoint))==null) return;
 		System.out.println("I Clicked: "+ lookupState.get(myPoint) + "!");
+		
 		String state = "src/map/" + lookupState.get(myPoint);
 
 		if (leftClick){

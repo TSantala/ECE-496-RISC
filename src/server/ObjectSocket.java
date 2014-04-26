@@ -42,6 +42,7 @@ public class ObjectSocket extends Thread implements ServerConstants{
 				m.sendMessageToServer(myServer);
 			}
 			catch (Exception e) {
+				e.printStackTrace();
 				System.out.println("The socket connection was closed unexpectedly");
 				myServer.removeConnection(this);
 				try {
