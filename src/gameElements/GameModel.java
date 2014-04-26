@@ -29,7 +29,7 @@ public class GameModel implements ServerConstants, Serializable {
 			System.out.println("Food:"+p.getFoodAmount());
 
 		myPrevious = myServerGame.getSavedState();
-
+		System.out.println("gets the saved state");
 		cl = this.createServerCommandList(cl);
 		
 //		List<Command> tradeOrders = cl.getCommands(TradeCommand.class);
