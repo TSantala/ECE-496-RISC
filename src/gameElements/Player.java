@@ -15,7 +15,7 @@ public class Player implements Serializable, GameConstants {
 
 	private List<Player> myAllies = new ArrayList<Player>();
 
-	private int myTechLevel = 6;
+	private int myTechLevel = 0;
 
 	private int nukeTurns = 0;
 	private boolean nukesReady = false;
@@ -147,6 +147,10 @@ public class Player implements Serializable, GameConstants {
 			if(this.equals(q)) return true;
 		}
 		return false;
+	}
+	
+	public String toString(){
+		return myPlayer.getName();
 	}
 
 }
