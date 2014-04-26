@@ -57,7 +57,6 @@ public class GameModel implements ServerConstants, Serializable {
 //		    this.makeAlliance(c);
 //		}
 		
-		
 		List<Command> spies = cl.getCommands(SpyCommand.class);
 		for(Command c : spies){
 			this.makeSpies(c.getUnits());
@@ -173,10 +172,10 @@ public class GameModel implements ServerConstants, Serializable {
 				break;
 			}
 		}
-
-		if(myGame.getMap().hasPath(from,to,p) || allSpies){
-			from.removeUnits(units);
-			to.addUnits(units);
+		if((!to.getOwner().equals(from.getOwner()) && allSpies)  || myGame.getMap().hasPath(from,to,p)) //you're moving spies to an enemy territory
+		{
+		    from.removeUnits(units);
+		    to.addUnits(units);
 		}
 		else{
 			this.redoTurnErrorFound("Invalid move!");
@@ -277,30 +276,28 @@ public class GameModel implements ServerConstants, Serializable {
 			for(int j = i+1; j<cl.size();j++){
 				Command attackA = cl.get(i);
 				Command attackB = cl.get(j);
-				if(attackA.getTo() == attackB.getFrom() && attackA.getFrom() == attackB.getTo()){
+				if(attackA.getTo() == attackB.getFrom() && attackA.getFrom() == attackB.getTo())
+				{
 					// are attacking one another, no longer swap, now fight
 					Territory terA = attackA.getFrom();
 					Territory terB = attackB.getFrom();
-					if(terA.getUnits().size() == attackA.getUnits().size() && terB.getUnits().size() == attackA.getUnits().size()){
-						System.out.println("MID ATTACK OCCURRED");
-						// are committing all units. Should attack in mid!
-						Player attackingPlayer;
-
-						if(Math.random() < 0.5)
-						{
-							attackingPlayer = attackA.getPlayer();
-							middleAttack(attackingPlayer, terA, terB, terA.getUnits());
-						}
-						else
-						{
-							attackingPlayer = attackB.getPlayer();
-							middleAttack(attackingPlayer, terB, terA, terB.getUnits());
-						}
-						// remove the mid attacks from commandlist.
-						cl.remove(j);
-						cl.remove(i);
-						System.out.println("MID ATTACKS FINISHED");
+					System.out.println("MID ATTACK OCCURRED");
+					// are committing all units. Should attack in mid!
+					Player attackingPlayer;
+					if(Math.random() < 0.5)
+					{
+						attackingPlayer = attackA.getPlayer();
+						middleAttack(attackingPlayer, terA, terB, terA.getUnits());
 					}
+					else
+					{
+						attackingPlayer = attackB.getPlayer();
+						middleAttack(attackingPlayer, terB, terA, terB.getUnits());
+					}
+					// remove the mid attacks from commandlist.
+					cl.remove(j);
+					cl.remove(i);
+					System.out.println("MID ATTACKS FINISHED");
 				}
 			}
 		}
@@ -414,7 +411,7 @@ public class GameModel implements ServerConstants, Serializable {
 		myGame.upgradePlayer(p);
 		if (p.getTechLevel() == 6)
 		{
-		    myServer.updateGame(new TextMessage("A PLAYER NOW HAS NUKES. YOU ARE NOT PREPARED."));
+		    myServerGame.updateGame(new TextMessage("A PLAYER NOW HAS NUKES. YOU ARE NOT PREPARED."));
 		}
 	}
 
