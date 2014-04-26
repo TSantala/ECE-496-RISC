@@ -51,7 +51,8 @@ public class LobbyPane extends JPanel{
 
 	public void joinGame() {
 		int game = gameList.getSelectedIndex();
-		myClient.sendMessage(new JoinRequest(game));
+		if (game != -1)
+			myClient.sendMessage(new JoinRequest(game));
 	}
 
 	public void NewGame() {

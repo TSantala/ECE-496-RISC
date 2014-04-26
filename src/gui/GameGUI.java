@@ -19,6 +19,7 @@ import gameElements.UpgradeUnitCommand;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.FlowLayout;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -181,10 +182,17 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 		mainPane.add(rightPane,BorderLayout.EAST);
 		mainPane.add(leftPane, BorderLayout.WEST);
 
-		System.out.println("6");
 		pane.add(bottomPane,BorderLayout.SOUTH);
 		pane.add(mainPane,BorderLayout.CENTER);
 
+		GraphicsEnvironment e = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		
+		myFrame.setMaximizedBounds(e.getMaximumWindowBounds());
+
+		myFrame.setExtendedState( myFrame.getExtendedState()|JFrame.MAXIMIZED_BOTH );
+
+		myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
 		myFrame.setVisible(true);
 		this.setButtons(false);
 		this.setOtherButtons(false);
