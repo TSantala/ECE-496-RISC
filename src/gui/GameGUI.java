@@ -68,6 +68,7 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 	private JButton myLeaveButton = new LeaveButton(this);
 	private JButton myNukeButton = new NukeButton(this);
 	private JButton myInterceptorButton = new InterceptorButton(this);
+	private JButton myAllianceButton = new AllianceButton(this);
 
 
 	private CommandList myCommandList = new CommandList();
