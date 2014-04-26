@@ -165,18 +165,31 @@ public class GameModel implements ServerConstants, Serializable {
 
 	public void move(Player p, Territory from, Territory to, List<Unit> units){
 		boolean allSpies = true;
-		for (Unit u : units){
-			if (!u.isSpy()){
+		for (Unit u : units)
+		{
+			if (!u.isSpy())
+			{
 				allSpies = false;
 				break;
 			}
 		}
-		if((!to.getOwner().equals(from.getOwner()) && allSpies)  || myGame.getMap().hasPath(from,to,p)) //you're moving spies to an enemy territory
+		
+		if (!to.getOwner().equals(from.getOwner()) && allSpies) //spies moving
+		{
+		    if (from.getNeighbors().contains(to)) //is 1 away
+		    {
+		        from.removeUnits(units);
+		        to.addUnits(units);
+		    }
+		}
+		
+		if(myGame.getMap().hasPath(from,to,p)) //you're moving spies to an enemy territory
 		{
 		    from.removeUnits(units);
 		    to.addUnits(units);
 		}
-		else{
+		else
+		{
 			//this.redoTurnErrorFound("Invalid move!");
 			this.broadcastGameMessage("Player "+p.getName()+" has committed an invalid move. Ignoring command.");		
 		}
