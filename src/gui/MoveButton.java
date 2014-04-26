@@ -30,7 +30,7 @@ public class MoveButton extends JButton
             	frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
             	//Create and set up the content pane.
-            	JComponent newContentPane = new MoveDialog(gui.getLeftClick().getUnits(),gui,frame,"Move Units!");
+            	JComponent newContentPane = new MoveDialog(gui.getLeftClickUnits(),gui,frame,"Move Units!");
             	newContentPane.setOpaque(true); //content panes must be opaque
             	frame.setContentPane(newContentPane);
 

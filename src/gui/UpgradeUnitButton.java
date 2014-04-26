@@ -23,7 +23,7 @@ public class UpgradeUnitButton extends JButton {
             	frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
             	//Create and set up the content pane.
-            	JComponent newContentPane = new UnitUpgradeDialog(gui.getLeftClick().getUnits(),gui,frame,"Upgrade Units!");
+            	JComponent newContentPane = new UnitUpgradeDialog(gui.getLeftClickUnits(),gui,frame,"Upgrade Units!");
             	newContentPane.setOpaque(true); //content panes must be opaque
             	frame.setContentPane(newContentPane);
 

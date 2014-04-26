@@ -143,7 +143,6 @@ public class EnhancedGameGraphic extends JPanel{
 
 		if (leftClick){
 			myGUI.setLeftClick(myGame.getMap().getTerritory(lookupState.get(myPoint)));
-			myGUI.updateTerritoryInfo(myGame.getMap().getTerritory(lookupState.get(myPoint)));
 			state = state + "-F.png";
 		}
 		else if(!leftClick){
@@ -165,7 +164,8 @@ public class EnhancedGameGraphic extends JPanel{
 				startUnits++;
 			}
 		}
-
+		
+		myGUI.updateTerritoryInfo();
 
 		BufferedImage in;
 		try {
