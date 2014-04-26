@@ -6,8 +6,10 @@ import gameElements.Territory;
 import gameElements.Unit;
 
 import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -39,7 +41,8 @@ public class EnhancedGameGraphic extends JPanel{
 	private final JPanel pane;
 
 	private Map<Point,String> lookupState = new HashMap<Point,String>();
-
+	private Map<String,Point> lookupPoint = new HashMap<String,Point>();
+	
 	public EnhancedGameGraphic(GameGUI gameGUI, GameState game) {
 		myGUI = gameGUI;
 		myGame = game;
@@ -132,6 +135,10 @@ public class EnhancedGameGraphic extends JPanel{
 		lookupState.put(new Point(978, 525), "West_Virginia");
 		lookupState.put(new Point(797, 348), "Wisconsin");
 		lookupState.put(new Point(457, 403), "Wyoming");
+		
+		for (Map.Entry<Point, String> entry : lookupState.entrySet()){
+		    lookupPoint.put(entry.getValue(), entry.getKey());
+		}
 	}
 
 	@Override
@@ -145,6 +152,15 @@ public class EnhancedGameGraphic extends JPanel{
 			g.drawImage(myLeft, 0, 0, null);
 		if (myRight != null)
 			g.drawImage(myRight, 0, 0, null);
+		g.setFont(new Font("TimesRoman", Font.BOLD, 24));
+		g.setColor(Color.WHITE);
+		for(String state : lookupPoint.keySet()){
+			if (myGame.getMap().getTerritory(state) != null)
+				g.drawString(""+myGame.getMap().getTerritory(state).getUnits().size(), lookupPoint.get(state).x, lookupPoint.get(state).y);
+			else {
+				g.drawString("X", lookupPoint.get(state).x, lookupPoint.get(state).y);
+			}
+		}
 		/*
 		for (BufferedImage bi : myImages){
 			g.drawImage(bi, 0, 0, null);

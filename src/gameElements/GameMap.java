@@ -371,7 +371,7 @@ public class GameMap implements Serializable
 			if(t.getID().equals(id))
 				return t;
 		}
-		System.out.println("Get territory returned null!! In GameMap");
+		//System.out.println("Get territory returned null!! In GameMap");
 		return null;
 	}
 
