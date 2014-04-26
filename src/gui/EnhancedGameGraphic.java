@@ -163,7 +163,7 @@ public class EnhancedGameGraphic extends JPanel{
 			}
 		}
 		
-		if (startUnits == 0){
+		if (startUnits == 0 && initialization){
 			this.endInitialization();
 		}
 

@@ -18,6 +18,10 @@ public class CommandList extends Message implements Serializable {
 		myCommands = new ArrayList<Command>();
 	}
 	
+	public CommandList(List<Command> list) {
+		myCommands = list;
+	}
+
 	public void addCommand(Command c){
 		myCommands.add(c);
 	}
