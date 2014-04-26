@@ -28,7 +28,9 @@ public class TextMessage extends Message implements Serializable {
 			String toSend = "WHISPER - "+os.getPlayerName(myOS)+":";
 			for(int i = 2; i<splitMessage.length; i++)
 				toSend+=" "+splitMessage[i];
-			os.sendWhisper(playerTo,toSend);
+			boolean success = os.sendWhisper(playerTo,toSend);
+			if(success) os.sendWhisper(os.getPlayerName(myOS),"Your whisper went through!");
+			else os.sendWhisper(os.getPlayerName(myOS),"Whisper failed: player not found.");
 			return true;
 		}
 		os.broadCastMessage(new TextMessage(myMessage),myOS);

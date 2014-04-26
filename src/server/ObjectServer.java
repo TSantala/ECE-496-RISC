@@ -227,15 +227,16 @@ public class ObjectServer extends Thread implements ServerConstants{
 		
 	}
 
-	public void sendWhisper(String playerTo, String toSend) {
+	public boolean sendWhisper(String playerTo, String toSend) {
 		ServerPlayer key = null;
 		for(ServerPlayer p : myPlayers.keySet()){
 			if(p.getName().equals(playerTo))
 				key = p;
 		}
-		if(key==null) return;
+		if(key==null) return false;
 		ObjectSocket toTell = myPlayers.get(key);
 		toTell.sendMessage(new TextMessage(toSend));
+		return true;
 	}
 
 	public String getPlayerName(ObjectSocket os) {
