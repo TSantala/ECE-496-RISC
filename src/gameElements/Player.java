@@ -13,6 +13,8 @@ public class Player implements Serializable, GameConstants {
 	private List<Territory> myTerritories = new ArrayList<Territory>();
 	private ServerPlayer myPlayer;
 
+	private List<Player> myAllies = new ArrayList<Player>();
+
 	private int myTechLevel = 6;
 
 	private int nukeTurns = 0;
@@ -132,6 +134,19 @@ public class Player implements Serializable, GameConstants {
 
 	public boolean equals(Player p){
 		return this.getName().equals(p.getName());
+	}
+
+	public void addAlly(Player p){
+		if(!myAllies.contains(p))
+			myAllies.add(p);
+	}
+
+	public boolean onTeam(Player p){
+		if(this.equals(p)) return true;
+		for(Player q : myAllies){
+			if(this.equals(q)) return true;
+		}
+		return false;
 	}
 
 }
