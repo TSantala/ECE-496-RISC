@@ -106,7 +106,7 @@ public class ServerGame extends Thread{
 
 	public void editVision(){
 		System.out.println("doing vision in ServerGame");
-		//HashMap<Player, GameState> playerToGameState  = new HashMap<Player, GameState>();
+		HashMap<Player, GameState> playerToGameState  = new HashMap<Player, GameState>();
 		for (Player p : myGame.getPlayers()){
 			GameState individualGame = this.getSavedState();
 			//individualGame.clearMap();
