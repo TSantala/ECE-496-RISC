@@ -68,7 +68,6 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 	private JButton myLeaveButton = new LeaveButton(this);
 	private JButton myNukeButton = new NukeButton(this);
 	private JButton myInterceptorButton = new InterceptorButton(this);
-	private JButton myAllianceButton = new AllianceButton(this);
 
 
 	private CommandList myCommandList = new CommandList();
@@ -245,7 +244,7 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 	public void beginGame(GameState gs){
 		mainPane.remove(lobbyPane);
 		myGameGraphic = new EnhancedGameGraphic(this, gs);
-		JScrollPane scrollingGameGraphic = new JScrollPane(myGameGraphic);
+		scrollingGameGraphic = new JScrollPane(myGameGraphic);
 		mainPane.add(scrollingGameGraphic,BorderLayout.CENTER);
 		mainPane.revalidate();
 		mainPane.repaint();
