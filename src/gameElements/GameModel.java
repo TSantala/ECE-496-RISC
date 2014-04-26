@@ -349,6 +349,7 @@ public class GameModel implements ServerConstants, Serializable {
 	}
 
 	private void feedUnits(){
+		List<Unit> toRemove = new ArrayList<Unit>();
 		for(Player p : myGame.getPlayers()){
 			System.out.println("Starting food = "+p.getFoodAmount());
 		}
@@ -356,9 +357,13 @@ public class GameModel implements ServerConstants, Serializable {
 			Player p = t.getOwner();
 			for(Unit u : t.getUnits()){
 				if(!p.feedUnit()){
-					t.removeUnit(u);
-					p.removeUnit(u);
+					toRemove.add(u);
 				}
+			}
+			while(!toRemove.isEmpty()){
+				Unit removing = toRemove.remove(0);
+				t.removeUnit(removing);
+				removing.getOwner().removeUnit(removing);
 			}
 		}
 		for(Player p : myGame.getPlayers()){
