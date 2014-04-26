@@ -102,6 +102,8 @@ public class GameModel implements ServerConstants, Serializable {
 
 		// return updated game after commands enacted to clients.
 		this.sendUpdatedGameState();
+		
+		this.checkWin();
 
 	}
 
@@ -430,6 +432,24 @@ public class GameModel implements ServerConstants, Serializable {
 	public void makeSpies(List<Unit> l) {
 		for(Unit u : l)
 			myGame.makeSpy(u);
+	}
+	
+	public void checkWin()
+	{
+	    int numAlive = myGame.getPlayers().size();
+	    for (Player p : myGame.getPlayers())
+	    {
+	        if (p.getTerritories().size() == 0) //player is eliminated
+	        {
+	            numAlive--;
+	        }
+	    }
+	    if (numAlive == 1)
+	    {
+	        String name = myGame.getMap().getTerritories().get(0).getOwner().getName();
+	        this.broadcastGameMessage(name + " HAS WON!  CONGRATULATIONS!");
+	        myServerGame.endGame();
+	    }
 	}
 
 }

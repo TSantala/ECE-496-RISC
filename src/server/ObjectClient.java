@@ -97,4 +97,9 @@ public class ObjectClient extends Thread implements ServerConstants{
 	public void updateGameInfo(Collection<GameInfo> myUpdate) {
 		myGUI.updateGameInfo(myUpdate);
 	}
+	
+	public void setGameOver()
+	{
+	    
+	}
 }

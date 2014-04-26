@@ -128,4 +128,9 @@ public class ServerGame extends Thread{
 		return myServer.getSavedState(this);
 	}
 
+        public void endGame () 
+        {
+            myServer.endGame(myInfo.getName());
+        }
+
 }
