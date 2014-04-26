@@ -448,12 +448,11 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 		int reply = JOptionPane.showConfirmDialog(null, "Do you accept an alliance with "+from.getName()+"?",
 				"ALLIANCE REQUESTED!",  JOptionPane.YES_NO_OPTION);
 		if (reply == JOptionPane.YES_OPTION){
-		   System.out.println("Request accepted!");
-		   this.addCommand(new DiplomacyCommand(from,to,true));
+			myClient.sendMessage(new TextMessage("/w "+from.getName()+" I welcome you as my ally!"));
+		    this.addCommand(new DiplomacyCommand(from,to,true));
 		}
 		else {
-			System.out.println("Request rejected!");
-			
+			myClient.sendMessage(new TextMessage("/w "+from.getName()+" Hahaha! I will never fight alongside you!"));
 		}
 	}
 	
