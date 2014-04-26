@@ -68,6 +68,7 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 	private JButton myLeaveButton = new LeaveButton(this);
 	private JButton myNukeButton = new NukeButton(this);
 	private JButton myInterceptorButton = new InterceptorButton(this);
+	private JButton myAllianceButton = new AllianceButton(this);
 
 
 	private CommandList myCommandList = new CommandList();
@@ -171,6 +172,7 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 		buttonPane.add(myUpgradeButton);
 		buttonPane.add(myNukeButton);
 		buttonPane.add(myInterceptorButton);
+		buttonPane.add(myAllianceButton);
 		buttonPane.add(myPlayerButton);
 		buttonPane.add(myLeaveButton);
 
@@ -399,6 +401,7 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 	private void setOtherButtons(boolean onOff){
 		myPlayerButton.setEnabled(onOff);
 		myLeaveButton.setEnabled(onOff);
+		myAllianceButton.setEnabled(onOff);
 	}
 
 	public Collection<Unit> getLeftClickUnits() {
