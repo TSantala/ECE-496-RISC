@@ -9,13 +9,14 @@ public class NukeCommand extends Command implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public NukeCommand(Territory target){
+	public NukeCommand(Territory target, Player attacker){
 		myTerritoryTo = target;
+		myPlayer = attacker;
 	}
 
 	@Override
 	public void enact(GameModel sg) {
-		sg.nuclearAttack(myTerritoryTo);
+		sg.nuclearAttack(myPlayer, myTerritoryTo);
 	}
 
 	public String toString(){

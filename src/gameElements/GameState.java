@@ -4,7 +4,6 @@ package gameElements;
  */
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import server.Message;
@@ -18,8 +17,8 @@ public class GameState extends Message implements Serializable {
 	
 	private GameMap myMap;
 	private List<Player> myPlayers = new ArrayList<Player>();
-	private static final int DEFAULT_NUM_START_UNITS = 3;
-	private static final int DEFAULT_NUM_START_TERRITORIES = 6;
+	private static final int DEFAULT_NUM_START_UNITS = 15;
+	//private static final int DEFAULT_NUM_START_TERRITORIES = 6;
 	
 	public GameState(GameMap gm, List<Player> players){
 		myMap = gm;

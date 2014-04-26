@@ -139,7 +139,8 @@ public class GameModel implements ServerConstants, Serializable {
 		
 		for(Command c : nukeCommands){
 			cl.removeCommand(c);
-			toReturn.addCommand(new NukeCommand(myGame.getMap().getTerritory(c.getTo().getID())));
+			toReturn.addCommand(new NukeCommand(myGame.getMap().getTerritory(c.getTo().getID()),
+					myGame.getPlayer(c.getPlayer().getName())));
 		}
 		
 		for(Command c : intCommands){
@@ -474,7 +475,13 @@ public class GameModel implements ServerConstants, Serializable {
 		}
 	}
 
-	public void nuclearAttack(Territory target) {
+	public void nuclearAttack(Player p, Territory target) {
+		if(p.getTechAmount() >= 50){
+			p.adjustResource(new Technology(-50));
+		}
+		else{
+			return;
+		}
 		if(target.hasInterceptors()>0){
 			this.broadcastGameMessage("A nuclear missile has been disarmed by an interceptor");
 			target.removeInterceptor();

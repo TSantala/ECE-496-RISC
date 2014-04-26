@@ -432,7 +432,7 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 
 	public void addNukeCommand() {
 		if(rightClick==null)return;
-		this.addCommand(new NukeCommand(rightClick));
+		this.addCommand(new NukeCommand(rightClick,myPlayer));
 	}
 
 	public void addInterceptorCommand() {
