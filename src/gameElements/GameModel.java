@@ -185,8 +185,8 @@ public class GameModel implements ServerConstants, Serializable {
 		        return;
 		    }
 		}
-		
-		else if(myGame.getMap().hasPath(from,to,p)) 
+
+		else if(myGame.getMap().hasPath(from,to,p))
 		{
 		    from.removeUnits(units);
 		    to.addUnits(units);
@@ -363,7 +363,6 @@ public class GameModel implements ServerConstants, Serializable {
 
 	private void endOfRoundAddUnits(){
 		for(Territory t : myGame.getMap().getTerritories()){
-			System.out.println("Adding unit to: "+t.getID());
 			this.addNewUnit(t);
 		}
 	}
@@ -420,10 +419,7 @@ public class GameModel implements ServerConstants, Serializable {
 
 	private void sendUpdatedGameState(){
 		System.out.println("Model logic completed!!!");
-		System.out.println("Now doing vision");
-		for(Territory t : myGame.getMap().getTerritories()){
-			System.out.println(t.getID()+" has units: "+t.getUnits().size());
-		}
+
 		myServerGame.setGameState(myGame);
 		myServerGame.updateGame();
 	}
@@ -449,18 +445,14 @@ public class GameModel implements ServerConstants, Serializable {
 			myGame.makeSpy(u);
 	}
 	
-	public void checkWin()
-	{
+	public void checkWin(){
 	    int numAlive = myGame.getPlayers().size();
-	    for (Player p : myGame.getPlayers())
-	    {
-	        if (p.getTerritories().size() == 0) //player is eliminated
-	        {
+	    for (Player p : myGame.getPlayers()){
+	        if (p.getTerritories().size() == 0){
 	            numAlive--;
 	        }
 	    }
-	    if (numAlive == 1)
-	    {
+	    if (numAlive == 1){
 	        String name = myGame.getMap().getTerritories().get(0).getOwner().getName();
 	        this.broadcastGameMessage(name + " HAS WON!  CONGRATULATIONS!");
 	        myServerGame.endGame();

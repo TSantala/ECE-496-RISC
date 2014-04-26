@@ -89,10 +89,8 @@ public class Territory implements Serializable, GameConstants
 	}
 
 	public void addUnit(Unit u){
-		System.out.println("Start add unit to: "+myID);
 		myUnits.add(u);
 		myOwner.addUnit(u);
-		System.out.println("End add unit to: "+myID+" new size = "+myUnits.size());
 	}
 
 	public Unit getUnit(int id){
