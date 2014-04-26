@@ -153,4 +153,17 @@ public class Player implements Serializable, GameConstants {
 		return myPlayer.getName();
 	}
 
+	public void removeAlly(Player other) {
+		if(myAllies.contains(other))
+			myAllies.remove(other);
+	}
+
+	public String getAlliesString() {
+		String toReturn = "";
+		for(Player p : myAllies){
+			toReturn += p.getName()+"\n";
+		}
+		return toReturn;
+	}
+
 }

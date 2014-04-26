@@ -219,9 +219,8 @@ public class ObjectServer extends Thread implements ServerConstants{
 			if(p.getName().equals(to.getName()))
 				key = p;
 		}
-		if(key==null)System.out.println("KEY NOT FOUND");
 		ObjectSocket toTell = myPlayers.get(key);
-		toTell.sendMessage(ar);
+		toTell.sendMessage(new AllianceRequest(ar.getFrom(),ar.getTo()));
 	}
 	
 	public synchronized void acceptAllianceRequest(ServerPlayer justAccepted, ServerPlayer toTell){
