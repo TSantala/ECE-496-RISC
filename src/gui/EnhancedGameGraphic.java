@@ -151,20 +151,21 @@ public class EnhancedGameGraphic extends JPanel{
 			state = state + "-T.png";
 		}
 
-
 		if (leftClick && initialization && startUnits > 0){
-			myGame.getMap().getTerritory(lookupState.get(myPoint)).addUnit(new Unit(1, myGame.getMap().getTerritory(lookupState.get(myPoint)).getOwner()));
+			Territory clicked = myGame.getMap().getTerritory(lookupState.get(myPoint));
+			if(!clicked.getOwner().getName().equals(myGUI.getPlayer().getName())) return;
+			clicked.addUnit(new Unit(1, clicked.getOwner()));
 			startUnits--;
 		}
 		else if (!leftClick && initialization){
-			if (!myGame.getMap().getTerritory(lookupState.get(myPoint)).getUnits().isEmpty()){
+			Territory clicked = myGame.getMap().getTerritory(lookupState.get(myPoint));
+			if(!clicked.getOwner().getName().equals(myGUI.getPlayer().getName())) return;
+			if (!clicked.getUnits().isEmpty()){
 				myGame.getMap().getTerritory(lookupState.get(myPoint)).removeUnit(myGame.getMap().getTerritory(lookupState.get(myPoint)).getUnits().get(0));
 				startUnits++;
 			}
 		}
 
-		//TODO
-		//Finish revamping the way initial troop placement is carried out
 
 		BufferedImage in;
 		try {
