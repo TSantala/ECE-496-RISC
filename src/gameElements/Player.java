@@ -114,5 +114,10 @@ public class Player implements Serializable, GameConstants {
 	public int getNumToFeed(){
 		return myUnits.size();
 	}
+	
+	public boolean equals(Player p)
+	{
+	     return this.getName().equals(p.getName());
+	}
 
 }

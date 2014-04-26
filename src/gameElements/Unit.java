@@ -41,12 +41,12 @@ public class Unit implements Serializable, GameConstants, Comparable<Unit>
 	public boolean toggleSpy(){
 		if(isSpy && myOwner.getTechAmount()>=5) {
 			myOwner.adjustResource(new Technology(-5));
-			isSpy = !isSpy;
+			isSpy = false;
 			return true;
 		}
 		else if(!isSpy && myOwner.getTechAmount()>=35){
 			myOwner.adjustResource(new Technology(-35));
-			isSpy = !isSpy;
+			isSpy = true;
 			return true;
 		}
 		return false;

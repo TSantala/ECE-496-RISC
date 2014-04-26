@@ -173,21 +173,25 @@ public class GameModel implements ServerConstants, Serializable {
 				break;
 			}
 		}
-		
-		if (!to.getOwner().equals(from.getOwner()) && allSpies) //spies moving
+		System.out.println("ALL SPIES? " + allSpies);
+		boolean ownersNotDifferent = !to.getOwner().getName().equals(from.getOwner().getName());
+		System.out.println(ownersNotDifferent + " OWNERS ARE DIFFERENT?");
+		if (ownersNotDifferent && allSpies) //spies moving
 		{
 		    if (from.getNeighbors().contains(to)) //is 1 away
 		    {
 		        from.removeUnits(units);
 		        to.addUnits(units);
+		        return;
 		    }
 		}
 		
-		if(myGame.getMap().hasPath(from,to,p)) //you're moving spies to an enemy territory
+		else if(myGame.getMap().hasPath(from,to,p)) 
 		{
 		    from.removeUnits(units);
 		    to.addUnits(units);
 		}
+		
 		else
 		{
 			//this.redoTurnErrorFound("Invalid move!");
