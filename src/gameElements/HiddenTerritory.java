@@ -23,6 +23,6 @@ public class HiddenTerritory extends Territory
 	
 	@Override
 	public String getUnitInfo(){
-		return "???";
+		return "???\n";
 	}
 }

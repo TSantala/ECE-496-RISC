@@ -388,6 +388,8 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 			myUpgradeButton.setEnabled(false);
 			mySpyButton.setEnabled(false);
 		}
+		if (leftClick.getOwner() == null)
+			System.out.println("YOU FOUND THE NULL!");
 		if(!leftClick.getOwner().equals(myPlayer))
 			myInterceptorButton.setEnabled(false);
 		if(rightClick==null){

@@ -1,5 +1,9 @@
 package gameElements;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.List;
 
@@ -96,44 +100,76 @@ public class ServerGame extends Thread{
 	}
 
 	public void updateGame() {
-		myServer.sendUpdatedGame(myGame, this);
-		//this.editVision();
+		//myServer.sendUpdatedGame(myGame, this);
+		this.editVision();
 	}
-	
+
 	public void setGameState(GameState gs){
 		myGame = gs;
 	}
 
 	public void editVision()
 	{
-	    System.out.println("editing vision now in servergame");
-	    for (Player p : myGame.getPlayers())
-	    {
-	        GameMap map = new GameMap();
-	        for (Territory t : myGame.getMap().getTerritories())
-	        {
-	            if (!t.getOwner().getName().equals(p.getName()) && !t.isAdjacentTo(p) && !t.hasSpy())
-	            {//if territory is not yours AND you're not adjacent to it AND you don't have a spy there
-	                //hide it from your view with a fogged territory
-	                map.replaceTerritory(t); 
-	            }
-	        }
-	        GameState individualGame = new GameState(map, myGame.getPlayers());
-	        myServer.sendGameByPlayer(individualGame, p.getPlayer());
-	    }
+		System.out.println("editing vision now in servergame");
+		this.backup();
+		for (Player p : myGame.getPlayers())
+		{
+			GameState tempState = this.readState();
+			GameMap map = tempState.getMap();
+			for (Territory t : myGame.getMap().getTerritories())
+			{
+				if (!t.getOwner().getName().equals(p.getName()) && !t.isAdjacentTo(p) && !t.hasSpy())
+				{//if territory is not yours AND you're not adjacent to it AND you don't have a spy there
+					//hide it from your view with a fogged territory
+					map.replaceTerritory(map.getTerritory(t.getID())); 
+				}
+			}
+			myServer.sendGameByPlayer(tempState, p.getPlayer());
+		}
 	}
 
 	public SaveGame saveGame(){
 		return new SaveGame(myInfo,myGame);
 	}
-	
+
 	public GameState getSavedState(){
 		return myServer.getSavedState(this);
 	}
 
-        public void endGame () 
-        {
-            myServer.endGame(myInfo.getName());
-        }
+	public void endGame () 
+	{
+		myServer.endGame(myInfo.getName());
+	}
+	
+	public synchronized GameState readState(){
+		try{
+		FileInputStream saveFile = new FileInputStream(".//gameData.sav");
+		ObjectInputStream save = new ObjectInputStream(saveFile);
+
+		@SuppressWarnings("unchecked")
+		GameState tempData = (GameState) save.readObject();
+
+		save.close();
+		return tempData;
+		}
+		catch (Exception e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public synchronized void backup(){
+		try{
+			FileOutputStream saveFile=new FileOutputStream(".//gameData.sav");
+			ObjectOutputStream save = new ObjectOutputStream(saveFile);
+			save.writeObject(myGame);
+			save.close();
+		}
+		catch(Exception exc){
+			exc.printStackTrace();
+		}
+	}
+	
+	
 
 }

@@ -153,11 +153,13 @@ public class EnhancedGameGraphic extends JPanel{
 		if (myRight != null)
 			g.drawImage(myRight, 0, 0, null);
 		g.setFont(new Font("TimesRoman", Font.BOLD, 24));
-		g.setColor(Color.WHITE);
 		for(String state : lookupPoint.keySet()){
-			if (myGame.getMap().getTerritory(state) != null)
+			if (myGame.getMap().getTerritory(state) != null){
+				g.setColor(Color.WHITE);
 				g.drawString(""+myGame.getMap().getTerritory(state).getUnits().size(), lookupPoint.get(state).x, lookupPoint.get(state).y);
+			}
 			else {
+				g.setColor(Color.RED);
 				g.drawString("X", lookupPoint.get(state).x, lookupPoint.get(state).y);
 			}
 		}
@@ -174,6 +176,8 @@ public class EnhancedGameGraphic extends JPanel{
 	public void identifyTerritories(){
 		myImages.clear();
 		for (Territory t : myGame.getMap().getTerritories()){
+			if (t.getOwner() == null)
+				continue;
 			if (t.getOwner().getPlayer().equals(myGUI.getPlayer().getPlayer())){
 				myImages.add(myGUI.getImage(t.getID()+"-O.png"));
 			}

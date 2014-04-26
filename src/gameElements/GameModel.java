@@ -216,8 +216,7 @@ public class GameModel implements ServerConstants, Serializable {
 				return;
 			}
 		}
-
-		else if(myGame.getMap().hasPath(from,to,p))
+		else if(myGame.getMap().hasPath(from,to,p) && to.getOwner().onTeam(from.getOwner()))
 		{
 			from.removeUnits(units);
 			to.addUnits(units);
@@ -309,8 +308,10 @@ public class GameModel implements ServerConstants, Serializable {
 
 	public List<Command> checkValidAttacks(List<Command> cl){
 		List<Command> toReturn = new ArrayList<Command>();
-		for(Command c : cl){
-			if(!myGame.getMap().canAttack(c.getFrom(),c.getTo(),c.getPlayer())){
+		for(Command c : cl)
+		{
+			if(!myGame.getMap().canAttack(c.getFrom(),c.getTo(),c.getPlayer()))
+			{
 				//this.redoTurnErrorFound("Invalid attack!");
 				this.broadcastGameMessage("Player "+c.getPlayer().getName()+" has committed an invalid attack. Ignoring command.");
 			}
