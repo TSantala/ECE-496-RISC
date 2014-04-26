@@ -1,8 +1,8 @@
 package server;
 
+import gameElements.AllianceRequest;
 import gameElements.GameInfo;
 import gameElements.GameState;
-import gui.AllianceRequest;
 import gui.GameGUI;
 import gui.ImageBase;
 

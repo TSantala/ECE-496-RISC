@@ -1,8 +1,5 @@
-package gui;
+package gameElements;
 
-import gameElements.Command;
-import gameElements.GameModel;
-import gameElements.Player;
 
 public class DiplomacyCommand extends Command {
 
@@ -27,5 +24,11 @@ public class DiplomacyCommand extends Command {
 	public boolean nowAlly(){
 		return allies;
 	}
+	
+    public String toString(){
+    	String status = allies ? " allies" : " enemies";
+        String temp  = "Make " +  myPlayer.getName() + " and " + otherPlayer.getName()+ status + "\n";
+        return temp;
+    }
 
 }

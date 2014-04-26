@@ -1,8 +1,7 @@
-package gui;
+package gameElements;
 
 import java.io.Serializable;
 
-import gameElements.Player;
 import server.Message;
 import server.ObjectClient;
 import server.ObjectServer;

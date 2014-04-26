@@ -1,8 +1,10 @@
 package gui;
 
+import gameElements.AllianceRequest;
 import gameElements.AttackCommand;
 import gameElements.Command;
 import gameElements.CommandList;
+import gameElements.DiplomacyCommand;
 import gameElements.GameConstants;
 import gameElements.GameInfo;
 import gameElements.GameState;
@@ -70,7 +72,7 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 	private JButton myNukeButton = new NukeButton(this);
 	private JButton myInterceptorButton = new InterceptorButton(this);
 	private JButton myAllianceButton = new AllianceButton(this);
-
+	private JButton myBreakButton = new BreakAllianceButton(this);
 
 	private CommandList myCommandList = new CommandList();
 
@@ -174,6 +176,7 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 		buttonPane.add(myNukeButton);
 		buttonPane.add(myInterceptorButton);
 		buttonPane.add(myAllianceButton);
+		buttonPane.add(myBreakButton);
 		buttonPane.add(myPlayerButton);
 		buttonPane.add(myLeaveButton);
 
@@ -289,6 +292,8 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 	}
 
 	public void leaveGame() {
+		territoryInfo.setText("");
+		playerInfo.setText("");
 		mainPane.remove(scrollingGameGraphic);
 		mainPane.add(lobbyPane, BorderLayout.CENTER);
 		mainPane.repaint();
@@ -411,6 +416,7 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 		myPlayerButton.setEnabled(onOff);
 		myLeaveButton.setEnabled(onOff);
 		myAllianceButton.setEnabled(onOff);
+		myBreakButton.setEnabled(onOff);
 	}
 
 	public Collection<Unit> getLeftClickUnits() {
@@ -451,11 +457,25 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 	
 	public Collection<Player> getOtherPlayers(){
 		Collection<Player> toReturn = new ArrayList<Player>();
+		Collection<Player> allies = this.getAllies();
 		for(Player p : myGame.getPlayers()){
-			if(!p.equals(myPlayer))
+			if(!p.equals(myPlayer) && !allies.contains(p))
 				toReturn.add(p);
 		}
 		return toReturn;
+	}
+
+	public Collection<Player> getAllies() {
+		Collection<Player> toReturn = new ArrayList<Player>();
+		for(Player p : myGame.getPlayers()){
+			if(p.isAlly(myPlayer))
+				toReturn.add(p);
+		}
+		return toReturn;
+	}
+
+	public void breakAlliance(Player p) {
+		this.addCommand(new DiplomacyCommand(myPlayer,p,false));
 	}
 
 }

@@ -22,6 +22,15 @@ public class TextMessage extends Message implements Serializable {
 		if (myMessage.equals("exit")){
 			return false;
 		}
+		if(myMessage.startsWith("/w")){
+			String[] splitMessage = myMessage.split(" ");
+			String playerTo = splitMessage[1];
+			String toSend = "WHISPER - "+os.getPlayerName(myOS)+":";
+			for(int i = 2; i<splitMessage.length; i++)
+				toSend+=" "+splitMessage[i];
+			os.sendWhisper(playerTo,toSend);
+			return true;
+		}
 		os.broadCastMessage(new TextMessage(myMessage),myOS);
 		return true;
 	}

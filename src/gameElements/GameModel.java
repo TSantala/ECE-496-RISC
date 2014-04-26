@@ -1,6 +1,5 @@
 package gameElements;
 
-import gui.DiplomacyCommand;
 
 import java.io.Serializable;
 import java.util.ArrayList;

@@ -14,16 +14,13 @@ import javax.swing.event.*;
 /* ListDemo.java requires no other files. */
 public class PlayerListComponent extends JPanel
 implements ListSelectionListener {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private JList<Player> list;
-	private DefaultListModel<Player> listModel;
-	protected GameGUI myGUI;
-	private JFrame myContainer;
 
-	private String upgradeString;
+	protected JList<Player> list;
+	protected DefaultListModel<Player> listModel;
+	protected GameGUI myGUI;
+	protected JFrame myContainer;
+
+	protected String upgradeString;
 
 	public PlayerListComponent(Collection<Player> players, GameGUI gui, JFrame container, String buttonLabel) {
 		super(new BorderLayout());
@@ -62,7 +59,7 @@ implements ListSelectionListener {
 	}
 	
 	
-	private void sendPlayer(Player p){
+	protected void sendPlayer(Player p){
 		myGUI.sendAllianceRequest(p);
 	}
 

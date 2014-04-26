@@ -13,18 +13,18 @@ public class AddUnitCommand extends Command implements Serializable {
 	public AddUnitCommand(){
 		//testing...
 	}
-	
-        public AddUnitCommand(Player p, Territory from, List<Unit> units){
-            myPlayer = p;
-            myTerritoryFrom = from;
-            myUnits = units;
-        }
-    
-        public String toString(){
-            String temp  = "Add " +  myUnits.size() + " units to : " + myTerritoryFrom.getID()+ "\n";
-            return temp;
-        }
-    
+
+	public AddUnitCommand(Player p, Territory from, List<Unit> units){
+		myPlayer = p;
+		myTerritoryFrom = from;
+		myUnits = units;
+	}
+
+	public String toString(){
+		String temp  = "Add " +  myUnits.size() + " units to : " + myTerritoryFrom.getID()+ "\n";
+		return temp;
+	}
+
 	@Override
 	public void enact(GameModel gm) {
 		// Command is enacted in the createServerList method of GameModel.

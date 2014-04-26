@@ -165,5 +165,12 @@ public class Player implements Serializable, GameConstants {
 		}
 		return toReturn;
 	}
+	
+	public boolean isAlly(Player other){
+		for(Player q : myAllies){
+			if(q.equals(other)) return true;
+		}
+		return false;
+	}
 
 }

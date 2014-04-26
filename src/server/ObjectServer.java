@@ -1,11 +1,11 @@
 package server;
 
+import gameElements.AllianceRequest;
 import gameElements.CommandList;
 import gameElements.GameState;
 import gameElements.Player;
 import gameElements.SaveGame;
 import gameElements.ServerGame;
-import gui.AllianceRequest;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -225,6 +225,21 @@ public class ObjectServer extends Thread implements ServerConstants{
 	
 	public synchronized void acceptAllianceRequest(ServerPlayer justAccepted, ServerPlayer toTell){
 		
+	}
+
+	public void sendWhisper(String playerTo, String toSend) {
+		ServerPlayer key = null;
+		for(ServerPlayer p : myPlayers.keySet()){
+			if(p.getName().equals(playerTo))
+				key = p;
+		}
+		if(key==null) return;
+		ObjectSocket toTell = myPlayers.get(key);
+		toTell.sendMessage(new TextMessage(toSend));
+	}
+
+	public String getPlayerName(ObjectSocket os) {
+		return myConnections.get(os).getName();
 	}
 
 }
