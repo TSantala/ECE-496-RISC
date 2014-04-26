@@ -23,7 +23,7 @@ public class SpyButton extends JButton {
             	frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
             	//Create and set up the content pane.
-            	JComponent newContentPane = new SpyDialog(gui.getLeftClick().getUnits(),gui,frame,"Toggle Spies!");
+            	JComponent newContentPane = new SpyDialog(gui.getLeftClickUnits(),gui,frame,"Toggle Spies!");
             	newContentPane.setOpaque(true); //content panes must be opaque
             	frame.setContentPane(newContentPane);
 

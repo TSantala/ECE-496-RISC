@@ -138,4 +138,12 @@ public class Territory implements Serializable, GameConstants
 		}
 		return toReturn;
 	}
+	
+	public boolean hasUnitHere(Player p){
+		for(Unit u : myUnits){
+			if(u.getOwner().getName().equals(p.getName()))
+				return true;
+		}
+		return false;
+	}
 }

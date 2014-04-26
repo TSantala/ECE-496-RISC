@@ -56,6 +56,11 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 	
 	private JButton myCommitButton = new CommitButton(this);
 	private JButton myPlayerButton = new UpgradePlayerButton(this);
+	private JButton myAttackButton = new AttackButton(this);
+	private JButton myMoveButton = new MoveButton(this);
+	private JButton myUpgradeButton = new UpgradeUnitButton(this);
+	private JButton mySpyButton = new SpyButton(this);
+	private JButton myLeaveButton = new LeaveButton(this);
 
 	private CommandList myCommandList = new CommandList();
 	
@@ -82,6 +87,9 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 			mainPane.revalidate();
 			mainPane.repaint();
 		}
+		leftClick=null;
+		rightClick=null;
+		this.checkAvailableButtons();
 		myGame = gs;
 		this.updatePlayerInfo();
 	}
@@ -144,12 +152,12 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 		
 		JPanel buttonPane = new JPanel();
 		buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.PAGE_AXIS));
-		buttonPane.add(new MoveButton(this));
-		buttonPane.add(new AttackButton(this));
-		buttonPane.add(new SpyButton(this));
-		buttonPane.add(new UpgradeUnitButton(this));
+		buttonPane.add(myMoveButton);
+		buttonPane.add(myAttackButton);
+		buttonPane.add(mySpyButton);
+		buttonPane.add(myUpgradeButton);
 		buttonPane.add(myPlayerButton);
-		buttonPane.add(new LeaveButton(this));
+		buttonPane.add(myLeaveButton);
 
 		rightPane.add(buttonPane,BorderLayout.SOUTH);
 
@@ -161,6 +169,8 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 		pane.add(mainPane,BorderLayout.CENTER);
 
 		myFrame.setVisible(true);
+		this.setButtons(false);
+		this.setOtherButtons(false);
 	}
 
 	public void printMessage(String s){
@@ -183,11 +193,11 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 		myCommitButton.setEnabled(false);
 	}
 
-	public void updateTerritoryInfo(Territory t){
-		territoryInfo.setText("  TERRITORY "+t.getID()+" INFORMATION\n" +
-				"  Territory owner = "+t.getOwner().getName()+", Level: "+t.getOwner().getTechLevel()+"\n"+
-				"  Number of Units = "+t.getUnits().size()+"  \n"+
-				t.getUnitInfo()+
+	public void updateTerritoryInfo(){
+		territoryInfo.setText("  TERRITORY "+leftClick.getID()+" INFORMATION\n" +
+				"  Territory owner = "+leftClick.getOwner().getName()+", Level: "+leftClick.getOwner().getTechLevel()+"\n"+
+				"  Number of Units = "+leftClick.getUnits().size()+"  \n"+
+				leftClick.getUnitInfo()+
 				"  Food Collection Rate = 10\n"+
 				"  Tech Collection Rate = 10\n");
 	}
@@ -220,27 +230,29 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 		mainPane.add(myGameGraphic,BorderLayout.CENTER);
 		mainPane.revalidate();
 		mainPane.repaint();
+		this.setOtherButtons(true);
 	}
 	
 	public EnhancedGameGraphic getGameGraphic(){
 		return myGameGraphic;
 	}
 
-	public Territory getLeftClick()
-	{
+	public Territory getLeftClick(){
 	    return leftClick;
 	}
-	public void setLeftClick(Territory t)
-	{
+	
+	public void setLeftClick(Territory t){
 	    leftClick = t;
+	    this.checkAvailableButtons();
 	}
-	public Territory getRightClick()
-	{
+	
+	public Territory getRightClick(){
 	    return rightClick;
 	}
-	public void setRightClick(Territory t)
-	{
+	
+	public void setRightClick(Territory t){
 	    rightClick = t;
+	    this.checkAvailableButtons();
 	}
 
 	public void updateGameInfo(Collection<GameInfo> myUpdate) {
@@ -253,6 +265,8 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 		mainPane.repaint();
 		myGame = null;
 		myClient.sendMessage(new LeaveRequest());
+		this.setButtons(false);
+		this.setOtherButtons(false);
 	}
 
 	public void addUnitUpgrade(Collection<Unit> u) {
@@ -316,4 +330,45 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 		myCommitButton.setEnabled(false);
 		myGameGraphic.endInitialization();
 	}
+	
+	public void checkAvailableButtons(){
+		if(leftClick==null){
+			this.setButtons(false);
+			return;
+		}
+		this.setButtons(true);
+		if(!leftClick.hasUnitHere(myPlayer)){
+			myAttackButton.setEnabled(false);
+			myMoveButton.setEnabled(false);
+			myUpgradeButton.setEnabled(false);
+			mySpyButton.setEnabled(false);
+		}
+		if(rightClick==null){
+			myAttackButton.setEnabled(false);
+			myMoveButton.setEnabled(false);
+			return;
+		}
+	}
+
+	private void setButtons(boolean onOff) {
+		myAttackButton.setEnabled(onOff);
+		myMoveButton.setEnabled(onOff);
+		myUpgradeButton.setEnabled(onOff);
+		mySpyButton.setEnabled(onOff);		
+	}
+	
+	private void setOtherButtons(boolean onOff){
+		myPlayerButton.setEnabled(onOff);
+		myLeaveButton.setEnabled(onOff);
+	}
+
+	public Collection<Unit> getLeftClickUnits() {
+		List<Unit> toReturn = new ArrayList<Unit>();
+		for(Unit u : leftClick.getUnits()){
+			if(u.getOwner().getName().equals(myPlayer.getName()))
+				toReturn.add(u);
+		}
+		return toReturn;
+	}
+	
 }
