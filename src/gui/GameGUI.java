@@ -81,6 +81,7 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 	}
 
 	public void updateGameState(GameState gs){
+		myCommandList = new CommandList();
 		if (myGame == null){
 			myClient.printMessage("STARTING THE GAME!");
 			this.beginGame(gs);
@@ -210,7 +211,7 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 				"  Territory owner = "+leftClick.getOwner().getName()+", Level: "+leftClick.getOwner().getTechLevel()+"\n"+
 				"  Number of Units = "+leftClick.getUnits().size()+"  \n"+
 				leftClick.getUnitInfo()+
-				"  Has interceptor = "+leftClick.hasInterceptor()+"  \n"+
+				"  Interceptors = "+leftClick.hasInterceptors()+"  \n"+
 				"  Food Collection Rate = 10\n"+
 				"  Tech Collection Rate = 10\n");
 	}
@@ -366,8 +367,9 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 			myMoveButton.setEnabled(false);
 			myUpgradeButton.setEnabled(false);
 			mySpyButton.setEnabled(false);
-			myInterceptorButton.setEnabled(false);
 		}
+		if(!leftClick.getOwner().equals(myPlayer))
+			myInterceptorButton.setEnabled(false);
 		if(rightClick==null){
 			myAttackButton.setEnabled(false);
 			myMoveButton.setEnabled(false);

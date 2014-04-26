@@ -411,12 +411,15 @@ public class GameModel implements ServerConstants, Serializable {
 	}
 
 	private void catchSpies(){
+		List<Unit> toKill = new ArrayList<Unit>();
+		List<Territory> killOn = new ArrayList<Territory>();
 		for (Territory t : myGame.getMap().getTerritories()){
 			for (Unit u : t.getUnits()){
 				if(u.isSpy()){
 					int percentChance = u.getTurnCount()*7+1;
 					if(Math.random()*100 < percentChance){
-						killSpy(u, t);
+						toKill.add(u);
+						killOn.add(t);
 					}
 					else {
 						u.setTurnCount(u.getTurnCount()+1);
@@ -424,6 +427,8 @@ public class GameModel implements ServerConstants, Serializable {
 				}
 			}
 		}
+		while(!toKill.isEmpty())
+			this.killSpy(toKill.remove(0), killOn.remove(0));
 	}
 
 	private void killSpy(Unit spy, Territory territory){
@@ -473,8 +478,9 @@ public class GameModel implements ServerConstants, Serializable {
 	}
 
 	public void nuclearAttack(Territory target) {
-		if(target.hasInterceptor()){
+		if(target.hasInterceptors()>0){
 			this.broadcastGameMessage("A nuclear missile has been disarmed by an interceptor");
+			target.removeInterceptor();
 			return;
 		}
 		this.broadcastGameMessage("NUCLEAR MISSILE HAS LANDED. Ouch...");
@@ -492,7 +498,7 @@ public class GameModel implements ServerConstants, Serializable {
 	}
 
 	public void buyInterceptor(Territory to, Player p) {
-		if(p.getTechAmount() >= 10 && !to.hasInterceptor()){
+		if(p.getTechAmount() >= 10){
 			p.adjustResource(new Technology(-10));
 			to.placeInterceptor();
 		}
