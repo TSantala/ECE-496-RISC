@@ -96,7 +96,6 @@ public class GameGraphic extends JPanel{
 				}
 			}
 			else if (mt.isWithin(p) && initialization){
-				// TO-DO: Fix unit IDs on initialization!
 				if(leftClick && mt.getTerritory().getOwner().getPlayer().equals(myGUI.getPlayer().getPlayer())){
 					mt.getTerritory().addUnit(new Unit(1,mt.getTerritory().getOwner()));
 					startUnits--;
@@ -106,9 +105,6 @@ public class GameGraphic extends JPanel{
 						mt.getTerritory().removeUnit(mt.getTerritory().getUnits().get(0));
 						startUnits++;
 					}
-				}
-				if (startUnits == 0){
-					this.endInitialization();
 				}
 			}
 			else{

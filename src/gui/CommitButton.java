@@ -10,7 +10,10 @@ public class CommitButton extends JButton{
 		super("Commit");
 		this.addActionListener(new ActionListener(){
 			public void actionPerformed (ActionEvent arg0) {
-				gui.sendCommandList();
+				if(gui.isInit())
+					gui.endInit();
+				else
+					gui.sendCommandList();
 			}
 		});
 	}
