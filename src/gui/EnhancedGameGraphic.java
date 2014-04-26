@@ -216,5 +216,6 @@ public class EnhancedGameGraphic extends JPanel{
 				myGUI.addCommand(new AddUnitCommand(t.getOwner(),t,t.getUnits()));
 			}
 		}
+		myGUI.sendCommandList();
 	}
 }
