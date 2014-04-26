@@ -46,7 +46,7 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 	private JFrame myFrame;
 
 	private LobbyPane lobbyPane;
-	private GameGraphic myGameGraphic;
+	private EnhancedGameGraphic myGameGraphic;
 	private GameState myGame;
 	private Player myPlayer;
 
@@ -72,7 +72,7 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 		}
 		else {
 			mainPane.remove(myGameGraphic);
-			myGameGraphic = new GameGraphic(this, gs);
+			myGameGraphic = new EnhancedGameGraphic(this, gs);
 			myGameGraphic.revalidate();
 			myGameGraphic.repaint();
 			mainPane.add(myGameGraphic,BorderLayout.CENTER);
@@ -215,13 +215,13 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 
 	public void beginGame(GameState gs){
 		mainPane.remove(lobbyPane);
-		myGameGraphic = new GameGraphic(this, gs);
+		myGameGraphic = new EnhancedGameGraphic(this, gs);
 		mainPane.add(myGameGraphic,BorderLayout.CENTER);
 		mainPane.revalidate();
 		mainPane.repaint();
 	}
 	
-	public GameGraphic getGameGraphic(){
+	public EnhancedGameGraphic getGameGraphic(){
 		return myGameGraphic;
 	}
 
