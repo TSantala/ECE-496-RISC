@@ -5,9 +5,13 @@ import gameElements.GameState;
 import gameElements.Territory;
 import gameElements.Unit;
 
+import java.awt.AlphaComposite;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -18,6 +22,7 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
 public class EnhancedGameGraphic extends JPanel{
 	private GameGUI myGUI;
@@ -29,6 +34,7 @@ public class EnhancedGameGraphic extends JPanel{
 	private List<BufferedImage> myImages = new ArrayList<BufferedImage>();
 	private BufferedImage myLeft;
 	private BufferedImage myRight;
+	private final JPanel pane;
 
 	private Map<Point,String> lookupState = new HashMap<Point,String>();
 
@@ -36,9 +42,31 @@ public class EnhancedGameGraphic extends JPanel{
 		myGUI = gameGUI;
 		myGame = game;
 		myGUI.updatePlayerInfo();
+		this.identifyTerritories();
 		setLookupMap();
 		this.setSize(1280, 900);
-		BufferedImage in;
+		pane = this;
+		Timer timer = new Timer(5, new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				pane.repaint();
+			}
+		});
+
+		myMap = myGUI.getImage("RISC.png");
+		/*pane = new JPanel() {
+		    @Override
+		    protected void paintComponent(Graphics g) {
+		        super.paintComponent(g);
+		        if (myLeft != null)
+		        	g.drawImage(myLeft, 0, 0, null);
+		        if (myRight != null)
+		        	g.drawImage(myRight, 0, 0, null);
+		    }
+		};*/
+
+		timer.start();
+
+		/*BufferedImage in;
 		try {
 			in = ImageIO.read(new File("src/map/RISC.png"));
 			myMap = new BufferedImage(in.getWidth(), in.getHeight(),BufferedImage.TYPE_INT_ARGB);
@@ -49,7 +77,7 @@ public class EnhancedGameGraphic extends JPanel{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.out.println("Failed to read map file");
-		}
+		}*/
 		this.addMouseListener(new MapMouseListener(this));
 	}
 
@@ -107,39 +135,39 @@ public class EnhancedGameGraphic extends JPanel{
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		g.drawImage(myMap, 0, 0, null);
-
-		for (Territory t : myGame.getMap().getTerritories()){
-			if (t.getOwner().getPlayer().equals(myGUI.getPlayer().getPlayer())){
-				BufferedImage in;
-				try {
-					in = ImageIO.read(new File("src/map/"+t.getID()+"-O.png"));
-					BufferedImage myImage = new BufferedImage(in.getWidth(), in.getHeight(),BufferedImage.TYPE_INT_ARGB);
-					Graphics2D g2d = myImage.createGraphics();
-					g2d.drawImage(in, 0, 0, null);
-					g2d.dispose();
-					g.drawImage(myImage, 0, 0, null);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					System.out.println("Failed to draw player's owned territories");
-				}
-			}
+		for (BufferedImage BI : myImages){
+			g.drawImage(BI, 0, 0, null);
 		}
+		if (myLeft != null)
+			g.drawImage(myLeft, 0, 0, null);
+		if (myRight != null)
+			g.drawImage(myRight, 0, 0, null);
+		/*
 		for (BufferedImage bi : myImages){
 			g.drawImage(bi, 0, 0, null);
 		}
 		if (myLeft != null)
 			g.drawImage(myLeft, 0, 0, null);
 		if (myRight != null)
-			g.drawImage(myRight, 0, 0, null);
+			g.drawImage(myRight, 0, 0, null);*/
+	}
+
+	public void identifyTerritories(){
+		myImages.clear();
+		for (Territory t : myGame.getMap().getTerritories()){
+			if (t.getOwner().getPlayer().equals(myGUI.getPlayer().getPlayer())){
+				myImages.add(myGUI.getImage(t.getID()+"-O.png"));
+			}
+		}
 	}
 
 	public void processClick(Point p, boolean leftClick){
 		//System.out.println("Mouse at: (" + p.x +", " + p.y + ").");
 
 		Point myPoint = findClosestPoint(p);
-		System.out.println("I Clicked: "+ lookupState.get(myPoint) + "!");
-		String state = "src/map/" + lookupState.get(myPoint);
+		//System.out.println("I Clicked: "+ lookupState.get(myPoint) + "!");
+		//String state = "src/map/" + lookupState.get(myPoint);
+		String state = lookupState.get(myPoint);
 
 		if (leftClick){
 			myGUI.setLeftClick(myGame.getMap().getTerritory(lookupState.get(myPoint)));
@@ -166,26 +194,35 @@ public class EnhancedGameGraphic extends JPanel{
 		//TODO
 		//Finish revamping the way initial troop placement is carried out
 
-		BufferedImage in;
+		/*BufferedImage in;
 		try {
 			in = ImageIO.read(new File(state));
 			BufferedImage myImage = new BufferedImage(in.getWidth(), in.getHeight(),BufferedImage.TYPE_INT_ARGB);
 			Graphics2D g = myImage.createGraphics();
 			g.drawImage(in, 0, 0, null);
-			g.dispose();
-			if (leftClick)
-				myLeft = myImage;
-			else
-				myRight = myImage;
-		} catch (IOException e) {
+			g.dispose();*/
+		if (leftClick){/*
+				Graphics2D g2d = myImage.createGraphics();
+				if (myLeft != null){
+					g2d.setComposite(
+							AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f));
+					Rectangle2D.Double rect = 
+							new Rectangle2D.Double(0,0,myLeft.getWidth(),myLeft.getHeight()); 
+					g2d.fill(rect);
+				}*/
+			myLeft = myGUI.getImage(state);
+		}
+		else
+			myRight = myGUI.getImage(state);
+		/*} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.out.println("Failed to read map file");
-		}
-		this.revalidate();
-		myGUI.revalidate();
-		this.repaint();		// this seems to be causing weird graphics bugs at random.
-		myGUI.repaint();
+		}*/
+		/*this.revalidate();
+		myGUI.revalidate();*/
+		/*this.repaint();		// this seems to be causing weird graphics bugs at random.
+		myGUI.repaint();*/
 	}
 
 	private Point findClosestPoint(Point myP) {

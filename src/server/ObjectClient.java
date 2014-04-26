@@ -3,6 +3,7 @@ package server;
 import gameElements.GameInfo;
 import gameElements.GameState;
 import gui.GameGUI;
+import gui.ImageBase;
 
 import java.net.*;
 import java.util.Collection;
@@ -15,18 +16,18 @@ public class ObjectClient extends Thread implements ServerConstants{
 	private ServerPlayer myPlayer;
 
 	public ObjectClient(){
-
+		
 	}
 
 	public synchronized void run(){
 		int port = 19999;
-
+		
 		System.out.println("ObjectClient initialized");
 		try {
 
 			//InetAddress address = InetAddress.getByName("10.190.218.185"); //timo's laptop server
-			InetAddress address = InetAddress.getByName("10.190.52.80");
-			//InetAddress address = InetAddress.getByName(InetAddress.getLocalHost().getHostAddress());
+			//InetAddress address = InetAddress.getByName("10.190.52.80");
+			InetAddress address = InetAddress.getByName(InetAddress.getLocalHost().getHostAddress());
 			System.out.println("Address is: "+InetAddress.getLocalHost().getHostAddress());
 
 			Socket connection = new Socket(address, port);

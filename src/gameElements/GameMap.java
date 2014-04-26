@@ -313,18 +313,6 @@ public class GameMap implements Serializable
 		myTerritories.add(West_Virginia);
 		myTerritories.add(Wisconsin);
 		myTerritories.add(Wyoming);
-		myTerritories.add(Alabama);
-		myTerritories.add(Alabama);
-		myTerritories.add(Alabama);
-		myTerritories.add(Alabama);
-		myTerritories.add(Alabama);
-		myTerritories.add(Alabama);
-		myTerritories.add(Alabama);
-		myTerritories.add(Alabama);
-		myTerritories.add(Alabama);
-		myTerritories.add(Alabama);
-		myTerritories.add(Alabama);
-		myTerritories.add(Alabama);
 	}
 
 	public GameMap(int num)		// for now, just create a 'circle' with each connected to numeric neighbors and last to first

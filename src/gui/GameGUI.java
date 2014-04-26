@@ -18,6 +18,7 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -61,9 +62,12 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 	
 	private boolean isInitializing = true;
 
+	private ImageBase myImages;
+
 	public GameGUI(ObjectClient client){
 		myClient = client;
 		myGame = myClient.getGameState();
+		myImages = new ImageBase();
 	}
 
 	public void updateGameState(GameState gs){
@@ -315,5 +319,9 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 		isInitializing = false;
 		myCommitButton.setEnabled(false);
 		myGameGraphic.endInitialization();
+	}
+	
+	public BufferedImage getImage(String s){
+		return myImages.getImage(s);
 	}
 }
