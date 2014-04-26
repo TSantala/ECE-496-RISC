@@ -23,16 +23,6 @@ public class GameModel implements ServerConstants, Serializable {
 		return myGame;
 	}
 
-	public void placeUnits(Player p, Territory t, List<Unit> units){
-
-		if (units.size() > 0){
-			Player serverPlayer = myGame.getPlayer(p.getName());
-			Territory serverTerritory = myGame.getMap().getTerritory(t.getID());
-			serverPlayer.addUnits(units);
-			serverTerritory.addUnits(units);
-		}
-	}
-
 	public void performCommands(CommandList cl){
 
 		for(Player p : myGame.getPlayers())
@@ -53,7 +43,6 @@ public class GameModel implements ServerConstants, Serializable {
 //		{
 //		    this.makeAlliance(c);
 //		}
-		
 		
 		List<Command> spies = cl.getCommands(SpyCommand.class);
 		for(Command c : spies){
@@ -82,19 +71,26 @@ public class GameModel implements ServerConstants, Serializable {
 
 		// first check validity of attacks.
 		if(!checkValidAttacks(cl.getCommands())) return;
+		
 		// check if attack swaps and enact them.  ******CHECK MIDCOMBAT ATTACKS NOW*******
 		this.checkAttackSwaps(cl.getCommands());
+		
 		// attacking units don't defend; remove them from the territories.
 		this.displaceAttackingUnits(cl.getCommands());
+		
 		// combine attack commands from same player to same destination.
 		this.combineGroupAttacks(cl.getCommands());
+		
 		// attack!
 		for(Command attack : cl.getCommands())
 			attack.enact(this);
+		
 		// add 1 unit to each territory.
 		this.endOfRoundAddUnits();
+		
 		// feed units and remove if out of food
 		this.feedUnits();
+		
 		// harvest resources from owned territories
 		this.harvestTerritories();
 		
@@ -162,18 +158,16 @@ public class GameModel implements ServerConstants, Serializable {
 
 	public boolean move(Player p, Territory from, Territory to, List<Unit> units){
 		boolean allSpies = true;
-		for (Unit u : units)
-		{
-			if (!u.isSpy())
-			{
+		for (Unit u : units){
+			if (!u.isSpy()){
 				allSpies = false;
 				break;
 			}
 		}
-
-		if(myGame.getMap().hasPath(from,to,p) || allSpies){
-			from.removeUnits(units);
-			to.addUnits(units);
+		if((!to.getOwner().equals(from.getOwner()) && allSpies)  || myGame.getMap().hasPath(from,to,p)) //you're moving spies to an enemy territory
+		{
+		    from.removeUnits(units);
+		    to.addUnits(units);
 		}
 		else{
 			this.redoTurnErrorFound("Invalid move!");
@@ -274,30 +268,28 @@ public class GameModel implements ServerConstants, Serializable {
 			for(int j = i+1; j<cl.size();j++){
 				Command attackA = cl.get(i);
 				Command attackB = cl.get(j);
-				if(attackA.getTo() == attackB.getFrom() && attackA.getFrom() == attackB.getTo()){
+				if(attackA.getTo() == attackB.getFrom() && attackA.getFrom() == attackB.getTo())
+				{
 					// are attacking one another, no longer swap, now fight
 					Territory terA = attackA.getFrom();
 					Territory terB = attackB.getFrom();
-					if(terA.getUnits().size() == attackA.getUnits().size() && terB.getUnits().size() == attackA.getUnits().size()){
-						System.out.println("MID ATTACK OCCURRED");
-						// are committing all units. Should attack in mid!
-						Player attackingPlayer;
-
-						if(Math.random() < 0.5)
-						{
-							attackingPlayer = attackA.getPlayer();
-							middleAttack(attackingPlayer, terA, terB, terA.getUnits());
-						}
-						else
-						{
-							attackingPlayer = attackB.getPlayer();
-							middleAttack(attackingPlayer, terB, terA, terB.getUnits());
-						}
-						// remove the mid attacks from commandlist.
-						cl.remove(j);
-						cl.remove(i);
-						System.out.println("MID ATTACKS FINISHED");
+					System.out.println("MID ATTACK OCCURRED");
+					// are committing all units. Should attack in mid!
+					Player attackingPlayer;
+					if(Math.random() < 0.5)
+					{
+						attackingPlayer = attackA.getPlayer();
+						middleAttack(attackingPlayer, terA, terB, terA.getUnits());
 					}
+					else
+					{
+						attackingPlayer = attackB.getPlayer();
+						middleAttack(attackingPlayer, terB, terA, terB.getUnits());
+					}
+					// remove the mid attacks from commandlist.
+					cl.remove(j);
+					cl.remove(i);
+					System.out.println("MID ATTACKS FINISHED");
 				}
 			}
 		}
@@ -336,6 +328,10 @@ public class GameModel implements ServerConstants, Serializable {
 
 	private void addNewUnit(Territory t){
 		t.addUnit(new Unit(unitID++,t.getOwner()));
+	}
+	
+	private void addNewUnit(Territory t, Player p){
+		t.addUnit(new Unit(unitID++,p));
 	}
 
 	private void endOfRoundAddUnits(){

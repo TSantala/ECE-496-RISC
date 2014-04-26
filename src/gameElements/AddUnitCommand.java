@@ -27,6 +27,6 @@ public class AddUnitCommand extends Command implements Serializable {
     
 	@Override
 	public void enact(GameModel gm) {
-		gm.placeUnits(myPlayer, myTerritoryFrom, myUnits);
+		// Command is enacted in the createServerList method of GameModel.
 	}
 }
