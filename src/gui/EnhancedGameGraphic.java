@@ -141,12 +141,12 @@ public class EnhancedGameGraphic extends JPanel{
 		System.out.println("I Clicked: "+ lookupState.get(myPoint) + "!");
 		String state = "src/map/" + lookupState.get(myPoint);
 
-		if (leftClick){
+		if (leftClick && !initialization){
 			myGUI.setLeftClick(myGame.getMap().getTerritory(lookupState.get(myPoint)));
 			myGUI.updateTerritoryInfo(myGame.getMap().getTerritory(lookupState.get(myPoint)));
 			state = state + "-F.png";
 		}
-		else{
+		else if(!leftClick && !initialization){
 			myGUI.setRightClick(myGame.getMap().getTerritory(lookupState.get(myPoint)));
 			state = state + "-T.png";
 		}
@@ -161,10 +161,6 @@ public class EnhancedGameGraphic extends JPanel{
 				myGame.getMap().getTerritory(lookupState.get(myPoint)).removeUnit(myGame.getMap().getTerritory(lookupState.get(myPoint)).getUnits().get(0));
 				startUnits++;
 			}
-		}
-		
-		if (startUnits == 0 && initialization){
-			this.endInitialization();
 		}
 
 		//TODO

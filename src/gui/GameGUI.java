@@ -313,6 +313,7 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 	
 	public void endInit(){
 		isInitializing = false;
+		myCommitButton.setEnabled(false);
 		myGameGraphic.endInitialization();
 	}
 }
