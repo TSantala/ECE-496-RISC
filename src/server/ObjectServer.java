@@ -2,8 +2,10 @@ package server;
 
 import gameElements.CommandList;
 import gameElements.GameState;
+import gameElements.Player;
 import gameElements.SaveGame;
 import gameElements.ServerGame;
+import gui.AllianceRequest;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -80,7 +82,6 @@ public class ObjectServer extends Thread implements ServerConstants{
 		int port = 19999;
 		int count = 0;
 		try{
-			@SuppressWarnings("resource")
 			ServerSocket socket1 = new ServerSocket(port);
 			System.out.println("Server Initialized");
 			while (true) {
@@ -209,6 +210,15 @@ public class ObjectServer extends Thread implements ServerConstants{
 	        }
 	    }
 	    this.updateGameInfo();
+	}
+	
+	public synchronized void sendAllianceRequest(AllianceRequest ar){
+		ObjectSocket toTell = myPlayers.get(ar.getTo());
+		toTell.sendMessage(ar);
+	}
+	
+	public synchronized void acceptAllianceRequest(ServerPlayer justAccepted, ServerPlayer toTell){
+		
 	}
 
 }

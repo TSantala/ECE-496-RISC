@@ -2,6 +2,7 @@ package server;
 
 import gameElements.GameInfo;
 import gameElements.GameState;
+import gui.AllianceRequest;
 import gui.GameGUI;
 import gui.ImageBase;
 
@@ -102,5 +103,9 @@ public class ObjectClient extends Thread implements ServerConstants{
 	public void setGameOver()
 	{
 	    
+	}
+
+	public void receiveAllianceRequest(AllianceRequest ar) {
+		myGUI.proposeRequest(ar.getFrom(),ar.getTo());
 	}
 }
