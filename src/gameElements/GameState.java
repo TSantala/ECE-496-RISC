@@ -20,7 +20,7 @@ public class GameState extends Message implements Serializable {
 	private List<Player> myPlayers = new ArrayList<Player>();
 	private static final int DEFAULT_NUM_START_UNITS = 3;
 	private static final int DEFAULT_NUM_START_TERRITORIES = 6;
-
+	
 	public GameState(GameMap gm, List<Player> players){
 		myMap = gm;
 		myPlayers = players;
