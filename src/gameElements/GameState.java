@@ -31,8 +31,8 @@ public class GameState extends Message implements Serializable {
 			myPlayers.add(new Player(player));
 		}
 		// Create map of territories.
-		myMap = new GameMap(DEFAULT_NUM_START_TERRITORIES);
-		//myMap = new GameMap();
+		//myMap = new GameMap(DEFAULT_NUM_START_TERRITORIES);
+		myMap = new GameMap();
 		// Randomly assign initial territories.
 		List<Territory> initialTerritories = new ArrayList<Territory>();
 		initialTerritories.addAll(myMap.getTerritories());

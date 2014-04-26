@@ -29,7 +29,7 @@ public class EnhancedGameGraphic extends JPanel{
 	private List<BufferedImage> myImages = new ArrayList<BufferedImage>();
 	private BufferedImage myLeft;
 	private BufferedImage myRight;
-	
+
 	private Map<Point,String> lookupState = new HashMap<Point,String>();
 
 	public EnhancedGameGraphic(GameGUI gameGUI, GameState game) {
@@ -52,7 +52,7 @@ public class EnhancedGameGraphic extends JPanel{
 		}
 		this.addMouseListener(new MapMouseListener(this));
 	}
-	
+
 	public void setLookupMap(){
 		lookupState.put(new Point(860, 680), "Alabama");
 		lookupState.put(new Point(122, 82), "Alaska");
@@ -106,58 +106,70 @@ public class EnhancedGameGraphic extends JPanel{
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-			g.drawImage(myMap, 0, 0, null);
-			
-			for (Territory t : myGame.getMap().getTerritories()){
-				if (t.getOwner().getPlayer().equals(myGUI.getPlayer().getPlayer())){
-					BufferedImage in;
-					try {
-						in = ImageIO.read(new File("src/map/"+t.getID()+"-O.png"));
-						BufferedImage myImage = new BufferedImage(in.getWidth(), in.getHeight(),BufferedImage.TYPE_INT_ARGB);
-						Graphics2D g2d = myImage.createGraphics();
-						g2d.drawImage(in, 0, 0, null);
-						g2d.dispose();
-						g.drawImage(myImage, 0, 0, null);
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						System.out.println("Failed to draw player's owned territories");
-					}
+		g.drawImage(myMap, 0, 0, null);
+
+		for (Territory t : myGame.getMap().getTerritories()){
+			if (t.getOwner().getPlayer().equals(myGUI.getPlayer().getPlayer())){
+				BufferedImage in;
+				try {
+					in = ImageIO.read(new File("src/map/"+t.getID()+"-O.png"));
+					BufferedImage myImage = new BufferedImage(in.getWidth(), in.getHeight(),BufferedImage.TYPE_INT_ARGB);
+					Graphics2D g2d = myImage.createGraphics();
+					g2d.drawImage(in, 0, 0, null);
+					g2d.dispose();
+					g.drawImage(myImage, 0, 0, null);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					System.out.println("Failed to draw player's owned territories");
 				}
 			}
-			for (BufferedImage bi : myImages){
-				g.drawImage(bi, 0, 0, null);
-			}
-			if (myLeft != null)
-				g.drawImage(myLeft, 0, 0, null);
-			if (myRight != null)
-				g.drawImage(myRight, 0, 0, null);
+		}
+		for (BufferedImage bi : myImages){
+			g.drawImage(bi, 0, 0, null);
+		}
+		if (myLeft != null)
+			g.drawImage(myLeft, 0, 0, null);
+		if (myRight != null)
+			g.drawImage(myRight, 0, 0, null);
 	}
 
 	public void processClick(Point p, boolean leftClick){
 		//System.out.println("Mouse at: (" + p.x +", " + p.y + ").");
-		
+
 		Point myPoint = findClosestPoint(p);
 		System.out.println("I Clicked: "+ lookupState.get(myPoint) + "!");
 		String state = "src/map/" + lookupState.get(myPoint);
-		
-		if (leftClick){
+
+		if (leftClick && !initialization){
 			myGUI.setLeftClick(myGame.getMap().getTerritory(lookupState.get(myPoint)));
 			myGUI.updateTerritoryInfo(myGame.getMap().getTerritory(lookupState.get(myPoint)));
 			state = state + "-F.png";
-			if (initialization & startUnits > 0){
-				myGame.getMap().getTerritory(lookupState.get(myPoint)).addUnit(new Unit(1, myGame.getMap().getTerritory(lookupState.get(myPoint)).getOwner()));
-				startUnits--;
-			}
 		}
-		else{
+		else if(!leftClick && !initialization){
 			myGUI.setRightClick(myGame.getMap().getTerritory(lookupState.get(myPoint)));
 			state = state + "-T.png";
 		}
+
+
+		if (leftClick && initialization && startUnits > 0){
+			myGame.getMap().getTerritory(lookupState.get(myPoint)).addUnit(new Unit(1, myGame.getMap().getTerritory(lookupState.get(myPoint)).getOwner()));
+			startUnits--;
+		}
+		else if (!leftClick && initialization){
+			if (!myGame.getMap().getTerritory(lookupState.get(myPoint)).getUnits().isEmpty()){
+				myGame.getMap().getTerritory(lookupState.get(myPoint)).removeUnit(myGame.getMap().getTerritory(lookupState.get(myPoint)).getUnits().get(0));
+				startUnits++;
+			}
+		}
 		
+		if (startUnits == 0){
+			this.endInitialization();
+		}
+
 		//TODO
 		//Finish revamping the way initial troop placement is carried out
-		
+
 		BufferedImage in;
 		try {
 			in = ImageIO.read(new File(state));
@@ -184,7 +196,7 @@ public class EnhancedGameGraphic extends JPanel{
 	}
 
 	private Point findClosestPoint(Point myP) {
-		
+
 		Point current = new Point(860,680);
 		double currentDist = Math.pow(Math.pow(myP.getX() - current.getX(),2) + Math.pow(myP.getY() - current.getY(), 2), .5);
 		for(Point p : lookupState.keySet()){
