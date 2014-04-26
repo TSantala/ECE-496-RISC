@@ -7,6 +7,10 @@ import server.ObjectServer;
 
 public class AllianceRequest extends Message {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Player from;
 	private Player to;
 	
