@@ -1,11 +1,13 @@
 package gui;
 
+import java.io.Serializable;
+
 import gameElements.Player;
 import server.Message;
 import server.ObjectClient;
 import server.ObjectServer;
 
-public class AllianceRequest extends Message {
+public class AllianceRequest extends Message implements Serializable{
 	
 	/**
 	 * 
