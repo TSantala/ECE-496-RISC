@@ -1,6 +1,5 @@
 package gameElements;
 
-import java.io.Serializable;
 import java.util.List;
 
 import server.ServerPlayer;
@@ -23,6 +22,6 @@ public class HiddenTerritory extends Territory
 	
 	@Override
 	public String getUnitInfo(){
-		return "???\n";
+		return "  ???\n";
 	}
 }

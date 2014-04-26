@@ -75,6 +75,8 @@ public class GameMap implements Serializable
 		Arkansas.addNeighbor(Texas);
 		Arkansas.addNeighbor(Louisiana);
 		Arkansas.addNeighbor(Missouri);
+		Arkansas.addNeighbor(Mississippi);
+		Arkansas.addNeighbor(Tennessee);
 		
 		California.addNeighbor(Arizona);
 		California.addNeighbor(Nevada);
@@ -104,15 +106,21 @@ public class GameMap implements Serializable
 		
 		Illinois.addNeighbor(Wisconsin);
 		Illinois.addNeighbor(Indiana);
+		Illinois.addNeighbor(Kentucky);
+		Illinois.addNeighbor(Missouri);
+		Illinois.addNeighbor(Iowa);
 		
 		Indiana.addNeighbor(Illinois);
 		Indiana.addNeighbor(Michigan);
 		Indiana.addNeighbor(Ohio);
+		Indiana.addNeighbor(Kentucky);
 		
 		Iowa.addNeighbor(Missouri);
 		Iowa.addNeighbor(Nebraska);
 		Iowa.addNeighbor(South_Dakota);
 		Iowa.addNeighbor(Minnesota);
+		Iowa.addNeighbor(Wisconsin);
+		Iowa.addNeighbor(Illinois);
 		
 		Kansas.addNeighbor(Oklahoma);
 		Kansas.addNeighbor(Colorado);
@@ -121,6 +129,9 @@ public class GameMap implements Serializable
 		
 		Kentucky.addNeighbor(Tennessee);
 		Kentucky.addNeighbor(West_Virginia);
+		Kentucky.addNeighbor(Illinois);
+		Kentucky.addNeighbor(Indiana);
+		Kentucky.addNeighbor(Ohio);
 		
 		Louisiana.addNeighbor(Texas);
 		Louisiana.addNeighbor(Arkansas);
@@ -154,6 +165,7 @@ public class GameMap implements Serializable
 		Missouri.addNeighbor(Kansas);
 		Missouri.addNeighbor(Nebraska);
 		Missouri.addNeighbor(Iowa);
+		Missouri.addNeighbor(Illinois);
 		
 		Montana.addNeighbor(Wyoming);
 		Montana.addNeighbor(South_Dakota);
@@ -201,6 +213,8 @@ public class GameMap implements Serializable
 		Ohio.addNeighbor(Michigan);
 		Ohio.addNeighbor(Indiana);
 		Ohio.addNeighbor(Pennsylvania);
+		Ohio.addNeighbor(Kentucky);
+		Ohio.addNeighbor(West_Virginia);
 		
 		Oklahoma.addNeighbor(Arkansas);
 		Oklahoma.addNeighbor(Texas);
@@ -233,6 +247,7 @@ public class GameMap implements Serializable
 		Tennessee.addNeighbor(Mississippi);
 		Tennessee.addNeighbor(Alabama);
 		Tennessee.addNeighbor(Kentucky);
+		Tennessee.addNeighbor(Arkansas);
 		
 		Texas.addNeighbor(New_Mexico);
 		Texas.addNeighbor(Oklahoma);
@@ -256,10 +271,12 @@ public class GameMap implements Serializable
 		
 		West_Virginia.addNeighbor(Kentucky);
 		West_Virginia.addNeighbor(Pennsylvania);
+		West_Virginia.addNeighbor(Ohio);
 		
 		Wisconsin.addNeighbor(Minnesota);
 		Wisconsin.addNeighbor(Michigan);
 		Wisconsin.addNeighbor(Illinois);
+		Wisconsin.addNeighbor(Iowa);
 		
 		Wyoming.addNeighbor(Montana);
 		Wyoming.addNeighbor(Colorado);
@@ -339,7 +356,7 @@ public class GameMap implements Serializable
 	}
 
 	public boolean hasPath(Territory from, Territory to, Player p){
-		List<Territory> pt = p.getTerritories();
+		List<Territory> pt = p.getAllAlliedTerritories();
 		if(!pt.contains(from) || !pt.contains(to))
 			return false;
 		List<Territory> visited = new ArrayList<Territory>();
@@ -359,9 +376,10 @@ public class GameMap implements Serializable
 	}
 
 	public boolean canAttack(Territory from, Territory to, Player p){
-		if(!p.containsTerritory(from))
+		List<Territory> alliedLands = p.getAllAlliedTerritories();
+		if(!alliedLands.contains(from))
 			return false;
-		if(p.containsTerritory(to))
+		if(alliedLands.contains(to))
 			return false;
 		return from.getNeighbors().contains(to);
 	}

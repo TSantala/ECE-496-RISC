@@ -22,7 +22,7 @@ public class Territory implements Serializable, GameConstants
 		myResources.add(new Food(10));
 		myResources.add(new Technology(10));
 	}
-	
+
 	public void setOwner(Player p){
 		myOwner = p;
 	}
@@ -40,7 +40,7 @@ public class Territory implements Serializable, GameConstants
 	public void addNeighbor(Territory neighbor){
 		myNeighbors.add(neighbor);
 	}
-	
+
 	public void removeNeighbor(Territory neighbor){
 		if (myNeighbors.contains(neighbor)){
 			myNeighbors.remove(neighbor);
@@ -95,25 +95,23 @@ public class Territory implements Serializable, GameConstants
 		return null;
 	}
 
-        public boolean isAdjacentTo (Player p) //if the territory is adjacent to any of the player's territories
-        { 
-            for (Territory t : p.getTerritories())
-            {
-                if (myNeighbors.contains(t))
-                    return true;
-            }
-            return false;
-        }
-        
-        public boolean hasSpy()
-        {
-            for (Unit u : myUnits)
-            {
-                if (u.isSpy())
-                    return true;
-            }
-            return false;
-        }
+	public boolean isAdjacentTo (Player p){ 
+		for (Territory t : p.getTerritories()){
+			if (myNeighbors.contains(t))
+				return true;
+		}
+		return false;
+	}
+
+	public boolean hasSpy(Player p){
+		for (Unit u : myUnits){
+			if (u.isSpy()){
+				if(u.getOwner().onTeam(p))
+					return true;
+			}
+		}
+		return false;
+	}
 
 	public String getUnitInfo(){
 		if(myUnits.size()==0) return "  No units!\n";
@@ -139,7 +137,7 @@ public class Territory implements Serializable, GameConstants
 		}
 		return toReturn;
 	}
-	
+
 	public boolean hasUnitHere(Player p){
 		for(Unit u : myUnits){
 			if(u.getOwner().getName().equals(p.getName()))
@@ -151,7 +149,7 @@ public class Territory implements Serializable, GameConstants
 	public int hasInterceptors() {
 		return interceptors;
 	}
-	
+
 	public void placeInterceptor(){
 		interceptors++;
 	}
@@ -159,5 +157,5 @@ public class Territory implements Serializable, GameConstants
 	public void removeInterceptor() {
 		interceptors--;
 	}
-	
+
 }

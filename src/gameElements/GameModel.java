@@ -35,12 +35,6 @@ public class GameModel implements ServerConstants, Serializable {
 		//		    this.trade(c);
 		//		}
 
-		//		List<Command> allianceOrders = cl.getCommands(AllianceCommand.class);
-		//		for(Command c : allianceOrders)
-		//		{
-		//		    this.makeAlliance(c);
-		//		}
-
 		List<Command> spies = cl.getCommands(SpyCommand.class);
 		for(Command c : spies){
 			this.makeSpies(c.getUnits());
@@ -196,10 +190,8 @@ public class GameModel implements ServerConstants, Serializable {
 
 	public void move(Player p, Territory from, Territory to, List<Unit> units){
 		boolean allSpies = true;
-		for (Unit u : units)
-		{
-			if (!u.isSpy())
-			{
+		for (Unit u : units){
+			if (!u.isSpy()){
 				allSpies = false;
 				break;
 			}
@@ -207,24 +199,18 @@ public class GameModel implements ServerConstants, Serializable {
 		System.out.println("ALL SPIES? " + allSpies);
 		boolean ownersNotDifferent = !to.getOwner().getName().equals(from.getOwner().getName());
 		System.out.println(ownersNotDifferent + " OWNERS ARE DIFFERENT?");
-		if (allSpies) //spies moving
-		{
-			if (from.getNeighbors().contains(to)) //is 1 away
-			{
+		if(allSpies){
+			if (from.getNeighbors().contains(to)){
 				from.removeUnits(units);
 				to.addUnits(units);
 				return;
 			}
 		}
-		else if(myGame.getMap().hasPath(from,to,p) && to.getOwner().onTeam(from.getOwner()))
-		{
+		else if(myGame.getMap().hasPath(from,to,p)){
 			from.removeUnits(units);
 			to.addUnits(units);
 		}
-
-		else
-		{
-			//this.redoTurnErrorFound("Invalid move!");
+		else{
 			this.broadcastGameMessage("Player "+p.getName()+" has committed an invalid move. Ignoring command.");		
 		}
 	}
@@ -236,8 +222,8 @@ public class GameModel implements ServerConstants, Serializable {
 
 		if(opposingUnits.size()!=0){
 
-			if(p.getName().equals(opponent.getName())){
-				// swap must have occurred, you own it already!
+			if(p.onTeam(opponent)){
+				System.out.println("Same team; change to move");
 				this.move(p, from, to, units);
 			}
 			while(!units.isEmpty() && !opposingUnits.isEmpty()){
@@ -308,10 +294,8 @@ public class GameModel implements ServerConstants, Serializable {
 
 	public List<Command> checkValidAttacks(List<Command> cl){
 		List<Command> toReturn = new ArrayList<Command>();
-		for(Command c : cl)
-		{
-			if(!myGame.getMap().canAttack(c.getFrom(),c.getTo(),c.getPlayer()))
-			{
+		for(Command c : cl){
+			if(!myGame.getMap().canAttack(c.getFrom(),c.getTo(),c.getPlayer())){
 				//this.redoTurnErrorFound("Invalid attack!");
 				this.broadcastGameMessage("Player "+c.getPlayer().getName()+" has committed an invalid attack. Ignoring command.");
 			}
@@ -428,6 +412,7 @@ public class GameModel implements ServerConstants, Serializable {
 		for (Territory t : myGame.getMap().getTerritories()){
 			for (Unit u : t.getUnits()){
 				if(u.isSpy()){
+					if(t.getOwner().onTeam(u.getOwner())) return;
 					int percentChance = u.getTurnCount()*7+1;
 					if(Math.random()*100 < percentChance){
 						toKill.add(u);

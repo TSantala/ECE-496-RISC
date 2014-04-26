@@ -140,11 +140,23 @@ public class Player implements Serializable, GameConstants {
 		if(!myAllies.contains(p))
 			myAllies.add(p);
 	}
+	
+	public List<Player> getAllies(){
+		return myAllies;
+	}
+	
+	public List<Territory> getAllAlliedTerritories(){
+		List<Territory> pt = this.getTerritories();
+		for(Player ally : this.getAllies()){
+			pt.addAll(ally.getTerritories());
+		}
+		return pt;
+	}
 
 	public boolean onTeam(Player p){
 		if(this.equals(p)) return true;
 		for(Player q : myAllies){
-			if(this.equals(q)) return true;
+			if(p.equals(q)) return true;
 		}
 		return false;
 	}
