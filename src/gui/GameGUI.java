@@ -435,5 +435,14 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 			System.out.println("Request rejected!");
 		}
 	}
+	
+	public Collection<Player> getOtherPlayers(){
+		Collection<Player> toReturn = new ArrayList<Player>();
+		for(Player p : myGame.getPlayers()){
+			if(!p.equals(myPlayer))
+				toReturn.add(p);
+		}
+		return toReturn;
+	}
 
 }
