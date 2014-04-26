@@ -23,16 +23,6 @@ public class GameModel implements ServerConstants, Serializable {
 		return myGame;
 	}
 
-	public void placeUnits(Player p, Territory t, List<Unit> units){
-
-		if (units.size() > 0){
-			Player serverPlayer = myGame.getPlayer(p.getName());
-			Territory serverTerritory = myGame.getMap().getTerritory(t.getID());
-			serverPlayer.addUnits(units);
-			serverTerritory.addUnits(units);
-		}
-	}
-
 	public void performCommands(CommandList cl){
 
 		for(Player p : myGame.getPlayers())
@@ -82,19 +72,26 @@ public class GameModel implements ServerConstants, Serializable {
 
 		// first check validity of attacks.
 		if(!checkValidAttacks(cl.getCommands())) return;
+		
 		// check if attack swaps and enact them.  ******CHECK MIDCOMBAT ATTACKS NOW*******
 		this.checkAttackSwaps(cl.getCommands());
+		
 		// attacking units don't defend; remove them from the territories.
 		this.displaceAttackingUnits(cl.getCommands());
+		
 		// combine attack commands from same player to same destination.
 		this.combineGroupAttacks(cl.getCommands());
+		
 		// attack!
 		for(Command attack : cl.getCommands())
 			attack.enact(this);
+		
 		// add 1 unit to each territory.
 		this.endOfRoundAddUnits();
+		
 		// feed units and remove if out of food
 		this.feedUnits();
+		
 		// harvest resources from owned territories
 		this.harvestTerritories();
 		
@@ -162,10 +159,8 @@ public class GameModel implements ServerConstants, Serializable {
 
 	public boolean move(Player p, Territory from, Territory to, List<Unit> units){
 		boolean allSpies = true;
-		for (Unit u : units)
-		{
-			if (!u.isSpy())
-			{
+		for (Unit u : units){
+			if (!u.isSpy()){
 				allSpies = false;
 				break;
 			}
@@ -336,6 +331,10 @@ public class GameModel implements ServerConstants, Serializable {
 
 	private void addNewUnit(Territory t){
 		t.addUnit(new Unit(unitID++,t.getOwner()));
+	}
+	
+	private void addNewUnit(Territory t, Player p){
+		t.addUnit(new Unit(unitID++,p));
 	}
 
 	private void endOfRoundAddUnits(){
