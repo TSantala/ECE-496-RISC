@@ -186,9 +186,6 @@ public class EnhancedGameGraphic extends JPanel{
 			e.printStackTrace();
 			System.out.println("Failed to read map file");
 		}
-		if (startUnits == 0){
-			this.endInitialization();
-		}
 		this.revalidate();
 		myGUI.revalidate();
 		this.repaint();		// this seems to be causing weird graphics bugs at random.

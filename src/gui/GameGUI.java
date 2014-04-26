@@ -58,6 +58,8 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 	private JButton myPlayerButton = new UpgradePlayerButton(this);
 
 	private CommandList myCommandList = new CommandList();
+	
+	private boolean isInitializing = true;
 
 	public GameGUI(ObjectClient client){
 		myClient = client;
@@ -67,7 +69,6 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 	public void updateGameState(GameState gs){
 		if (myGame == null){
 			myClient.printMessage("STARTING THE GAME!");
-			System.out.println("STARTING THE GAME!");
 			this.beginGame(gs);
 		}
 		else {
@@ -304,5 +305,14 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 			}
 		}
 		return true;
+	}
+	
+	public boolean isInit(){
+		return isInitializing;
+	}
+	
+	public void endInit(){
+		isInitializing = false;
+		myGameGraphic.endInitialization();
 	}
 }
