@@ -7,9 +7,6 @@ import server.*;
 
 public class GameModel implements ServerConstants, Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private ServerGame myServerGame;
 	private GameState myPrevious;

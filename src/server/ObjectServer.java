@@ -66,8 +66,9 @@ public class ObjectServer extends Thread implements ServerConstants{
 	
 	public GameState getSavedState(ServerGame current){
 		List<SaveGame> list = this.getSaveGameList();
+		System.out.println("got the list...");
 		for(SaveGame sg : list){
-			if(sg.equals(current))
+			if(sg.getInfo().equals(current.getInfo()))
 				return sg.getState();
 		}
 		System.out.println("SAVED GAMESTATE NOT FOUND!!!");
