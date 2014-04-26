@@ -344,15 +344,13 @@ public class GameModel implements ServerConstants, Serializable {
 
 	private void endOfRoundAddUnits(){
 		for(Territory t : myGame.getMap().getTerritories()){
+			System.out.println("Adding unit to: "+t.getID());
 			this.addNewUnit(t);
 		}
 	}
 
 	private void feedUnits(){
 		List<Unit> toRemove = new ArrayList<Unit>();
-		for(Player p : myGame.getPlayers()){
-			System.out.println("Starting food = "+p.getFoodAmount());
-		}
 		for(Territory t : myGame.getMap().getTerritories()){
 			Player p = t.getOwner();
 			for(Unit u : t.getUnits()){
@@ -365,9 +363,6 @@ public class GameModel implements ServerConstants, Serializable {
 				t.removeUnit(removing);
 				removing.getOwner().removeUnit(removing);
 			}
-		}
-		for(Player p : myGame.getPlayers()){
-			System.out.println("Ending food = "+p.getFoodAmount());
 		}
 	}
 
@@ -407,6 +402,9 @@ public class GameModel implements ServerConstants, Serializable {
 	private void sendUpdatedGameState(){
 		System.out.println("Model logic completed!!!");
 		System.out.println("Now doing vision");
+		for(Territory t : myGame.getMap().getTerritories()){
+			System.out.println(t.getID()+" has units: "+t.getUnits().size());
+		}
 		myServerGame.setGameState(myGame);
 		myServerGame.updateGame();
 	}

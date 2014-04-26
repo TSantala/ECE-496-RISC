@@ -15,8 +15,8 @@ public class Player implements Serializable, GameConstants {
 	
 	private int myTechLevel=0;
 	
-	private Food myFood = new Food(INIT_RESOURCES);
-	private Technology myTech = new Technology(INIT_RESOURCES);
+	private Food myFood = new Food(40);
+	private Technology myTech = new Technology(40);
 	
 	public Player(ServerPlayer p){
 		myPlayer = p;
