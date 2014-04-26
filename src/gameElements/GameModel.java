@@ -65,12 +65,16 @@ public class GameModel implements ServerConstants, Serializable {
 
 		List<Command> moveCommands = cl.getCommands(MoveCommand.class);
 		for(Command move : moveCommands){
-			if(!(this.move(move.getPlayer(),move.getFrom(),move.getTo(),move.getUnits()))) return;
+			//if(!(this.move(move.getPlayer(),move.getFrom(),move.getTo(),move.getUnits()))) return;
+			this.move(move.getPlayer(),move.getFrom(),move.getTo(),move.getUnits());
 			cl.removeCommand(move);
 		}
 
+		// ONLY ATTACK COMMANDS MUST BE LEFT.
+		
 		// first check validity of attacks.
-		if(!checkValidAttacks(cl.getCommands())) return;
+		cl = this.checkValidAttacks(cl.getCommands());
+		//if(!checkValidAttacks(cl.getCommands())) return;
 		
 		// check if attack swaps and enact them.  ******CHECK MIDCOMBAT ATTACKS NOW*******
 		this.checkAttackSwaps(cl.getCommands());
@@ -135,7 +139,8 @@ public class GameModel implements ServerConstants, Serializable {
 		for(Command c : placeCommands){
 			cl.removeCommand(c);
 			for(int i = 0; i < c.getUnits().size(); i++){
-				this.addNewUnit(myGame.getMap().getTerritory(c.getFrom().getID()));
+				this.addNewUnit(myGame.getMap().getTerritory(c.getFrom().getID()),
+						myGame.getPlayer(c.getPlayer().getName()));
 			}
 		}
 		for(Command c : cl.getCommands()){
@@ -156,7 +161,7 @@ public class GameModel implements ServerConstants, Serializable {
 		return toReturn;
 	}
 
-	public boolean move(Player p, Territory from, Territory to, List<Unit> units){
+	public void move(Player p, Territory from, Territory to, List<Unit> units){
 		boolean allSpies = true;
 		for (Unit u : units){
 			if (!u.isSpy()){
@@ -170,10 +175,9 @@ public class GameModel implements ServerConstants, Serializable {
 		    to.addUnits(units);
 		}
 		else{
-			this.redoTurnErrorFound("Invalid move!");
-			return false;
+			//this.redoTurnErrorFound("Invalid move!");
+			this.broadcastGameMessage("Player "+p.getName()+" has committed an invalid move. Ignoring command.");		
 		}
-		return true;
 	}
 
 	public void attack(Player p, Territory from, Territory to, List<Unit> units){
@@ -253,14 +257,18 @@ public class GameModel implements ServerConstants, Serializable {
 		}
 	}
 
-	public boolean checkValidAttacks(List<Command> cl){
+	public CommandList checkValidAttacks(List<Command> cl){
+		List<Command> toReturn = new ArrayList<Command>();
 		for(Command c : cl){
 			if(!myGame.getMap().canAttack(c.getFrom(),c.getTo(),c.getPlayer())){
-				this.redoTurnErrorFound("Invalid attack!");
-				return false;
-			}					
+				//this.redoTurnErrorFound("Invalid attack!");
+				this.broadcastGameMessage("Player "+c.getPlayer().getName()+" has committed an invalid attack. Ignoring command.");
+			}
+			else{
+				toReturn.add(c);
+			}
 		}
-		return true;
+		return new CommandList(toReturn);
 	}
 
 	public void checkAttackSwaps(List<Command> cl){
@@ -405,10 +413,13 @@ public class GameModel implements ServerConstants, Serializable {
 
 	public void upgradePlayer(Player p){
 		myGame.upgradePlayer(p);
-		if (p.getTechLevel() == 6)
-		{
-		    myServerGame.updateGame(new TextMessage("A PLAYER NOW HAS NUKES. YOU ARE NOT PREPARED."));
+		if (p.getTechLevel() == 6){
+		    this.broadcastGameMessage("A PLAYER NOW HAS NUKES. YOU ARE NOT PREPARED.");
 		}
+	}
+	
+	public void broadcastGameMessage(String message){
+		myServerGame.updateGame(new TextMessage(message));
 	}
 
 	public void makeSpies(List<Unit> l) {
