@@ -51,6 +51,7 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 
 	private LobbyPane lobbyPane;
 	private EnhancedGameGraphic myGameGraphic;
+	private JScrollPane scrollingGameGraphic;
 	private GameState myGame;
 	private Player myPlayer;
 
@@ -88,11 +89,11 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 			this.beginGame(gs);
 		}
 		else {
-			mainPane.remove(myGameGraphic);
+			mainPane.remove(scrollingGameGraphic);
 			myGameGraphic = new EnhancedGameGraphic(this, gs);
 			myGameGraphic.revalidate();
 			myGameGraphic.repaint();
-			JScrollPane scrollingGameGraphic = new JScrollPane(myGameGraphic);
+			scrollingGameGraphic = new JScrollPane(myGameGraphic);
 			mainPane.add(scrollingGameGraphic,BorderLayout.CENTER);
 			myCommitButton.setEnabled(true);
 			myPlayerButton.setEnabled(true);
@@ -277,7 +278,7 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 	}
 
 	public void leaveGame() {
-		mainPane.remove(myGameGraphic);
+		mainPane.remove(scrollingGameGraphic);
 		mainPane.add(lobbyPane, BorderLayout.CENTER);
 		mainPane.repaint();
 		myGame = null;
