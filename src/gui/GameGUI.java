@@ -18,6 +18,7 @@ import gameElements.UpgradeUnitCommand;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -90,7 +91,8 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 			myGameGraphic = new EnhancedGameGraphic(this, gs);
 			myGameGraphic.revalidate();
 			myGameGraphic.repaint();
-			mainPane.add(myGameGraphic,BorderLayout.CENTER);
+			JScrollPane scrollingGameGraphic = new JScrollPane(myGameGraphic);
+			mainPane.add(scrollingGameGraphic,BorderLayout.CENTER);
 			myCommitButton.setEnabled(true);
 			myPlayerButton.setEnabled(true);
 			mainPane.revalidate();
@@ -240,7 +242,8 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 	public void beginGame(GameState gs){
 		mainPane.remove(lobbyPane);
 		myGameGraphic = new EnhancedGameGraphic(this, gs);
-		mainPane.add(myGameGraphic,BorderLayout.CENTER);
+		JScrollPane scrollingGameGraphic = new JScrollPane(myGameGraphic);
+		mainPane.add(scrollingGameGraphic,BorderLayout.CENTER);
 		mainPane.revalidate();
 		mainPane.repaint();
 		this.setOtherButtons(true);

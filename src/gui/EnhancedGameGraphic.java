@@ -6,6 +6,8 @@ import gameElements.Territory;
 import gameElements.Unit;
 
 import java.awt.AlphaComposite;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -44,9 +46,10 @@ public class EnhancedGameGraphic extends JPanel{
 		myGUI.updatePlayerInfo();
 		this.identifyTerritories();
 		setLookupMap();
-		this.setSize(1280, 900);
+		//this.setSize(1280, 900);
+		this.setPreferredSize(new Dimension(1280, 900));
 		pane = this;
-		Timer timer = new Timer(5, new ActionListener() {
+		Timer timer = new Timer(100, new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				pane.repaint();
 			}
