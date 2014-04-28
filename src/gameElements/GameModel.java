@@ -12,6 +12,7 @@ public class GameModel implements ServerConstants, Serializable {
 	private ServerGame myServerGame;
 	private GameState myGame;
 	private int unitID=0;
+	private boolean gameWon = false;
 
 	public GameModel(GameState gs, ServerGame sg){
 		myGame = gs;
@@ -23,6 +24,8 @@ public class GameModel implements ServerConstants, Serializable {
 	}
 
 	public void performCommands(CommandList cl){
+		
+		if(gameWon) return;
 
 		for(Player p : myGame.getPlayers())
 			System.out.println("Food:"+p.getFoodAmount());
@@ -121,7 +124,7 @@ public class GameModel implements ServerConstants, Serializable {
 		List<Command> intCommands = cl.getCommands(InterceptorCommand.class);
 		List<Command> allyCommands = cl.getCommands(DiplomacyCommand.class);
 
-		
+
 		for(Command c : placeCommands){
 			cl.removeCommand(c);
 			for(int i = 0; i < c.getUnits().size(); i++){
@@ -129,20 +132,20 @@ public class GameModel implements ServerConstants, Serializable {
 						myGame.getPlayer(c.getPlayer().getName()));
 			}
 		}
-		
+
 		for(Command c : allyCommands){
 			cl.removeCommand(c);
 			DiplomacyCommand dc = (DiplomacyCommand) c;
 			this.setDiplomacy(myGame.getPlayer(dc.getPlayer().getName()), 
 					myGame.getPlayer(dc.getOtherPlayer().getName()), dc.nowAlly());
 		}
-		
+
 		for(Command c : nukeCommands){
 			cl.removeCommand(c);
 			toReturn.addCommand(new NukeCommand(myGame.getMap().getTerritory(c.getTo().getID()),
 					myGame.getPlayer(c.getPlayer().getName())));
 		}
-		
+
 		for(Command c : intCommands){
 			cl.removeCommand(c);
 			toReturn.addCommand(new InterceptorCommand(myGame.getMap().getTerritory(c.getTo().getID()),
@@ -471,7 +474,7 @@ public class GameModel implements ServerConstants, Serializable {
 		if (numAlive == 1){
 			String name = myGame.getMap().getTerritories().get(0).getOwner().getName();
 			this.broadcastGameMessage(name + " HAS WON!  CONGRATULATIONS!");
-			myServerGame.endGame();
+			gameWon = true;
 		}
 	}
 
