@@ -25,10 +25,17 @@ import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 
 import server.LeaveRequest;
@@ -79,6 +86,8 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 	private boolean isInitializing = true;
 
 	private ImageBase myImages;
+	
+	private Clip clip;
 
 	public GameGUI(ObjectClient client){
 		myClient = client;
@@ -263,8 +272,31 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 		mainPane.revalidate();
 		mainPane.repaint();
 		this.setOtherButtons(true);
+		
+		try {
+			File soundfile = new File("src/Age of Mythology Soundtrack Part 1.wav");
+			clip = AudioSystem.getClip();
+			AudioInputStream ais = AudioSystem.getAudioInputStream(soundfile);
+			clip.open(ais);
+			clip.loop(Integer.MAX_VALUE);
+		} catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) {
+			e.printStackTrace();
+		}
 	}
 
+	public void leaveGame() {
+		territoryInfo.setText("");
+		playerInfo.setText("");
+		mainPane.remove(scrollingGameGraphic);
+		mainPane.add(lobbyPane, BorderLayout.CENTER);
+		mainPane.repaint();
+		myGame = null;
+		myClient.sendMessage(new LeaveRequest());
+		this.setButtons(false);
+		this.setOtherButtons(false);
+		clip.close();
+	}
+	
 	public EnhancedGameGraphic getGameGraphic(){
 		return myGameGraphic;
 	}
@@ -291,17 +323,6 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 		lobbyPane.updateGames(myUpdate);
 	}
 
-	public void leaveGame() {
-		territoryInfo.setText("");
-		playerInfo.setText("");
-		mainPane.remove(scrollingGameGraphic);
-		mainPane.add(lobbyPane, BorderLayout.CENTER);
-		mainPane.repaint();
-		myGame = null;
-		myClient.sendMessage(new LeaveRequest());
-		this.setButtons(false);
-		this.setOtherButtons(false);
-	}
 
 	public void addUnitUpgrade(Collection<Unit> u) {
 		if(!validateCommand(u))
