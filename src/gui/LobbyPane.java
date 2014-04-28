@@ -5,9 +5,16 @@ import gameElements.GameInfo;
 import java.awt.BorderLayout;
 import java.awt.Label;
 import java.awt.List;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -51,13 +58,14 @@ public class LobbyPane extends JPanel{
 
 	public void joinGame() {
 		int game = gameList.getSelectedIndex();
-		if (game != -1)
+		if (game != -1){
 			myClient.sendMessage(new JoinRequest(game));
+		}
 	}
 
 	public void NewGame() {
-		int numPlayers = Integer.parseInt(JOptionPane.showInputDialog("You are beginning a new game.  How many players?" ,"2"));
-		String gameName = JOptionPane.showInputDialog("What should your game be called?" ,"Default");
+		int numPlayers = Integer.parseInt(JOptionPane.showInputDialog("You are beginning a new game.  How many players?", "2"));
+		String gameName = JOptionPane.showInputDialog("What should your game be called?", "Default");
 		myClient.sendMessage(new NewGameRequest(numPlayers, gameName));
 	}
 

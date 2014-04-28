@@ -87,12 +87,23 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 
 	private ImageBase myImages;
 	
-	private Clip clip;
+	private Clip lobbyClip;
+	private Clip gameClip;
 
 	public GameGUI(ObjectClient client){
 		myClient = client;
 		myGame = myClient.getGameState();
-		myImages = new ImageBase();
+		myImages = new ImageBase();	
+		
+		try {
+			File soundfile = new File("src/Banjo-Kazooie Music- Treasure Trove Cove.wav");
+			lobbyClip = AudioSystem.getClip();
+			AudioInputStream ais = AudioSystem.getAudioInputStream(soundfile);
+			lobbyClip.open(ais);
+			lobbyClip.loop(Integer.MAX_VALUE);
+		} catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void updateGameState(GameState gs){
@@ -273,12 +284,13 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 		mainPane.repaint();
 		this.setOtherButtons(true);
 		
+		lobbyClip.close();
 		try {
-			File soundfile = new File("src/Age of Mythology Soundtrack Part 1.wav");
-			clip = AudioSystem.getClip();
+			File soundfile = new File("src/Age of Mythology Soundtrack.wav");
+			gameClip = AudioSystem.getClip();
 			AudioInputStream ais = AudioSystem.getAudioInputStream(soundfile);
-			clip.open(ais);
-			clip.loop(Integer.MAX_VALUE);
+			gameClip.open(ais);
+			gameClip.loop(Integer.MAX_VALUE);
 		} catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) {
 			e.printStackTrace();
 		}
@@ -294,7 +306,17 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 		myClient.sendMessage(new LeaveRequest());
 		this.setButtons(false);
 		this.setOtherButtons(false);
-		clip.close();
+		
+		gameClip.close();
+		try {
+			File soundfile = new File("src/Banjo-Kazooie Music- Treasure Trove Cove.wav");
+			lobbyClip = AudioSystem.getClip();
+			AudioInputStream ais = AudioSystem.getAudioInputStream(soundfile);
+			lobbyClip.open(ais);
+			lobbyClip.loop(Integer.MAX_VALUE);
+		} catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public EnhancedGameGraphic getGameGraphic(){
