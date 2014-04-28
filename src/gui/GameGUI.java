@@ -283,6 +283,7 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 		mainPane.revalidate();
 		mainPane.repaint();
 		this.setOtherButtons(true);
+		myCommitButton.setEnabled(true);
 		
 		lobbyClip.close();
 		try {
