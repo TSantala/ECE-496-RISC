@@ -27,10 +27,14 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -90,15 +94,18 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 	private Clip lobbyClip;
 	private Clip gameClip;
 
+
 	public GameGUI(ObjectClient client){
 		myClient = client;
 		myGame = myClient.getGameState();
 		myImages = new ImageBase();	
 		
 		try {
-			File soundfile = new File("src/Banjo-Kazooie Music- Treasure Trove Cove.wav");
+
+			URL testurl = this.getClass().getResource("/Banjo.wav");
+			
 			lobbyClip = AudioSystem.getClip();
-			AudioInputStream ais = AudioSystem.getAudioInputStream(soundfile);
+			AudioInputStream ais = AudioSystem.getAudioInputStream(testurl);
 			lobbyClip.open(ais);
 			lobbyClip.loop(Integer.MAX_VALUE);
 		} catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) {
@@ -287,9 +294,10 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 		
 		lobbyClip.close();
 		try {
-			File soundfile = new File("src/Age of Mythology Soundtrack.wav");
+			URL testurl = this.getClass().getResource("/AOM.wav");
+			
 			gameClip = AudioSystem.getClip();
-			AudioInputStream ais = AudioSystem.getAudioInputStream(soundfile);
+			AudioInputStream ais = AudioSystem.getAudioInputStream(testurl);
 			gameClip.open(ais);
 			gameClip.loop(Integer.MAX_VALUE);
 		} catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) {
@@ -310,9 +318,10 @@ public class GameGUI extends JFrame implements ServerConstants, GameConstants {
 		
 		gameClip.close();
 		try {
-			File soundfile = new File("src/Banjo-Kazooie Music- Treasure Trove Cove.wav");
+			URL testurl = this.getClass().getResource("/Banjo.wav");
+			
 			lobbyClip = AudioSystem.getClip();
-			AudioInputStream ais = AudioSystem.getAudioInputStream(soundfile);
+			AudioInputStream ais = AudioSystem.getAudioInputStream(testurl);
 			lobbyClip.open(ais);
 			lobbyClip.loop(Integer.MAX_VALUE);
 		} catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) {

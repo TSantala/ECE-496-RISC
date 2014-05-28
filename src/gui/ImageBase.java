@@ -4,13 +4,16 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLDecoder;
 import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 
 public class ImageBase {
 	private HashMap<String,BufferedImage> myImages = new HashMap<String,BufferedImage>();
-	private static final String root = "src/map/";
 	private static final String end = ".png";
 	private static final String[] tags = {"-F", "-O", "-T"};
 	private static final String[] states = {
@@ -28,9 +31,11 @@ public class ImageBase {
 
 	public ImageBase() {
 
-		BufferedImage in;
-		try {
-			in = ImageIO.read(new File(root + "RISC.png"));
+		BufferedImage in = null;
+		try {	
+			
+			in = ImageIO.read(getClass().getResourceAsStream("/map/RISC.png"));
+
 			BufferedImage myMap = new BufferedImage(in.getWidth(), in.getHeight(),BufferedImage.TYPE_INT_ARGB);
 			myImages.put("RISC" + end, myMap);
 			Graphics2D g = myMap.createGraphics();
@@ -39,7 +44,9 @@ public class ImageBase {
 
 			for (String state : states){
 				for (String tag : tags){
-					in = ImageIO.read(new File(root + state + tag + end));
+					
+					in = ImageIO.read(getClass().getResourceAsStream("/map/"+state+tag+".png"));
+
 					BufferedImage myState = new BufferedImage(in.getWidth(), in.getHeight(),BufferedImage.TYPE_INT_ARGB);
 					myImages.put(state + tag + end, myState);
 					Graphics2D g2 = myState.createGraphics();
