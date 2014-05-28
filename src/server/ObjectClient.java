@@ -4,7 +4,6 @@ import gameElements.AllianceRequest;
 import gameElements.GameInfo;
 import gameElements.GameState;
 import gui.GameGUI;
-import gui.ImageBase;
 
 import java.net.*;
 import java.util.Collection;
@@ -15,9 +14,20 @@ public class ObjectClient extends Thread implements ServerConstants{
 	private GameState myGame;
 	private ObjectOutputStream oos;
 	private ServerPlayer myPlayer;
+	
+	private String server_address;
 
 	public ObjectClient(){
-		
+		try {
+			server_address = InetAddress.getLocalHost().getHostAddress();
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public ObjectClient(String address){
+		server_address = address;
 	}
 
 	public synchronized void run(){
@@ -26,10 +36,7 @@ public class ObjectClient extends Thread implements ServerConstants{
 		System.out.println("ObjectClient initialized");
 		try {
 
-			//InetAddress address = InetAddress.getByName("10.190.218.185"); //timo's laptop server
-			//InetAddress address = InetAddress.getByName("10.190.52.80");
-			InetAddress address = InetAddress.getByName(InetAddress.getLocalHost().getHostAddress());
-			System.out.println("Address is: "+InetAddress.getLocalHost().getHostAddress());
+			InetAddress address = InetAddress.getByName(server_address);
 
 			Socket connection = new Socket(address, port);
 			oos = new ObjectOutputStream(connection.getOutputStream());

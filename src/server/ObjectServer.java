@@ -77,6 +77,7 @@ public class ObjectServer extends Thread implements ServerConstants{
 		return null;
 	}
 
+	@SuppressWarnings("resource")
 	public void run(){
 
 		int port = 19999;
@@ -241,6 +242,10 @@ public class ObjectServer extends Thread implements ServerConstants{
 
 	public String getPlayerName(ObjectSocket os) {
 		return myConnections.get(os).getName();
+	}
+	
+	public void close(){
+		this.interrupt();
 	}
 
 }
